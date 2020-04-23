@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/styles.css">
+    <script
+        src="https://code.jquery.com/jquery-3.5.0.min.js"
+        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <header>
+    <nav>
+        <div class="logo-header enabled">
+            TGen.
+        </div>
+        <div class="menu-container">
+            <ul>
+                <li>Docs</li>
+                <li class="login">
+                    Login
+                    <!-- Font Awesome Arrow -->
+                    <svg aria-hidden="true" focusable="false" 
+                          data-prefix="fad" data-icon="angle-down" 
+                          role="img" xmlns="http://www.w3.org/2000/svg" 
+                          viewBox="0 0 320 512" class="arrow">
+                        <g class="fa-group">
+                            <path fill="currentColor" 
+                              d="M160 256.14l-56.51 56.47-96.44-96.15a23.77 23.77 0 0 1-.18-33.61l.18-.18 22.59-22.51a23.94 23.94 0 0 1 33.85 0z" 
+                              class="arrow-primary">
+                            </path>
+                            <path fill="currentColor" 
+                              d="M313 182.57L290.21 160a23.94 23.94 0 0 0-33.85 0L103.47 312.61 143 352l.06.06a24 24 0 0 0 33.93-.16L313 216.36l.18-.17a23.78 23.78 0 0 0-.18-33.62z" 
+                              class="arrow-secondary">
+                            </path>
+                        </g>
+                    </svg>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    </header>
+
+    <div class="login-form">
+        <form method="POST">
+            <input type="email" placeholder="Email" class="textbox"> <br />
+            <input type="password" placeholder="Password" class="textbox"> <br /> <br />
+            <div class="buttons">
+                <button type="submit" class="accent-button">Login</button>
+                <button type="reset" class="button">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <section class="hero-container">
+        <img src="img/ScheduleImage.svg" class="hero-img">
+        <div class="hero-p">
+            <h1 class="hero-text">The only management tool you'll need.</h1>
+            <p>TGen is a college management tool. </p>
+        </div>
+    </section>
+    <div class="hero-container-2">Read the&nbsp;<a href="#">docs</a>.</div>
+</body>
+
+<script>
+    $().ready(() => {
+
+    });
+    $('.login').click(() => {
+        $('.login-form').slideToggle();
+        $('.arrow').toggleClass('arrow-up');
+    });
+</script>
+
+</html>
