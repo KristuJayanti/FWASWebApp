@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="css/styles.css">
+    <title>Welcome to TGen.</title>
     <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
         integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
@@ -13,12 +14,12 @@
 
     <header>
     <nav>
-        <div class="logo-header enabled">
+        <a class="logo-header enabled" href="index.html">
             TGen.
-        </div>
+        </a>
         <div class="menu-container">
             <ul>
-                <li>Docs</li>
+                <li><a href="docs.html">Docs</a></li>
                 <li class="login">
                     Login
                     <!-- Font Awesome Arrow -->
@@ -66,7 +67,10 @@
 
 <script>
     $().ready(() => {
-
+        $('.enabled').css('border-top', '3px solid #0078d7');
+        var size = parseInt($('.enabled').css('padding-top'));
+        size-=3;
+        $('.enabled').css('padding-top', size+"px");
     });
     $('.login').click(() => {
         $('.login-form').slideToggle();
