@@ -4,9 +4,14 @@
 <head>
     <link rel="stylesheet" href="css/styles.css">
     <title>Welcome to TGen.</title>
+    <meta name="viewport" content="width=device-width">
     <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
         integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous"></script>
 </head>
 
@@ -17,6 +22,22 @@
         <a class="logo-header enabled" href="index.html">
             TGen.
         </a>
+        <div class="nav-button">
+            <svg 
+                aria-hidden="true" focusable="false" 
+                data-prefix="fad" data-icon="bars" 
+                role="img" xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 448 512" class="svg-inline--fa fa-bars fa-w-14 fa-9x">
+                <g class="fa-group">
+                    <path fill="currentColor" 
+                        d="M16 288h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16z" 
+                        class="fa-secondary"></path>
+                    <path fill="currentColor" 
+                        d="M432 384H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H16A16 16 0 0 0 0 80v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16z" class="fa-primary">
+                    </path>
+                </g>
+            </svg>
+        </div>
         <div class="menu-container">
             <ul>
                 <li><a href="features.html">Docs</a></li>
@@ -38,6 +59,9 @@
                             </path>
                         </g>
                     </svg>
+                </li>
+                <li class="mob-login">
+                    <a href="Login">Login</a>
                 </li>
             </ul>
         </div>
@@ -76,6 +100,9 @@
     $('.login').click(() => {
         $('.login-form').slideToggle();
         $('.arrow').toggleClass('arrow-up');
+    });
+    $('.nav-button').click(()=> {
+        $('.menu-container').toggle('slide', {direction: 'left'}, 100);
     });
 </script>
 

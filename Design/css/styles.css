@@ -27,6 +27,8 @@ body, html {
     font-size: 28px;
     padding-top: 0.5rem;
     margin-left: 2rem;
+    justify-self: center;
+    align-self: center;
 }
 
 
@@ -39,19 +41,16 @@ header {
 
 nav {
     display: flex;
+    justify-content: center;
 }
 
 nav ul {
     margin: 0;
-}
-
-.menu-container {
-    margin-left: auto;
-    padding-right: 2rem;
+    padding: 0;
 }
 
 nav ul li {
-    display: inline-block;
+    display: block;
     padding-top: 0.5rem;
     padding-right: 1rem;
     padding-left: 1rem;
@@ -82,7 +81,7 @@ nav a {
     position: absolute;
     right: 0;
     border-radius: 2px;
-    left: 83%;
+    left: calc(100% - 15rem);
     top: 3rem;
     border: 1px solid var(--fade-border);
     padding: 0.5rem;
@@ -195,4 +194,90 @@ button.button:active {
 .hero-p {
     margin-top: 10vh;
     margin-left: 20px;
+}
+
+
+@media only screen and (max-width: 800px) {
+    .menu-container {
+        position: absolute;
+        display: none;
+        left: 0;
+        top: 0;
+        width: 20vw;
+        height: 100vh;
+        background-color: #fff;
+        border: 1px solid var(--fade-border);
+    }
+
+    nav ul li {
+        margin: 20px;
+    }
+
+    nav ul:first-child {
+        margin-top: 15vh;
+    }
+
+    .nav-button {
+        position: absolute;
+        top: 5vh;
+        left: 5vw;
+        display: block;
+        padding: 2px;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 2px;
+        border: 1px solid var(--fade-border);
+        z-index: 2;
+    }
+
+    .hero-container {
+        flex-direction: column;
+    }
+
+    .hero-img {
+        width: 90%;
+    }
+
+    .arrow {
+        display: none;
+    }
+    .login {
+        display: none;
+    }
+    .mob-login {
+        display: block;
+    }
+
+}
+
+@media only screen and (min-width: 800px) {    
+    nav ul li {
+        display: inline-block;
+    }
+
+    .menu-container {
+        display: block;
+        margin-left: auto;
+        padding-right: 2rem;
+    }
+
+    .logo-header {
+        align-self: flex-start;
+    }
+
+    nav {
+        justify-content: start;
+    }
+
+    .nav-button {
+        display: none;
+    }
+
+    .mob-login {
+        display: none;
+    }
+
+    .login {
+        display: inline-block;
+    }
 }
