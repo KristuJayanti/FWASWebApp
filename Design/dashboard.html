@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Welcome, {User}! </title>
+    <link rel="stylesheet" href="css/dashboard.styles.css">
+    <script
+        src="https://code.jquery.com/jquery-3.5.0.min.js"
+        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="dashboard-nav">
+            <div><a class="logo">TGen.</a></div>
+            <div class="menu">
+                <ul>
+                    <li class="enabled dashboard" onclick="dashboard()">Dashboard</li>
+                    <li onclick="manage()" class="manage">Manage</li>
+                    <li onclick="pref()" class="pref">Preferences</li>
+                </ul>
+            </div>
+            <div class="user">
+                <svg aria-hidden="true" 
+                    focusable="false" data-prefix="fad" 
+                    data-icon="user" role="img" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 448 512" class="avatar"
+                    width="20px" height="20px">
+                    <g class="fa-group">
+                        <path fill="currentColor" d="M352 128A128 128 0 1 1 224 0a128 128 0 0 1 128 128z" 
+                        class="primary-col"></path>
+                        <path fill="currentColor" d="M313.6 288h-16.7a174.1 174.1 0 0 1-145.8 0h-16.7A134.43 134.43 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.43 134.43 0 0 0 313.6 288z" 
+                        class="secondary-col"></path>
+                    </g>
+                </svg>
+                John
+                <svg aria-hidden="true" focusable="false" 
+                  data-prefix="fad" data-icon="angle-down" 
+                  role="img" xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 320 512" class="arrow" width="20px" height="20px">
+                    <g class="fa-group">
+                        <path fill="currentColor" 
+                            d="M160 256.14l-56.51 56.47-96.44-96.15a23.77 23.77 0 0 1-.18-33.61l.18-.18 22.59-22.51a23.94 23.94 0 0 1 33.85 0z" 
+                            class="primary-col">
+                        </path>
+                        <path fill="currentColor" 
+                            d="M313 182.57L290.21 160a23.94 23.94 0 0 0-33.85 0L103.47 312.61 143 352l.06.06a24 24 0 0 0 33.93-.16L313 216.36l.18-.17a23.78 23.78 0 0 0-.18-33.62z" 
+                            class="secondary-col">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+
+</body>
+
+<script>
+    function dashboard() {
+        $('.enabled').removeClass('enabled');
+        $('.dashboard').addClass('enabled');
+        console.log('Done');
+    }
+
+    function pref() {
+        $('.enabled').removeClass('enabled');
+        $('.pref').addClass('enabled');
+    }
+
+    function manage() {
+        $('.enabled').removeClass('enabled');
+        $('.manage').addClass('enabled');
+    }
+</script>
+
+</html>
