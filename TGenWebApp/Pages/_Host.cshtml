@@ -13,17 +13,70 @@
     <base href="~/" />
     <link href="css/site.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.styles.css">
     <title>Welcome to TGen.</title>
-    <script
+    @* <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
         integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
         crossorigin="anonymous"></script>
     <script
         src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> *@
+    <style>
+    .my-reconnect-modal > div{
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        overflow: hidden;
+        background-color: #000;
+        opacity: 0.6;
+        text-align: center;
+        font-weight: bold;
+    }
+    .components-reconnect-hide > div
+    {
+        display: none;
+    }
+
+    .components-reconnect-show > div
+    {
+        display: none;
+    }
+    .components-reconnect-show > .show
+    {
+        display: block;
+    }
+
+    .components-reconnect-failed > div
+    {
+        display: none;
+    }
+    .components-reconnect-failed > .failed
+    {
+        display: block;
+    }
+
+    .components-reconnect-refused >div
+    {
+        display: none;
+    }
+    .components-reconnect-refused > .refused
+    {
+        display: block;
+    }
+</style>
 </head>
 <body>
+    <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
+        <div class="show failed refused">
+            <img src="img/puff.svg" style="position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); width:200px">
+            <h1 style="color: #fff">Please wait, reconnecting to the server.</h1>
+        </div>
+    </div>
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
     </app>
