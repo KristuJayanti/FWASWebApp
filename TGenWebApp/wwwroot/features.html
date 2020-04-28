@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Welcome to TGen.</title>
+    <meta name="viewport" content="width=device-width">
+    <script
+        src="https://code.jquery.com/jquery-3.5.0.min.js"
+        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+        crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"></script>
+</head>
+    
+
+<body>
+
+    <header>
+    <nav>
+        <a class="logo-header" href="index.html">
+            TGen.
+        </a>
+        <div class="nav-button">
+            <svg 
+                aria-hidden="true" focusable="false" 
+                data-prefix="fad" data-icon="bars" 
+                role="img" xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 448 512" class="svg-inline--fa fa-bars fa-w-14 fa-9x">
+                <g class="fa-group">
+                    <path fill="currentColor" 
+                        d="M16 288h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16z" 
+                        class="fa-secondary"></path>
+                    <path fill="currentColor" 
+                        d="M432 384H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H16A16 16 0 0 0 0 80v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16z" class="fa-primary">
+                    </path>
+                </g>
+            </svg>
+        </div>
+        <div class="menu-container">
+            <ul>
+                <li class="enabled"><a href="docs.html">Docs</a></li>
+                <li class="login">
+                    Login
+                    <!-- Font Awesome Arrow -->
+                    <svg aria-hidden="true" focusable="false" 
+                          data-prefix="fad" data-icon="angle-down" 
+                          role="img" xmlns="http://www.w3.org/2000/svg" 
+                          viewBox="0 0 320 512" class="arrow">
+                        <g class="fa-group">
+                            <path fill="currentColor" 
+                              d="M160 256.14l-56.51 56.47-96.44-96.15a23.77 23.77 0 0 1-.18-33.61l.18-.18 22.59-22.51a23.94 23.94 0 0 1 33.85 0z" 
+                              class="arrow-primary">
+                            </path>
+                            <path fill="currentColor" 
+                              d="M313 182.57L290.21 160a23.94 23.94 0 0 0-33.85 0L103.47 312.61 143 352l.06.06a24 24 0 0 0 33.93-.16L313 216.36l.18-.17a23.78 23.78 0 0 0-.18-33.62z" 
+                              class="arrow-secondary">
+                            </path>
+                        </g>
+                    </svg>
+                </li>
+                <li class="mob-login">
+                    <a href="Login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    </header>
+
+    <div class="login-form">
+        <form method="POST">
+            <input type="email" placeholder="Email" class="textbox"> <br />
+            <input type="password" placeholder="Password" class="textbox"> <br /> <br />
+            <div class="buttons">
+                <button type="submit" class="accent-button">Login</button>
+                <button type="reset" class="button">Reset</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+<script>
+    $().ready(() => {
+        $('.enabled').css('border-top', '3px solid #0078d7');
+        var size = parseInt($('.enabled').css('padding-top'));
+        size-=3;
+        $('.enabled').css('padding-top', size+"px");
+    });
+    $('.login').click(() => {
+        $('.login-form').slideToggle();
+        $('.arrow').toggleClass('arrow-up');
+    });
+    $('.nav-button').click(()=> {
+        $('.menu-container').toggle('slide', {direction: 'left'}, 100);
+    });
+</script>
+
+</html>
