@@ -1,0 +1,123 @@
+﻿@page "/Manage"
+
+<section id="featuresView" style="position: absolute;
+        top:0%; left: 0%; width: 100vw; height: 100vh; background-color: #0007; display: @Hide;
+        opacity: @ViewOpacity; transition: opacity 300ms ease;">
+    <div style="position: relative; 
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            height: 60vh; width: 60vw; ">
+        <div style="position: absolute; top: 50%; transform: translateY(-50%);" @onclick="leftClick">
+            <svg aria-hidden="true" focusable="false" 
+                data-prefix="fad" data-icon="angle-left" 
+                role="img" xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 256 512" style="width: 3vw; opacity: @leftOpacity;
+                    transition:opacity 300ms ease;">
+                <g class="fa-group">
+                    <path fill="currentColor" d="M223.83 352.44a24 24 0 0 1 0 33.86L201.32 409l-.18.18a23.76 23.76 0 0 1-33.6-.18l-96.15-96.5 56.47-56.5z" 
+                    style="color: #fff7"></path>
+                    <path fill="currentColor" d="M167.81 102.87l-.17.18L32.11 239a24 24 0 0 0-.17 33.93l.06.07 39.39 39.51L224 159.66a23.92 23.92 0 0 0 0-33.84l-22.54-22.74a23.77 23.77 0 0 0-33.62-.23z" 
+                    style="color: #fff7"></path>
+                </g>
+            </svg>
+        </div>
+        <div class="info" style="position: absolute; left: 5vw; width: 44vw; background-color: #fff; height: 60vh;">
+            <div class="close" style="position: absolute; width: 2rem; height: 2rem; 
+                padding: 5px; margin-right: 4px; margin-top: 4px; right: 0%; opacity: 0.7" @onclick="closeClick">
+                <svg aria-hidden="true" focusable="false" 
+                    data-prefix="fad" data-icon="times" 
+                    role="img" xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 352 512" class="close-icon" style="width: 2rem; height: 2rem;">
+                    <g class="fa-group">
+                        <path fill="currentColor" d="M9.21,356.07a31.46,31.46,0,0,0,0,44.48l22.24,22.24a31.46,31.46,0,0,0,44.48,0L176,322.72,109.28,256ZM342.79,111.45,320.55,89.21a31.46,31.46,0,0,0-44.48,0L176,189.28,242.72,256,342.79,155.93a31.46,31.46,0,0,0,0-44.48Z" 
+                            class="fa-secondary"></path>
+                        <path fill="currentColor" d="M342.79,356.07a31.46,31.46,0,0,1,0,44.48l-22.24,22.24a31.46,31.46,0,0,1-44.48,0L9.21,155.93a31.46,31.46,0,0,1,0-44.48L31.45,89.21a31.46,31.46,0,0,1,44.48,0Z" 
+                            class="fa-primary"></path>
+                    </g>
+                </svg>
+            </div>
+            @foreach(var im in imgs){
+                <img src="@im.Image"
+                    style="position: absolute; width: 34vw; height: 34vh; top: 40%; left: 50%;
+                    transform: translate(-50%, -50%); border:0; opacity: @im.Opacity; transition: opacity 300ms ease"> 
+            }
+            <h2 class="image-text1" style="position: absolute; top: 70%; left: 50%;
+                    transform: translateX(-50%); border:0;">@head</h2>
+            <p class="image-text2" style="position: absolute; top: 78%; left: 50%;
+                    transform: translateX(-50%); border:0;">@para</p>
+        </div> 
+        <div style="position: absolute; top:50%; transform: translateY(-50%); left: 51vw;" @onclick="rightClick">
+            <svg aria-hidden="true" focusable="false" 
+                data-prefix="fad" data-icon="angle-right" 
+                role="img" xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 256 512" style="width: 3vw; opacity: @rightOpacity; 
+                    transition: opacity 300ms ease;">
+                <g class="fa-group">
+                    <path fill="currentColor" 
+                        d="M128.14 256l56.47 56.49L88.46 409a23.76 23.76 0 0 1-33.6.18l-.18-.18-22.51-22.68a23.92 23.92 0 0 1 0-33.84z" 
+                        style="color: #fff7;"></path>
+                    <path fill="currentColor" 
+                        d="M54.58 103.07L32 125.81a23.92 23.92 0 0 0 0 33.84L184.61 312.5 224 273l.06-.06a24 24 0 0 0-.16-33.94L88.37 103l-.17-.18a23.78 23.78 0 0 0-33.62.22z" 
+                        style="color: #fff7;"></path>
+                </g>
+            </svg>
+        </div>
+    </div>
+</section>
+
+@code {
+    public class myImage {
+        public string Image {get; set;}
+        public string Opacity {get; set; }
+    }
+
+    public string Hide = "block", ViewOpacity = "1";
+    private static string[] heads = {"Welcome to TGen!","Easy to use, fast and neat", "Stay on schedule",
+            "Review on the go", "Complete peace of mind", "Thanks for choosing TGen"};
+
+    public static myImage[] imgs = { 
+        new myImage{ Image = "img/welcome.svg", Opacity="1" },
+        new myImage{ Image = "img/dashboard.svg", Opacity="0" },
+        new myImage{ Image = "img/ScheduleImage.svg", Opacity="0" },
+        new myImage{ Image = "img/review.svg", Opacity="0" },
+        new myImage{ Image = "img/percentages.svg", Opacity="0" },
+        new myImage{ Image = "img/thanks.svg", Opacity="0" }
+    }; 
+    private static string[] paras = {"TGen is the only tool you'll want.", "Powerful dashboard, little clutter.", 
+        "TGen powerful and revolutionary time table scheduler is powered by a powerful algorithm, so you don't loose productivity.",
+        "Forget running into issues, TGen will manage everything!",
+        "Easy tracking, quick filters, and more.",
+        "Explore TGen, we're here to help.",
+        "We hope you enjoy."};
+    int ptr = 0;
+    int size = heads.Length - 2;
+    public string leftOpacity = "0", rightOpacity = "1", head = heads[0], para = paras[0];
+
+    public void leftClick() {
+        if (leftOpacity=="1") {
+            if (ptr==size+1) rightOpacity = "1";
+            if (ptr==1) leftOpacity = "0";
+            imgs[ptr].Opacity="0";
+            ptr--;
+            imgs[ptr].Opacity="1";
+            head = heads[ptr];
+            para = paras[ptr];
+        }
+    }
+
+    public void rightClick() {
+        if (rightOpacity=="1") {
+            if (ptr==0) leftOpacity="1";
+            if (ptr==size) rightOpacity = "0";
+            imgs[ptr].Opacity="0";
+            ptr++;
+            imgs[ptr].Opacity="1";
+            head = heads[ptr];
+            para = paras[ptr];
+        }
+    }
+
+    public void closeClick() {
+        ViewOpacity="0";
+        Hide = "none";
+    }
+}

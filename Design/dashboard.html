@@ -22,6 +22,7 @@
                 <ul>
                     <li class="enabled dashboard" onclick="dashboard()">Dashboard</li>
                     <li onclick="manage()" class="manage">Manage</li>
+                    <li onclick="messages()" class="messages">Messages</li>
                     <li onclick="pref()" class="pref">Preferences</li>
                 </ul>
             </div>
@@ -59,6 +60,9 @@
         </nav>
     </header>
 
+    <section class="page">
+        
+    </section>
 
 </body>
 
@@ -77,6 +81,11 @@
     function manage() {
         $('.enabled').removeClass('enabled');
         $('.manage').addClass('enabled');
+    }
+
+    function messages() {
+        $('.enabled').removeClass('enabled');
+        $('.messages').addClass('enabled');
     }
 </script>
 
