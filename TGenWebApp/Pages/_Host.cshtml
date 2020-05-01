@@ -15,14 +15,15 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dashboard.styles.css">
     <title>Welcome to TGen.</title>
-    @* <script
+    <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
         integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
         crossorigin="anonymous"></script>
-    <script
+    @* <script
         src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous"></script> *@
+    <Script src="js/rellax.min.js"></Script>
     <style>
     .my-reconnect-modal > div{
         position: fixed;
@@ -93,5 +94,14 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script>
+        function relax() {
+            $().ready(() => {
+                if (screen && screen.width > 800) 
+                    var rellax = new Rellax('.rellax');
+            });
+            console.log('done');
+        }
+    </script>
 </body>
 </html>

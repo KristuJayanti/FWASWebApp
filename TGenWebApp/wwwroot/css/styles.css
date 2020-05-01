@@ -10,7 +10,6 @@
 
 * {
     font-family: Inter, sans-serif;
-    user-select: none;
 }
 
 body, html {
@@ -28,6 +27,7 @@ body, html {
     font-size: 28px;
     padding-top: 0.5rem;
     margin-left: 2rem;
+    margin-right: 2rem;
     justify-self: center;
     align-self: center;
 }
@@ -36,8 +36,12 @@ body, html {
 header {
     position: fixed;
     width: 100%;
-    background-color: #fff9;
-    background-image: linear-gradient(to bottom, #fff, #fff0);
+    background-color: #fefefe;
+    opacity: 0.8;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding-bottom: 0.5rem;
+    /*box-shadow: 0px 1px 5px 1px black; */
 }
 
 nav {
@@ -85,7 +89,7 @@ nav a:hover {
     padding-left: 0.6rem !important; 
     padding-right: 0.6rem !important; 
 }
-
+    
 .arrow {
     height: 1rem;
     width: 1rem;
@@ -207,7 +211,7 @@ button.button:active {
     display: flex; 
     padding-top: 20vh; 
     padding-left: 15vw; 
-    padding-right: 5vw;
+    padding-right: 15vw;
 }
 
 .hero-text {
@@ -253,8 +257,8 @@ button.button:active {
 
     .nav-button {
         position: absolute;
-        top: 5vh;
-        left: 5vw;
+        top: 1vh;
+        left: 2vw;
         display: block;
         padding: 2px;
         width: 2rem;

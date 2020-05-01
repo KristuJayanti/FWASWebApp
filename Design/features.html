@@ -14,7 +14,7 @@
         src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous"></script>
-    <script src="js/rellax.min.js"></script>
+    <script src="js/pagescript.js"></script>
 </head>
     
 
@@ -169,11 +169,19 @@
             }
 
             .obj:nth-child(2) .overlay {
-                padding-top: 300px;
+                margin-top: 60px;
             }
 
-            .obj:nth-child(3) .overlay{
+            .obj:nth-child(2) .text-right {
+                margin-top: 20px;
+            }
+
+            .obj:nth-child(3) .overlay {
                 margin-top: 180px;
+            }
+
+            .obj:nth-child(3) .text-left {
+                margin-top: 220px;
             }
 
             .obj:last-child {
@@ -227,22 +235,4 @@
     </footer>
 
 </body>
-
-<script>
-    $().ready(() => {
-        if (screen && screen.width > 800) var rellax = new Rellax('.rellax');
-        $('.enabled').css('border-top', '3px solid #0078d7');
-        var size = parseInt($('.enabled').css('padding-top'));
-        size-=3;
-        $('.enabled').css('padding-top', size+"px");
-    });
-    $('.login').click(() => {
-        $('.login-form').slideToggle();
-        $('.arrow').toggleClass('arrow-up');
-    });
-    $('.nav-button').click(()=> {
-        $('.menu-container').toggle('slide', {direction: 'left'}, 100);
-    });
-</script>
-
 </html>

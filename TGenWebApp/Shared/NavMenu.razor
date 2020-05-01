@@ -59,7 +59,7 @@
 </nav>
 </header>
 
-<div class="login-form @FormDisp" style="display: @OutNav">
+<div class="login-form @FormDisp">
     <form method="POST">
         <input type="email" placeholder="Email" class="textbox"> <br />
         <input type="password" placeholder="Password" class="textbox"> <br /> <br />
@@ -134,5 +134,6 @@
 
     private void TestLogin() {
         isLoggedIn = true;
+        dispStatus = false;
     }
 }
