@@ -1,0 +1,23 @@
+<button type="@Type" class="@cssClasses" @onclick="OnClick">@ChildContent</button>
+
+@code {
+    [Parameter]
+    public string cssClasses {get; set; }
+
+    [Parameter]
+    public string Color {get; set; } 
+
+    [Parameter]
+    public string Type {get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent {get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick {get; set; }
+
+    protected override void OnInitialized() {
+        if (Color==null || Color=="" || Color.Equals("Uncolored", StringComparison.OrdinalIgnoreCase)) cssClasses += "button";
+        else if (Color.Equals("Colored", StringComparison.OrdinalIgnoreCase)) cssClasses += "accent-button";
+    }
+}
