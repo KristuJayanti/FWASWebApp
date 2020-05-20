@@ -25,6 +25,10 @@
         crossorigin="anonymous"></script> *@
     <Script src="js/rellax.min.js"></Script>
     <style>
+    .my-reconnect-modal {
+        z-index: 10000;
+    }
+
     .my-reconnect-modal > div{
         position: fixed;
         top: 0;
@@ -38,35 +42,28 @@
         text-align: center;
         font-weight: bold;
     }
-    .components-reconnect-hide > div
-    {
+    .components-reconnect-hide > div {
         display: none;
     }
 
-    .components-reconnect-show > div
-    {
+    .components-reconnect-show > div {
         display: none;
     }
-    .components-reconnect-show > .show
-    {
+    .components-reconnect-show > .show {
         display: block;
     }
 
-    .components-reconnect-failed > div
-    {
+    .components-reconnect-failed > div {
         display: none;
     }
-    .components-reconnect-failed > .failed
-    {
+    .components-reconnect-failed > .failed {
         display: block;
     }
 
-    .components-reconnect-refused >div
-    {
+    .components-reconnect-refused >div {
         display: none;
     }
-    .components-reconnect-refused > .refused
-    {
+    .components-reconnect-refused > .refused {
         display: block;
     }
 </style>
