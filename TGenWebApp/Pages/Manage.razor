@@ -1,9 +1,12 @@
 ﻿@page "/Manage"
 
-<Carousel Headings="@heads" Descriptions="@paras" Images="@imgs" />
-
+@if(isNewUser) {
+    <Carousel Headings="@heads" Descriptions="@paras" Images="@imgs" />
+}
 
 @code {
+    public bool isNewUser = true;
+
     //Headings
     private string[] heads = {"Welcome to TGen!","Easy to use, fast and neat", "Stay on schedule",
             "Review on the go", "Complete peace of mind", "Thanks for choosing TGen"};

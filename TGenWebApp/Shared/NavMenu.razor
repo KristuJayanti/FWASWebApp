@@ -120,6 +120,7 @@
 
 
 @code {
+
     public string OutNav, InNav;
     private bool dispStatus;
 
@@ -127,13 +128,23 @@
 
     public string FormDisp => dispStatus ? "login-visible" : "";
     public string ArrowState => dispStatus ? "arrow-up" : "";
+    
+
+    protected override void OnInitialized() {
+        OutNav = isLoggedIn ? "none" : "block";
+        InNav = isLoggedIn ? "block" : "none";
+    }
 
     private void ShowLogin() {
         dispStatus = !dispStatus;
     }
 
+
+    // This function is for testing only - remove after implementing JWT
     private void TestLogin() {
         isLoggedIn = true;
         dispStatus = false;
+        OutNav = isLoggedIn ? "none" : "block";
+        InNav = isLoggedIn ? "block" : "none";
     }
 }
