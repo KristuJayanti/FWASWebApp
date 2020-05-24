@@ -1,5 +1,47 @@
 ﻿@page "/Manage"
 
+<CardLayout ChildrenWidth="15rem" ChildrenHeight="15rem">
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card Breadth="Wide">
+        <h3>Wide</h3>
+    </Card>
+    <Card Length="Tall">
+        <h3>Tall</h3>
+    </Card>
+    <Card Breadth="Wide" Length="Tall">
+        <h3>Big</h3>
+    </Card>
+    <Card Breadth="Narrow" Length="Short">
+        <h3>Tiny</h3>
+    </Card>
+    <Card Breadth="Narrow" Length="Short">
+        <h3>Tiny</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+    <Card>
+        <h3>Default</h3>
+    </Card>
+</CardLayout>
+
 @if(isNewUser) {
     <Carousel Headings="@heads" Descriptions="@paras" Images="@imgs" />
 }
