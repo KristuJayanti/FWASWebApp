@@ -1,0 +1,55 @@
+<style>
+    .container {
+        position: absolute;
+        padding-top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        grid-column-gap: 3rem;
+        grid-row-gap: 3rem;
+        width: 80%;
+    }
+
+
+    @@media only screen and (max-width: 972px) and (min-width: 650px) {
+        .container {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+    }
+
+    @@media only screen and (max-width: 1268px) and (min-width: 972px) {
+        .container {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        }
+    }
+
+    @@media only screen and (min-width: 1268px) {
+        .container {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        }
+    }
+</style>
+
+
+<div style="position: relative; width: 100vw; padding-top: 2rem; overflow-x: none">
+    <div class="container">
+        @ChildContent
+    </div>
+ </div>
+
+@code {
+    [Parameter]
+    public string ChildrenHeight {get; set; }
+    [Parameter]
+    public string ChildrenWidth {get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent {get; set; }
+
+    protected override void OnInitialized() {
+        if (ChildrenHeight is null) ChildrenHeight = "14rem";
+        if (ChildrenWidth is null) ChildrenWidth = "16rem";
+    }
+}

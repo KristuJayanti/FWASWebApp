@@ -1,0 +1,53 @@
+<style>
+    .card {
+        background: white;
+        text-decoration: none;
+        color: #444;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        padding: 0.75rem;
+        transition: 500ms ease;
+        color: #444;
+        border-bottom: 4rem;
+    }
+
+    .card:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+        color: #000;
+    }
+</style>
+
+<div class="card" style="@Width @Height @Length @Breadth">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string Height {get; set; }
+    [Parameter]
+    public string Width {get; set; }
+    [Parameter]
+    public string Length {get; set; }
+    [Parameter]
+    public string Breadth {get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent {get; set; }
+
+    protected override void OnInitialized() {
+        if (Height is null) Height = "";
+        else Height = "height: " + Height + " !important;";
+
+        if (Width is null) Width = "";
+        else Width = "width: " + Width + " !important;";
+
+        if (Length is null || Length is "Medium") Length = "grid-row: span 2; min-height: 14rem;";
+        else if (Length is "Short") Length = "grid-row: span 1; min-height: 7rem;";
+        else if (Length is "Tall") Length = "grid-row: span 4; min-height: 21rem;";
+
+        if (Breadth is null || Breadth is "Medium") Breadth = "grid-column: span 2;";
+        else if (Breadth is "Narrow") Breadth = "grid-column: span 1;";
+        else if (Breadth is "Wide") Breadth = "grid-column: span 4;";
+    }
+}
