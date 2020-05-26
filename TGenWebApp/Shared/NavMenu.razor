@@ -6,6 +6,8 @@
     InNav = "block";
 }
 
+@inject NavigationManager manager;
+
 <header style="display: @OutNav;">
 <nav>
     <div class="logo-header">
@@ -66,7 +68,7 @@
         <div class="buttons">
             <Button Type="submit" Color="Colored">Login</Button>
             <Button Type="reset" Color="Uncolored">Reset</Button>
-            <Button OnClick="TestLogin">Test</Button>
+            <Button OnClick="TestLogin" Type="button">Test</Button>
         </div>
     </form>
 </div>
@@ -146,5 +148,6 @@
         dispStatus = false;
         OutNav = isLoggedIn ? "none" : "block";
         InNav = isLoggedIn ? "block" : "none";
+        manager.NavigateTo("/Dashboard");
     }
 }
