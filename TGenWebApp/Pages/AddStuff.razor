@@ -1,0 +1,32 @@
+@page "/AddStuff"
+
+<ContextMenu Visible='@_visible'
+             X=@_x
+             Y=@_y>
+    <ContextLink>New</ContextLink>
+    <ContextLink>Open</ContextLink>
+    <ContextLink>Save</ContextLink>
+    <ContextLink>Cut</ContextLink>
+</ContextMenu>
+
+<div style="height: 95vh;" 
+     @onmouseup="Trigger"
+     oncontextmenu="return false;">
+    <h2>Add Departments</h2>
+</div>
+
+@code{
+    private bool _visible;
+    private double _x, _y;
+
+    private void Trigger(MouseEventArgs e) {
+        if (e.Button == 2) {
+            _visible = true;
+            _x = e.ClientX;
+            _y = e.ClientY;
+        } else {
+            _visible = false;
+        }
+    }
+
+}

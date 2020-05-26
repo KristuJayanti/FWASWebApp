@@ -1,0 +1,23 @@
+<style>
+    .context-links {
+        padding: 3px 8px;
+        cursor:default;
+        transition: background-color 100ms ease, padding 300ms ease;
+    }
+
+    .context-links:hover {
+        background-color: #dadada;
+    }
+</style>
+
+<div class="context-links" @onclick="OnClick">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick {get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent {get; set; }
+}
