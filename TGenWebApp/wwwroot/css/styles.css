@@ -174,7 +174,7 @@ button.accent-button:active {
 }
 
 button.button {
-    font-family: 'Inter';
+    font-family: 'Inter', sans-serif;
     background-color: #fff;
     color: #000;
     padding: 6px 14px;
@@ -232,6 +232,10 @@ button.button:active {
 .hero-p {
     margin-top: 10vh;
     margin-left: 20px;
+}
+
+.main {
+    padding-top: 5vh;
 }
 
 
