@@ -1,0 +1,77 @@
+﻿@page "/Faculty"
+
+<h1 style='padding-left: 10vw;'>Faculty</h1>
+
+<style>
+    img {
+        width: 170px;
+    } input[type='text'] {
+        padding: 4px;
+        margin: 8px 2px;
+        border-radius: 4px;
+        border: 1px solid black;
+    }
+</style>
+
+<CardLayout ChildrenHeight='15rem'
+            ChildrenWidth='15rem'>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/R%20Kumar.jpg'>
+        <h3>Dr. R. Kumar</h3>
+        <p>Role: HOD</p>
+        <p>Department: Computer Science PG</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/Muruganantham.jpg'>
+        <h3>Prof. A. Muruganantham</h3>
+        <p>Role: Professor</p>
+        <p>Department: Computer Science PG</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/Velmurugan.jpg'>
+        <h3>Prof. Velmurugan R </h3>
+        <p>Role: Professor</p>
+        <p>Department: Computer Science PG</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Jude.jpg'>
+        <h3>Dr. Calistus Jude AL </h3>
+        <p>Role: Dean</p>
+        <p>Department: Computer Science</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Fr_Lijo.jpg'>
+        <h3>Fr. Lijo P. Thomas </h3>
+        <p>Role: HOD</p>
+        <p>Department: Computer Science</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Sevuga%20Pandian.jpg'>
+        <h3>A. Sevuga Pandian </h3>
+        <p>Role: Professor</p>
+        <p>Department: Computer Science</p>
+    </Card>
+    <Card>
+        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Commerce-Management/management/images/faculty/Surendranath%20Reddy.jpg'>
+        <h3>C.Surendranath Reddy</h3>
+        <p>Role: HOD</p>
+        <p>Department: Commerce</p>
+    </Card>
+</CardLayout>
+
+<PromptPane Dismissible='true'
+            Title='Add Faculty'
+            PrimaryText='Add'
+            SecondaryText='Cancel'>
+    Designation: <input type='text' placeholder='Designation'/> <br />
+    First Name: <input type='text'
+           placeholder='First Name' /> <br/>
+    Last Name: <input type='text' placeholder='Last Name' /> <br/>
+    Department: <input type='text' placeholder='Department' /> <br/>
+    Age: <input type='text' placeholder='Age'/><br/>
+    Gender: <input type='radio'/>Male
+    <input type='radio'/>Female<br />
+    Qualifications: <input type='text' placeholder='Qualifications'/><br />
+    Speciality: <input type='text' placeholder='Speciality'/> <br />
+    Photo: <input type='file' placeholder='Photo'/>
+</PromptPane>
