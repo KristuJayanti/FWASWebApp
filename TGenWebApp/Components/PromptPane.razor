@@ -12,37 +12,37 @@
 </style>
 
 
-<div style="width:100vw; height: 100vh; background-color: #0004; overflow: hidden; position: relative; 
-        backdrop-filter: blur(10px); z-index: 1000;" class="@mainClosed">
-    <div style="left: 35%; top: 2rem; bottom: 2rem; right: 2rem; border: 1px solid gray; float:right;
-            border-radius: 2px; position: absolute; background-color: #fff; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            transition: all 300ms ease-out; overflow: hidden;">
-        <div style="width: 1rem; height: 1rem; position: absolute; right: 12px; top: 8px; display: @_visible" @onclick="Dismiss">
-            <svg aria-hidden="true" focusable="false" 
-                data-prefix="fad" data-icon="times" 
-                role="img" xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-9x">
-                <g class="fa-group">
-                    <path fill="currentColor" 
-                        d="M9.21,356.07a31.46,31.46,0,0,0,0,44.48l22.24,22.24a31.46,31.46,0,0,0,44.48,0L176,322.72,109.28,256ZM342.79,111.45,320.55,89.21a31.46,31.46,0,0,0-44.48,0L176,189.28,242.72,256,342.79,155.93a31.46,31.46,0,0,0,0-44.48Z" 
-                        class="fa-secondary">
+<div style='width:100vw; height: 100vh; background-color: #0004; overflow: hidden; position: fixed; 
+        backdrop-filter: blur(10px); z-index: 1000; left: 0; top: 0;' class='@mainClosed'>
+    <div style='left: 35%; top: 2rem; bottom: 2rem; right: 2rem; border: 1px solid gray; float:right;
+            border-radius: 2px; position: fixed; background-color: #fff; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            transition: all 300ms ease-out; overflow: hidden;'>
+        <div style='width: 1rem; height: 1rem; position: absolute; right: 12px; top: 8px; display: @_visible' @onclick='Dismiss'>
+            <svg aria-hidden='true' focusable='false' 
+                data-prefix='fad' data-icon='times' 
+                role='img' xmlns='http://www.w3.org/2000/svg' 
+                viewBox='0 0 352 512' class='svg-inline--fa fa-times fa-w-11 fa-9x'>
+                <g class='fa-group'>
+                    <path fill='currentColor' 
+                        d='M9.21,356.07a31.46,31.46,0,0,0,0,44.48l22.24,22.24a31.46,31.46,0,0,0,44.48,0L176,322.72,109.28,256ZM342.79,111.45,320.55,89.21a31.46,31.46,0,0,0-44.48,0L176,189.28,242.72,256,342.79,155.93a31.46,31.46,0,0,0,0-44.48Z' 
+                        class='fa-secondary'>
                     </path>
-                    <path fill="currentColor" 
-                        d="M342.79,356.07a31.46,31.46,0,0,1,0,44.48l-22.24,22.24a31.46,31.46,0,0,1-44.48,0L9.21,155.93a31.46,31.46,0,0,1,0-44.48L31.45,89.21a31.46,31.46,0,0,1,44.48,0Z" 
-                        class="fa-primary">
+                    <path fill='currentColor' 
+                        d='M342.79,356.07a31.46,31.46,0,0,1,0,44.48l-22.24,22.24a31.46,31.46,0,0,1-44.48,0L9.21,155.93a31.46,31.46,0,0,1,0-44.48L31.45,89.21a31.46,31.46,0,0,1,44.48,0Z' 
+                        class='fa-primary'>
                     </path>
                 </g>
             </svg>
         </div>
-        <div style="left: 1rem; position: absolute;">
+        <div style='left: 1rem; position: absolute;'>
             <h2>@Title</h2>
         </div>
-        <div style="position: absolute; left: 2rem; top: 4rem; overflow-y: scroll; height: 75vh; width: -moz-available; width: -webkit-fill-available">   
+        <div style='position: absolute; left: 2rem; top: 4rem; overflow-y: scroll; height: 75vh; width: -moz-available; width: -webkit-fill-available'>   
             @ChildContent
         </div>
-        <div style="bottom: 1rem; right: 1rem; position: absolute;">
-            <Button Color="Uncolored" @onclick="OnClickSecondary">@SecondaryText</Button>
-            <Button Color="Colored" @onclick="OnClickPrimary">@PrimaryText</Button>
+        <div style='bottom: 1rem; right: 1rem; position: absolute;'>
+            <Button Color='Uncolored' @onclick='OnClickSecondary'>@SecondaryText</Button>
+            <Button Color='Colored' @onclick='OnClickPrimary'>@PrimaryText</Button>
         </div>
     </div>
 </div>
