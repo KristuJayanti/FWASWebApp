@@ -45,7 +45,7 @@ namespace TGenWebApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
