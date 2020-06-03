@@ -99,6 +99,9 @@
             });
             console.log('done');
         }
+        $().ready(() => {
+            $("a.active").parents('li').addClass('active');
+        })
     </script>
 </body>
 </html>

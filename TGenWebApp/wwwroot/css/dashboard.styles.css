@@ -24,15 +24,20 @@
 }
 
 .menu li {
+    margin: 0 0.3rem;
+}
+
+.menu li a {
     list-style-type: none;
     margin: 0.5rem 0;
     display: inline-flex;
     padding: 4px 0.6rem;
     transition-property: all;
     transition-duration: 300ms;
+    border-bottom: 2px solid #fff2;
 }
 
-.menu li:hover {
+.menu li a:hover {
     background-color: #f3f4f5;
     color: var(--accent-primary);
 }
@@ -42,7 +47,7 @@
     padding: 4px 0.1rem !important;
     transition-timing-function: ease;
     border-bottom: 2px solid var(--accent-primary) !important;
-    font-weight: 600;
+    
 }
 
 .enabled:hover {
