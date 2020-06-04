@@ -83,7 +83,7 @@
                     <h3 style='text-align: center'>Deaneries</h3>
                     <p>Manage what courses your college has to offer.</p>
                 </Card>
-            </div> <div>
+            </div> <div @onclick='() => NavigateTo("Departments")'>
                 <Card>
                     <svg aria-hidden="true"
                          class="fa-9x fa-school fa-w-20 svg-inline--fa"
@@ -107,7 +107,7 @@
                     <h3 style='text-align: center'>Departments</h3>
                     <p>Manage all details about classes, students, and timings.</p>
                 </Card>
-            </div><div>
+            </div><div @onclick='() => NavigateTo("Faculties")'>
                 <Card >
                     <svg aria-hidden="true"
                          class="fa-9x fa-chalkboard-teacher fa-w-20 svg-inline--fa"
@@ -137,16 +137,15 @@
         break;
 }
 
-@if (isNewUser) {
+@if (_isNewUser) {
     <Carousel Headings="@_heads"
               Descriptions="@_paras"
               Images="@_images" />
 }
 
 @code {
-
     private string _currentPage = "";
-    private bool isNewUser = true;
+    private bool _isNewUser = true;
 
     //Headings
     private readonly string[] _heads = {
@@ -176,9 +175,4 @@
     private void NavigateTo(string page) {
         _currentPage = page;
     }
-
-    private void DoNothing() {
-        
-    }
-
 }

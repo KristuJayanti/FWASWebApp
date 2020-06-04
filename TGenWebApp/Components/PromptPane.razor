@@ -41,8 +41,8 @@
             @ChildContent
         </div>
         <div style='bottom: 1rem; right: 1rem; position: absolute;'>
-            <Button Color='Uncolored' @onclick='OnClickSecondary'>@SecondaryText</Button>
-            <Button Color='Colored' @onclick='OnClickPrimary'>@PrimaryText</Button>
+            <Button Color='Uncolored' OnClick="@OnClickSecondary">@SecondaryText</Button>
+            <Button Color='Colored' OnClick="@OnClickPrimary">@PrimaryText</Button>
         </div>
     </div>
 </div>
@@ -62,10 +62,10 @@
     public string SecondaryText {get; set;}
 
     [Parameter]
-    public EventCallback<MouseEventArgs> OnClickSecondary {get; set; }
+    public EventCallback OnClickSecondary {get; set; }
 
     [Parameter]
-    public EventCallback<MouseEventArgs> OnClickPrimary {get; set; }
+    public EventCallback OnClickPrimary {get; set; }
 
     [Parameter]
     public RenderFragment ChildContent {get; set; }

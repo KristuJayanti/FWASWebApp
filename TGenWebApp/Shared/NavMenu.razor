@@ -1,14 +1,8 @@
-﻿@if(!isLoggedIn) {
-    OutNav = "block";
-    InNav = "none";
-} else {
-    OutNav = "none";
-    InNav = "block";
-}
+﻿@using TGenWebApp.Drivers
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Manager;
 
-@inject NavigationManager manager;
-
-<header style="display: @(isLoggedIn ? "none" : "block")">
+<header style="display: @(_isLoggedIn ? "none" : "block")">
 <nav>
     <div class="logo-header">
     <NavLink href="" Match="NavLinkMatch.All">
@@ -61,21 +55,21 @@
 </nav>
 </header>
 
-<div class="login-form @FormDisp">
+<div class="login-form @FormDisplay">
     <form method="POST">
         <input type="email" placeholder="Email" class="textbox"> <br />
         <input type="password" placeholder="Password" class="textbox"> <br /> <br />
         <div class="buttons">
             <Button Type="submit" Color="Colored">Login</Button>
             <Button Type="reset" Color="Uncolored">Reset</Button>
-            <Button OnClick="TestLogin" Type="button">Test</Button>
+            <Button OnClick="@TestLogin" Type="button">Test</Button>
         </div>
     </form>
 </div>
 
 @* Logged In Nav Bar Below *@
 
-<header style='display: @(isLoggedIn ? "block" : "none")'>
+<header style='display: @(_isLoggedIn ? "block" : "none")'>
     <nav class="dashboard-nav">
          <div class="logo-header">
             <NavLink href="" Match="NavLinkMatch.All">
@@ -104,7 +98,7 @@
                     class="secondary-col"></path>
                 </g>
             </svg>
-            John
+            @_name
             <svg aria-hidden="true" focusable="false" 
                 data-prefix="fad" data-icon="angle-down" 
                 role="img" xmlns="http://www.w3.org/2000/svg" 
@@ -126,32 +120,43 @@
 
 
 @code {
+    private string _sessionId = "";
+    private string _name = "";
+    private bool _loginWindowStatus;
 
-    private string OutNav, InNav;
-    private bool dispStatus;
+    private bool _isLoggedIn;
 
-    private bool isLoggedIn = true;
-
-    private string FormDisp => dispStatus ? "login-visible" : "";
-    private string ArrowState => dispStatus ? "arrow-up" : "";
+    private string FormDisplay => _loginWindowStatus ? "login-visible" : "";
+    private string ArrowState => _loginWindowStatus ? "arrow-up" : "";
     
-
-    protected override void OnInitialized() {
-        OutNav = isLoggedIn ? "none" : "block";
-        InNav = isLoggedIn ? "block" : "none";
-    }
-
     private void ShowLogin() {
-        dispStatus = !dispStatus;
+        _loginWindowStatus = !_loginWindowStatus;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (_isLoggedIn) _loginWindowStatus = false;
+        await ConfirmLogin();
+    }
+    
+    private async Task<bool> ConfirmLogin() {
+        var sess = await LocalStorage.GetItemAsync<string>("sessionId");
+        if (SessionManager.IsValidSession(sess)) {
+            _sessionId = sess;
+            _isLoggedIn = true;
+            _name = SessionManager.GetName(sess);
+            return true;
+        }
+        _sessionId = string.Empty;
+        _isLoggedIn = false;
+        _name = string.Empty;
+        return false;
+    }
 
-    // This function is for testing only - remove after implementing JWT
-    private void TestLogin() {
-        isLoggedIn = true;
-        dispStatus = false;
-        OutNav = isLoggedIn ? "none" : "block";
-        InNav = isLoggedIn ? "block" : "none";
-        manager.NavigateTo("/Dashboard");
+    // This function is for testing only - remove after implementing actual login
+    private async Task TestLogin() {
+        ShowLogin();
+        var sess= SessionManager.AddSession("Tester");
+        await LocalStorage.SetItemAsync("sessionId", sess);
+        await ConfirmLogin();
     }
 }
