@@ -8,10 +8,4 @@
     <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Shared\LoginControls.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
-
 </Project>
