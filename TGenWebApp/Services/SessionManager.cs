@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace TGenWebApp.Drivers {
+namespace TGenWebApp.Services {
     public static class SessionManager {
         private static readonly Dictionary<string, Session> NameMap = new Dictionary<string, Session>();
 
@@ -19,17 +19,15 @@ namespace TGenWebApp.Drivers {
                 .ToArray());
         }
 
-        public static string AddSession(string name) {
+        /// <summary>
+        ///  Add a session to the scope.
+        /// </summary>
+        /// <param name="session">A valid session object.</param>
+        /// <returns>Session ID</returns>
+        public static string AddSession(Session session) {
             var random = GetRandomString();
             while (NameMap.ContainsKey(random))
                 random = GetRandomString();
-            var session = new Session() {
-                Auth = AuthLevel.Faculty,
-                InstitutionId = "7878",
-                InstitutionName = "",
-                IsInitialSetup = true,
-                Name = name
-            };
             NameMap.Add(random, session);
             return random;
         }
@@ -44,6 +42,10 @@ namespace TGenWebApp.Drivers {
 
         public static bool IsValidSession(string sessionId) {
             return !string.IsNullOrEmpty(sessionId) && NameMap.ContainsKey(sessionId);
+        }
+
+        public static Session Login(string username, string password) {
+            return new Session();
         }
     }
 }
