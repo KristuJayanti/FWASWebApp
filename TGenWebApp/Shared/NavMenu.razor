@@ -1,4 +1,5 @@
-﻿@using TGenWebApp.Drivers
+﻿@using TGenWebApp.Services
+@using TGenWebApp.Pages
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager Manager;
 
@@ -57,12 +58,24 @@
 
 <div class="login-form @FormDisplay">
     <form method="POST">
-        <input type="email" placeholder="Email" class="textbox"> <br />
-        <input type="password" placeholder="Password" class="textbox"> <br /> <br />
+        <input type="email"
+               @bind="Email"
+               placeholder="Email"
+               class="textbox">
+        <br />
+        <input type="password"
+               @bind="Password"
+               placeholder="Password"
+               class="textbox">
+        <br />
+        <p style="background-color: #ff7070; color: #f00; padding: 3px; border-radius: 3px;">@_errorMessages</p>
+        <br />
         <div class="buttons">
-            <Button Type="submit" Color="Colored">Login</Button>
-            <Button Type="reset" Color="Uncolored">Reset</Button>
-            <Button OnClick="@TestLogin" Type="button">Test</Button>
+            <Button OnClick="@Login"
+                    Type="button"
+                    Color="Colored">Login</Button>
+            <Button Type="reset"
+                    Color="Uncolored">Reset</Button>
         </div>
     </form>
 </div>
@@ -120,7 +133,9 @@
 
 
 @code {
-    private string _sessionId = "";
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private string _errorMessages = "";
     private string _name = "";
     private bool _loginWindowStatus;
 
@@ -130,33 +145,43 @@
     private string ArrowState => _loginWindowStatus ? "arrow-up" : "";
     
     private void ShowLogin() {
+        if (!_isLoggedIn)
         _loginWindowStatus = !_loginWindowStatus;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (_isLoggedIn) _loginWindowStatus = false;
         await ConfirmLogin();
     }
-    
+
     private async Task<bool> ConfirmLogin() {
         var sess = await LocalStorage.GetItemAsync<string>("sessionId");
         if (SessionManager.IsValidSession(sess)) {
-            _sessionId = sess;
             _isLoggedIn = true;
             _name = SessionManager.GetName(sess);
+            _loginWindowStatus = false;
+            StateHasChanged();
             return true;
         }
-        _sessionId = string.Empty;
         _isLoggedIn = false;
         _name = string.Empty;
+        StateHasChanged();
         return false;
     }
 
-    // This function is for testing only - remove after implementing actual login
-    private async Task TestLogin() {
-        ShowLogin();
-        var sess= SessionManager.AddSession("Tester");
-        await LocalStorage.SetItemAsync("sessionId", sess);
-        await ConfirmLogin();
+    private async void Login() {
+        var res = await ApiService.IsValidUsername(Email);
+        if (res) {
+            // User Exists!
+            var ses= await ApiService.Login(Email, Password);
+            if (ses is null) {
+                _errorMessages = "Invalid Username or password";
+            }
+            else {
+                _errorMessages = "Login successful";
+                await LocalStorage.SetItemAsync("sessionId", ses);
+                await ConfirmLogin();
+            }
+        } else _errorMessages = "Invalid Username or password";
+        StateHasChanged();
     }
 }
