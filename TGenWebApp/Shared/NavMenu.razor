@@ -169,10 +169,10 @@
     }
 
     private async void Login() {
-        var res = await ApiService.IsValidUsername(Email);
+        var res = await AuthApi.IsValidUsername(Email);
         if (res) {
             // User Exists!
-            var ses= await ApiService.Login(Email, Password);
+            var ses= await AuthApi.Login(Email, Password);
             if (ses is null) {
                 _errorMessages = "Invalid Username or password";
             }
