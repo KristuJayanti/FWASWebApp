@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace TGenWebApp.Services {
     public static class SessionManager {
@@ -24,7 +25,8 @@ namespace TGenWebApp.Services {
         /// </summary>
         /// <param name="session">A valid session object.</param>
         /// <returns>Session ID</returns>
-        public static string AddSession(Session session) {
+        public static async Task<string> AddSession(Session session) {
+            await Logger.Log($"Created session for {session.Id}");
             var random = GetRandomString();
             while (NameMap.ContainsKey(random))
                 random = GetRandomString();
