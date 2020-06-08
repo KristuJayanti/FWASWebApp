@@ -2,16 +2,14 @@
     public class Session {
         public string Id { get; set; }
         public string CollegeId { get; set; }
-        public string LoginType { get; set; }
+        public string CollegeName { get; set; }
         public string Name { get; set; }
         public bool IsInitialSetup { get; set; }
-        public LoginLevel LoginLevel { get; set; }
+        public UserType UserType { get; set; }
     }
 
-    public enum LoginLevel {
+    public enum UserType {
         Institution,
-        Faculty,
-        Dean,
-        Admin
+        User
     }
 }

@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serialization.Json;
+using TGenWebApp.ResponseModels.Core;
 
 namespace TGenWebApp.Services {
     public static class AuthApi {
-        
         /// <summary>
         /// Implementation of Endpoint /CheckUsername
         /// </summary>
@@ -21,10 +21,11 @@ namespace TGenWebApp.Services {
             var client = new RestClient($"{ApiBase.BaseUrl}CheckUsername") {Timeout = -1};
             var request = ApiBase.GenerateRequest($@"{{""username"":""{username}""}}");
             var response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful) { 
+            if (!response.IsSuccessful) {
                 await Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
                 return false;
             }
+
             var re = ApiBase.GetDict(response.Content);
             return bool.Parse(re["isUsernameExists"]);
         }
@@ -45,12 +46,30 @@ namespace TGenWebApp.Services {
                 await Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
                 return null;
             }
+
             var result = ApiBase.GetDict(response.Content);
             if (result["validationMessage"] != "Validation Success") return null;
             var sess = new Session {
-                Id = result["userId"]
+                Id = result["userId"],
+                UserType = result["userType"] == "institution" ? UserType.Institution : UserType.User
             };
             return await SessionManager.AddSession(sess);
+        }
+
+        private static async Task<UserBasicResponseModel> CompleteSession(Session session) {
+            await Logger.Log($"Called /UserBasic for {session.Id}", LogMode.Information);
+            var client = new RestClient($"{ApiBase.BaseUrl}UserBasic") {Timeout = -1};
+            var request = ApiBase.GenerateRequest($@"{{""userId"":""{session.UserType}"", 
+                                                    ""userType"":""{session.UserType}""}}");
+            var response = await client.ExecuteAsync<UserBasicResponseModel>(request);
+            MapClass(session, response.Data);
+            return response.Data;
+        }
+
+        private static void MapClass(Session session, UserBasicResponseModel model) {
+            session.Name = model.name;
+            session.CollegeName = model.addressLocation.name;
+            session.IsInitialSetup = model.initialSetup;
         }
     }
 }
