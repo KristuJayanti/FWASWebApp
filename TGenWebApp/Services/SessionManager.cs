@@ -31,7 +31,16 @@ namespace TGenWebApp.Services {
             while (NameMap.ContainsKey(random))
                 random = GetRandomString();
             NameMap.Add(random, session);
-            return random;
+            return random;                                                            
+        }
+        
+        /// <summary>
+        /// Get a session object upon requesting for a valid sessionID.
+        /// </summary>
+        /// <param name="session">A session ID</param>
+        /// <returns>Session object if the session ID is valid.</returns>
+        public static Session GetSession(string session) {
+            return IsValidSession(session) ? NameMap[session] : null;
         }
 
         public static string GetName(string sessionId) {
@@ -44,10 +53,6 @@ namespace TGenWebApp.Services {
 
         public static bool IsValidSession(string sessionId) {
             return !string.IsNullOrEmpty(sessionId) && NameMap.ContainsKey(sessionId);
-        }
-
-        public static Session Login(string username, string password) {
-            return new Session();
         }
     }
 }
