@@ -154,7 +154,7 @@
     }
 
     private async Task<bool> ConfirmLogin() {
-        var sess = await LocalStorage.GetItemAsync<string>("sessionId");
+        var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
         if (SessionManager.IsValidSession(sess)) {
             _isLoggedIn = true;
             _name = SessionManager.GetName(sess);
@@ -178,8 +178,9 @@
             }
             else {
                 _errorMessages = "Login successful";
-                await LocalStorage.SetItemAsync("sessionId", ses);
+                await LocalStorage.SetItemAsync(Constants.SessionId, ses);
                 await ConfirmLogin();
+                Manager.NavigateTo("Dashboard");
             }
         } else _errorMessages = "Invalid Username or password";
         StateHasChanged();

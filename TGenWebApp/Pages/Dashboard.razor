@@ -1,3 +1,18 @@
 ﻿@page "/Dashboard"
+@using TGenWebApp.Services
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Manager;
 
-<h2>Dashboard</h2>>
+<h1>Welcome, @_session.Name!</h1>
+
+@code {
+    
+	private Session _session;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender) {
+		var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
+		_session = SessionManager.GetSession(sess);
+		if (_session is null) Manager.NavigateTo("Index");
+	}
+
+}
