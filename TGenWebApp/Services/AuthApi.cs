@@ -10,6 +10,9 @@ using RestSharp.Serialization.Json;
 using TGenWebApp.ResponseModels.Core;
 
 namespace TGenWebApp.Services {
+    /// <summary>
+    /// Authentication APIs are implemented in this class. 
+    /// </summary>
     public static class AuthApi {
         /// <summary>
         /// Implementation of Endpoint /CheckUsername
@@ -18,7 +21,7 @@ namespace TGenWebApp.Services {
         /// <returns>Returns if the email or username is registered.</returns>
         public static async Task<bool> IsValidUsername(string username) {
             await Logger.Log($"Called /CheckUsername for {username}", LogMode.Information);
-            var client = new RestClient($"{ApiBase.BaseUrl}CheckUsername") {Timeout = -1};
+            var client = new RestClient($"{Constants.BaseUrl}CheckUsername") {Timeout = -1};
             var request = ApiBase.GenerateRequest($@"{{""username"":""{username}""}}");
             var response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful) {
@@ -38,7 +41,7 @@ namespace TGenWebApp.Services {
         /// <returns>Session ID</returns>
         public static async Task<string> Login(string username, string password) {
             await Logger.Log($"Called /UserAuth for {username}", LogMode.Information);
-            var client = new RestClient($"{ApiBase.BaseUrl}UserAuth") {Timeout = -1};
+            var client = new RestClient($"{Constants.BaseUrl}UserAuth") {Timeout = -1};
             var request = ApiBase.GenerateRequest($@"{{""username"":""{username}"", 
                                                         ""password"":""{password}""}}");
             var response = await client.ExecuteAsync(request);
@@ -53,12 +56,13 @@ namespace TGenWebApp.Services {
                 Id = result["userId"],
                 UserType = result["userType"] == "institution" ? UserType.Institution : UserType.User
             };
+            await CompleteSession(sess);
             return await SessionManager.AddSession(sess);
         }
 
         private static async Task<UserBasicResponseModel> CompleteSession(Session session) {
             await Logger.Log($"Called /UserBasic for {session.Id}", LogMode.Information);
-            var client = new RestClient($"{ApiBase.BaseUrl}UserBasic") {Timeout = -1};
+            var client = new RestClient($"{Constants.BaseUrl}UserBasic") {Timeout = -1};
             var request = ApiBase.GenerateRequest($@"{{""userId"":""{session.UserType}"", 
                                                     ""userType"":""{session.UserType}""}}");
             var response = await client.ExecuteAsync<UserBasicResponseModel>(request);
@@ -68,8 +72,13 @@ namespace TGenWebApp.Services {
 
         private static void MapClass(Session session, UserBasicResponseModel model) {
             session.Name = model.name;
-            session.CollegeName = model.addressLocation.name;
-            session.IsInitialSetup = model.initialSetup;
+            if (session.UserType == UserType.User) {
+                session.InstitutionId = model.institutionId;
+                session.InstitutionName = model.addressLocation.name;
+            } else {
+                session.InstitutionId = session.Id;
+                session.InstitutionName = session.Name;
+            }
         }
     }
 }

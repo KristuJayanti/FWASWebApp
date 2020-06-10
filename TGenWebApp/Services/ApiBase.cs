@@ -4,9 +4,7 @@ using RestSharp;
 
 namespace TGenWebApp.Services {
     internal static class ApiBase {
-        
-        internal const string BaseUrl = "https://localhost:5001/";
-        
+
         internal static IRestRequest GenerateRequest(string jsonBody) {
             return new RestRequest(Method.POST) { RequestFormat = DataFormat.Json}
                 .AddHeader("Access-Control-Allow-Origin", "*")
