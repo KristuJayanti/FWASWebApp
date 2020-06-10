@@ -1,15 +1,20 @@
 ﻿namespace TGenWebApp.Services {
     public class Session {
-        public string Id { get; set; }
-        public string CollegeId { get; set; }
-        public string CollegeName { get; set; }
-        public string Name { get; set; }
-        public bool IsInitialSetup { get; set; }
         public UserType UserType { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string InstitutionId { get; set; }
+        public string InstitutionName { get; set; }
+        public bool IsInitialSetup { get; set; }
     }
 
     public enum UserType {
         Institution,
         User
+    }
+
+    public static class Constants {
+        public const string SessionId = "sessionId";
+        public const string BaseUrl = "https://localhost:5001/";
     }
 }
