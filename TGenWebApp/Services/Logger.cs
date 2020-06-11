@@ -26,6 +26,7 @@ namespace TGenWebApp.Services {
             var time = DateTime.Now;
             text = $"{time.Day}/{time.Month}/{time.Year},{time.Hour}:" +
                    $"{time.Minute}.{time.Millisecond}\t{logMode}\t" + text;
+            Console.WriteLine(text);
             await _file.WriteLineAsync(text);
         }
         
@@ -33,7 +34,7 @@ namespace TGenWebApp.Services {
 
     public enum LogMode {
         [Description("V")] Verbose,
-        [Description("I")] Information,
+        [Description("I")] Info,
         [Description("E")] Error,
         [Description("W")] Warning
         
