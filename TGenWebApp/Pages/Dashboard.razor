@@ -3,16 +3,48 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager Manager;
 
-<h1>Welcome, @_session.Name!</h1>
+<style>
+	.waiting {
+		background: linear-gradient(-90deg, #fff, #ddd, #fff, #ddd);
+		animation: load 2s ease infinite;
+		background-size: 400% 400%;
+	}
+	
+	@@keyframes load {
+   	0% {
+   		background-position: 0 50%;
+   	}
+   	50% {
+   		background-position: 100% 50%;
+   	}
+   	100% {
+   		background-position: 0 50%;
+   	}
+   }
+</style>
+
+<div style="padding: 3rem 7rem 0 7rem">
+
+	<h1>
+		<div class = "waiting" style = "width: 15rem; height: 3rem; 
+			  display: @(_welcome == null ? "block" : "none")"></div>
+		@_welcome
+	</h1>
+
+</div>
 
 @code {
     
 	private Session _session;
 
+	private string _welcome;
+
 	protected override async Task OnAfterRenderAsync(bool firstRender) {
 		var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
 		_session = SessionManager.GetSession(sess);
-		if (_session is null) Manager.NavigateTo("Index");
+		if (_session is null) Manager.NavigateTo("/");
+		else _welcome = $"Welcome, {_session.Name}!";
+		StateHasChanged();
 	}
 
 }
