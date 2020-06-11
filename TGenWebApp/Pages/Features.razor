@@ -160,7 +160,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
         if (firstRender){
-            Console.WriteLine("Triggered!");
             await JSRuntime.InvokeVoidAsync("relax");
         }
     }
