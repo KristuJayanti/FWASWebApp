@@ -1,4 +1,7 @@
 ﻿@page "/Manage"
+@using System.Reflection.Metadata
+@using TGenWebApp.Services
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <style>
     .fa-9x {
@@ -148,8 +151,9 @@
 }
 
 @code {
+    Session _session;
     private string _currentPage = "";
-    private bool _isNewUser = true;
+    private bool _isNewUser;
 
     //Headings
     private readonly string[] _heads = {
@@ -179,4 +183,15 @@
     private void NavigateTo(string page) {
         _currentPage = page;
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        var sessionId = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
+        if (SessionManager.IsValidSession(sessionId)) {
+            _session = SessionManager.GetSession(sessionId);
+            _isNewUser = _session.IsInitialSetup;
+        } else {
+            _session = null;
+        }
+    }
+
 }

@@ -84,6 +84,7 @@ namespace TGenWebApp.Services {
 
         private static void MapClass(Session session, UserBasicResponseModel model) {
             session.Name = model.name;
+            session.IsInitialSetup = model.initialSetup;
             if (session.UserType == UserType.user) {
                 session.InstitutionId = model.institutionId;
                 session.InstitutionName = model.addressLocation.name;
