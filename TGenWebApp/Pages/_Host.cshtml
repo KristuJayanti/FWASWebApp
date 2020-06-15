@@ -83,15 +83,14 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-
+    <script src="js/countUp.js"></script>
     <script src="_framework/blazor.server.js"></script>
     <script>
         function relax() {
             $().ready(() => {
                 if (screen && screen.width > 800) 
-                    var rellax = new Rellax('.rellax');
+                    let rellax = new Rellax('.rellax');
             });
-            console.log('done');
         }
         $().ready(() => {
             $("a.active").parents('li').addClass('active');
