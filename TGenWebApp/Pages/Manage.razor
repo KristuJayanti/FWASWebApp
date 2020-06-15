@@ -8,8 +8,8 @@
     }
 </style>
 
-<div style='width: 100vw; position: fixed'>
-<div style='display: flex; align-items: center; justify-content: center; '>
+<div style="width: 100vw; position: fixed; background: #fffc; backdrop-filter: blur(4px); z-index: 1000;">
+<div style="display: flex; align-items: center; justify-content: center; ">
     <nav>
         <ul>
             <li>
@@ -40,6 +40,8 @@
     </nav>
 </div>
 </div>
+
+<div style="margin-top: 4rem;">
 
 @switch (_currentPage) {
     case "Deaneries":
@@ -137,10 +139,14 @@
         break;
 }
 
+</div>
+
 @if (_isNewUser) {
+    <div style="z-index: 1001">
     <Carousel Headings="@_heads"
               Descriptions="@_paras"
               Images="@_images" />
+    </div>
 }
 
 @code {
