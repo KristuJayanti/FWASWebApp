@@ -8,7 +8,7 @@
     }
 </style>
 
-<div style="width: 100vw; position: fixed; background: #fffc; backdrop-filter: blur(4px); z-index: 1000;">
+<div style="width: 100vw; position: fixed; background: #fffc; backdrop-filter: blur(4px); z-index: 10;">
 <div style="display: flex; align-items: center; justify-content: center; ">
     <nav>
         <ul>
@@ -142,11 +142,9 @@
 </div>
 
 @if (_isNewUser) {
-    <div style="z-index: 1001">
     <Carousel Headings="@_heads"
-              Descriptions="@_paras"
-              Images="@_images" />
-    </div>
+                  Descriptions="@_paras"
+                  Images="@_images" />
 }
 
 @code {
