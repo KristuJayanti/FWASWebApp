@@ -180,7 +180,7 @@
                 _errorMessages = "Login successful";
                 await LocalStorage.SetItemAsync(Constants.SessionId, ses);
                 await ConfirmLogin();
-                Manager.NavigateTo("Dashboard");
+                Manager.NavigateTo(SessionManager.GetSession(ses).IsInitialSetup ? "Manage" : "Dashboard");
             }
         } else _errorMessages = "Invalid Username or password";
         StateHasChanged();
