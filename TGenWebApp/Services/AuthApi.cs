@@ -74,6 +74,10 @@ namespace TGenWebApp.Services {
             var request = ApiBase.GenerateRequest($@"{{""userId"":""{session.Id}"", 
                                                                 ""userType"":""{session.UserType}""}}");
             var response = await client.ExecuteAsync(request);
+            if (!response.IsSuccessful) {
+                await Logger.Log($"API Server failed when completing session for userID {session.Id}.", LogMode.Error);
+                return;
+            }
             var re = JsonConvert.DeserializeObject<UserBasicResponseModel>(response.Content);
             MapClass(session, re);
         }
