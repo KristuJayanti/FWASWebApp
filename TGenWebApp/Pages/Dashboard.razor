@@ -6,21 +6,14 @@
 
 <style>
 	.waiting {
-		background: linear-gradient(to left, #fff, #ddd, #fff, #ddd);
-		animation: load 5s ease infinite;
-		background-size: 400% 400%;
+		background: repeating-linear-gradient(to left, #fff, #ddd);
+		animation: load 5s linear infinite forwards;
+		background-size: 200% auto;
 	}
 	
 	@@keyframes load {
-   	0% {
-   		background-position: 0 50%;
-   	}
-   	50% {
-   		background-position: 100% 50%;
-   	}
-   	100% {
-   		background-position: 0 50%;
-   	}
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
    }
 </style>
 
