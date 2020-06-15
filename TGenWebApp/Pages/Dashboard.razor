@@ -2,11 +2,12 @@
 @using TGenWebApp.Services
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager Manager;
+@inject IJSRuntime JsRuntime;
 
 <style>
 	.waiting {
-		background: linear-gradient(-90deg, #fff, #ddd, #fff, #ddd);
-		animation: load 2s ease infinite;
+		background: linear-gradient(to left, #fff, #ddd, #fff, #ddd);
+		animation: load 5s ease infinite;
 		background-size: 400% 400%;
 	}
 	
@@ -23,19 +24,48 @@
    }
 </style>
 
-<div style="padding: 3rem 7rem 0 7rem">
+<div style = "padding: 3rem 7rem 0 7rem">
 
 	<h1>
 		<div class = "waiting" style = "width: 15rem; height: 3rem; 
 			  display: @(_welcome == null ? "block" : "none")"></div>
 		@_welcome
 	</h1>
+	
+	<div style="display: @(_session == null ? "block" : "none")">
 
+		<CardLayout ChildrenHeight = "10rem"
+		            ChildrenWidth = "15rem">
+			<Card>
+				<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+				<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+			</Card>
+			<Card>
+				<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+				<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+			</Card>
+		</CardLayout>
+		
+	</div>
+	
+	<div style="display: @(_session == null ? "none" : "block")">
+		<CardLayout ChildrenHeight = "10rem"
+		            ChildrenWidth = "15rem">
+			<Card>
+				<div style="position: relative; width: 15rem; height: 15rem;">
+				<h2>Total Employees:</h2>
+				<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">@_facultyCount</div>
+				</div>
+			</Card>
+		</CardLayout>
+	</div>
 </div>
 
 @code {
-    
+
 	private Session _session;
+
+	private int _facultyCount;
 
 	private string _welcome;
 
@@ -44,7 +74,16 @@
 		_session = SessionManager.GetSession(sess);
 		if (_session is null) Manager.NavigateTo("/");
 		else _welcome = $"Welcome, {_session.Name}!";
+		UpdateCards().Wait();
 		StateHasChanged();
+	}
+
+	private async Task UpdateCards() {
+		if (_session is null) {
+			await Logger.Log("Error getting session when /Dashboard is open", LogMode.Error);
+			return;
+		}
+		_facultyCount = 50;
 	}
 
 }
