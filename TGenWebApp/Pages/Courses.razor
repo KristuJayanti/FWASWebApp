@@ -1,0 +1,38 @@
+﻿@page "/Manage/Courses"
+@using TGenWebApp.Services
+
+<style>
+	.waiting {
+		background: repeating-linear-gradient(to left, #fff, #ddd);
+		animation: load 5s linear infinite forwards;
+		background-size: 200% auto;
+	}
+	
+	@@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+   }
+</style>
+
+<h1 style="padding-left: 10vw;">Courses</h1>
+
+<div>
+	<CardLayout ChildrenHeight = "15rem" ChildrenWidth = "15rem">
+		<Card>
+			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+		</Card>
+		<Card>
+			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+		</Card>
+	</CardLayout>
+</div>
+
+
+@code{
+
+	Session _session;
+
+}
+
