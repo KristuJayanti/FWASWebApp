@@ -1,31 +1,51 @@
 ﻿@page "/Manage/Departments";
+@using TGenWebApp.Services
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+
+<style>
+	.waiting {
+		background: repeating-linear-gradient(to left, #fff, #ddd);
+		animation: load 5s linear infinite forwards;
+		background-size: 200% auto;
+	}
+	
+	@@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+   }
+</style>
 
 <h1 style='padding-left: 10vw;'>Departments</h1>
 
-<CardLayout ChildrenHeight='15rem'
-            ChildrenWidth='15rem'>
-    <Card>
-        <h2>Computer Science PG</h2>
-        <p>HOD: Dr R. Kumar</p>
-        <p>Courses: MCA, MSc</p>
-    </Card>
-    <Card>
-        <h2>Computer Science</h2>
-        <p>HOD: Fr. Lijo P. Thomas</p>
-        <p>Courses: BCA, BSc</p>
-    </Card>
-    <Card>
-        <h2>Commerce</h2>
-        <p>HOD: Prof. VijayaKumarR</p>
-        <p>Courses: BCom</p>
-    </Card>
-    <Card>
-        <h2>Management</h2>
-        <p>HOD: C.Surendranath Reddy</p>
-        <p>Courses: MCom</p>
-    </Card>
-    <Card>
-        <input type='text' placeholder='Department'/>
-        <p>Add a course and pick the courses in this department there.</p>
-    </Card>
-</CardLayout>
+
+
+<div style="display: @(_session == null ? "block" : "none")">
+
+	<CardLayout ChildrenHeight = "10rem"
+	            ChildrenWidth = "15rem">
+		<Card>
+			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+		</Card>
+		<Card>
+			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
+			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+		</Card>
+	</CardLayout>
+		
+</div>
+
+@code {
+
+	Session _session;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender) {
+		var sessionId = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
+		if (SessionManager.IsValidSession(sessionId)) {
+			_session = SessionManager.GetSession(sessionId);
+		} else {
+			_session = null;
+		}
+	}
+
+}
