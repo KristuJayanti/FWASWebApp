@@ -20,8 +20,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.11.0/rellax.min.js"></script>
     <style>
     .my-reconnect-modal {
-        z-index: 1000;
-        backdrop-filter: blur(10px);
+        z-index: 1050;
+        position: absolute;
     }
 
     .my-reconnect-modal > div{
@@ -32,7 +32,8 @@
         left: 0;
         overflow: hidden;
         background-color: #000;
-        opacity: 0.6;
+        opacity: 0.8;
+        backdrop-filter: blur(3px);
         text-align: center;
         font-weight: bold;
     }
@@ -63,29 +64,31 @@
     </style>
 </head>
 <body>
-    <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
-        <div class="show failed refused">
-            <img src="img/puff.svg" style="position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); width:200px">
-            <h1 style="color: #fff">Please wait, reconnecting to the server.</h1>
-        </div>
+<div id = "components-reconnect-modal" class = "my-reconnect-modal components-reconnect-hide">
+    <div class = "show failed refused">
+        <img src = "img/puff.svg" 
+             style = "position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); width:200px" 
+             alt="Please wait">
+        <h1 style = "color: #fff">Please wait, we're reconnecting.</h1>
     </div>
-    <app>
-        <component type="typeof(App)" render-mode="ServerPrerendered" />
-    </app>
+</div>
+<app>
+    <component type = "typeof(App)" render-mode = "ServerPrerendered" />
+</app>
 
-    <div id="blazor-error-ui">
-        <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
-        </environment>
-        <environment include="Development">
-            An unhandled exception has occurred. See browser dev tools for details.
-        </environment>
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
-    <script src="js/countUp.js"></script>
-    <script src="_framework/blazor.server.js"></script>
-    <script>
+<div id = "blazor-error-ui">
+    <environment include = "Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include = "Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href = "" class = "reload">Reload</a>
+    <a class = "dismiss">🗙</a>
+</div>
+<script src = "js/countUp.js"></script>
+<script src = "_framework/blazor.server.js"></script>
+<script>
         function relax() {
             $().ready(() => {
                 if (screen && screen.width > 800) 
