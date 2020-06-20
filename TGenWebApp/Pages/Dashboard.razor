@@ -25,8 +25,8 @@
 			  display: @(_welcome == null ? "block" : "none")"></div>
 		@_welcome
 	</h1>
-	
-	<div style="display: @(_session == null ? "block" : "none")">
+
+	<div style = "display: @(_session == null ? "block" : "none")">
 
 		<CardLayout ChildrenHeight = "10rem"
 		            ChildrenWidth = "15rem">
@@ -39,16 +39,40 @@
 				<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
 			</Card>
 		</CardLayout>
-		
+
 	</div>
-	
-	<div style="display: @(_session == null ? "none" : "block")">
+
+	<div style = "display: @(_session == null ? "none" : "block")">
 		<CardLayout ChildrenHeight = "10rem"
 		            ChildrenWidth = "15rem">
+			@* Total Designations available *@
 			<Card>
-				<div style="position: relative; width: 15rem; height: 15rem;">
-				<h2>Total Employees:</h2>
-				<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">@_facultyCount</div>
+				<div style = "position: relative; width: 15rem; height: 15rem;">
+					<h2>Total Designations:</h2>
+					<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">
+						@if (_designationCount is null) {
+							<div class = "waiting"
+							     style = "width: 4rem; height: 4rem;">
+							</div>
+						} else {
+							@_designationCount
+						}
+					</div>
+				</div>
+			</Card>
+			@* Total Faculty count *@
+			<Card>
+				<div style = "position: relative; width: 15rem; height: 15rem;">
+					<h2>Total Faculty:</h2>
+					<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">
+						@if (_facultyCount is null) {
+							<div class = "waiting"
+							     style = "width: 4rem; height: 4rem;">
+							</div>
+						} else {
+							@_facultyCount
+						}
+					</div>
 				</div>
 			</Card>
 		</CardLayout>
@@ -58,9 +82,7 @@
 @code {
 
 	private Session _session;
-
-	private int _facultyCount;
-
+	private int? _facultyCount, _designationCount;
 	private string _welcome;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender) {
@@ -68,16 +90,19 @@
 		_session = SessionManager.GetSession(sess);
 		if (_session is null) Manager.NavigateTo("/");
 		else _welcome = $"Welcome, {_session.Name}!";
-		UpdateCards().Wait();
 		StateHasChanged();
+		UpdateCards();
 	}
 
-	private async Task UpdateCards() {
+	private void UpdateCards() {
 		if (_session is null) {
-			await Logger.Log("Error getting session when /Dashboard is open", LogMode.Error);
+			Logger.Log("Error getting session when /Dashboard is open", LogMode.Error);
 			return;
 		}
-		_facultyCount = 50;
+		var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
+		_designationCount = inst.CollegeConfig.designations.Count;
+		_facultyCount = inst.CollegeFaculties.Count;
+		StateHasChanged();
 	}
 
 }
