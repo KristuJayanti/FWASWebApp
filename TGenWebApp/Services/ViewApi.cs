@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 using TGenWebApp.ResponseModels.View;
@@ -30,7 +31,7 @@ namespace TGenWebApp.Services {
         /// <param name="institutionId">Institution ID</param>
         /// <returns>Instance of ViewCollegeConfigResponseModel</returns>
         public static async Task<ViewCollegeConfigResponseModel> ViewCollegeConfig(string institutionId) {
-            await Logger.Log($"Called /ViewDesignation for {institutionId}", LogMode.Info);
+            await Logger.Log($"Called /ViewCollegeConfig for {institutionId}", LogMode.Info);
             var client = new RestClient($"{Constants.BaseUrl}ViewCollegeConfig")  {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
@@ -42,7 +43,19 @@ namespace TGenWebApp.Services {
             await Logger.Log($"API Server failed when getting College Config for {institutionId}.", LogMode.Error);
             return null;
         }
-        
-        
+
+        public static async Task<List<ViewCollegeFacultiesResponseModel>> ViewCollegeFaculties(string institutionId) {
+            await Logger.Log($"Called /ViewCollegeFaculties for {institutionId}", LogMode.Info);
+            var client = new RestClient($"{Constants.BaseUrl}ViewCollegeConfig")  {
+                Timeout = -1,
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+            };
+            var request = ApiBase.GenerateRequest($@"{{""institutionID"":""{institutionId}""}}");
+            var response = await client.ExecuteAsync(request);
+            if (response.IsSuccessful)
+                return JsonConvert.DeserializeObject<List<ViewCollegeFacultiesResponseModel>>(response.Content);
+            await Logger.Log($"API Server failed when getting College Faculties for {institutionId}.", LogMode.Error);
+            return null;
+        }
     }
 }
