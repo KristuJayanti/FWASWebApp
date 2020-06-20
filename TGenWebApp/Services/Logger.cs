@@ -22,13 +22,13 @@ namespace TGenWebApp.Services {
         }
 
         public static async Task Log(string text, LogMode logMode = LogMode.Verbose) {
-            if (!_isOpen) await Initialise();
+            // if (!_isOpen) await Initialise();
             var time = DateTime.Now;
             var t = $"{time.Day}/{time.Month}/{time.Year},{time.Hour}:" +
                        $"{time.Minute}.{time.Millisecond}";
             PrintLog(t, logMode, text);
-            text = t + $"\t{logMode}\t" + text;
-            await _file.WriteLineAsync(text);
+            // text = t + $"\t{logMode}\t" + text;
+            // await _file.WriteLineAsync(text);
         }
 
         private static void PrintLog(string time, LogMode logMode, string log) {
