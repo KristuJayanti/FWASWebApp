@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TGenWebApp.ResponseModels.View;
 
 namespace TGenWebApp.Services {
@@ -15,20 +16,12 @@ namespace TGenWebApp.Services {
             InstitutionName = institutionName;
         }
 
-        // /!\ BLOCKING
-        public ViewCollegeConfigResponseModel CollegeConfig {
-            get { 
-                _config ??= ViewApi.ViewCollegeConfig(InstitutionId).Result;
-                return _config;
-            }
+        public async Task<ViewCollegeConfigResponseModel> GetCollegeConfigResponse() {
+           return _config ??= await ViewApi.ViewCollegeConfig(InstitutionId);
         }
         
-        // /!\ BLOCKING
-        public List<ViewCollegeFacultiesResponseModel> CollegeFaculties {
-            get {
-                _faculties ??= ViewApi.ViewCollegeFaculties(InstitutionId).Result;
-                return _faculties;
-            }
+        public async Task<List<ViewCollegeFacultiesResponseModel>> GetCollegeFaculties() {
+            return _faculties ??= await ViewApi.ViewCollegeFaculties(InstitutionId);
         }
     }
 }
