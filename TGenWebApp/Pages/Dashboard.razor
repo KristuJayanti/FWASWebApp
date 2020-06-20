@@ -90,19 +90,21 @@
 		_session = SessionManager.GetSession(sess);
 		if (_session is null) Manager.NavigateTo("/");
 		else _welcome = $"Welcome, {_session.Name}!";
+		await UpdateCards();
 		StateHasChanged();
-		UpdateCards();
 	}
 
-	private void UpdateCards() {
+	private async Task UpdateCards() {
 		if (_session is null) {
 			Logger.Log("Error getting session when /Dashboard is open", LogMode.Error);
 			return;
 		}
 		var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
-		_designationCount = inst.CollegeConfig.designations.Count;
-		_facultyCount = inst.CollegeFaculties.Count;
-		StateHasChanged();
+		var designations = await inst.GetCollegeConfigResponse();
+		_designationCount = designations.designations.Count;
+		var faculties = await inst.GetCollegeFaculties();
+		_facultyCount = faculties.Count;
+		Console.WriteLine($"Designation: {_designationCount}, Faculty: {_facultyCount}");
 	}
 
 }
