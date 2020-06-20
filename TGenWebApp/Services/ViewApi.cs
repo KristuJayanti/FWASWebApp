@@ -46,7 +46,7 @@ namespace TGenWebApp.Services {
 
         public static async Task<List<ViewCollegeFacultiesResponseModel>> ViewCollegeFaculties(string institutionId) {
             Logger.Log($"Called /ViewCollegeFaculties for {institutionId}", LogMode.Info);
-            var client = new RestClient($"{Constants.BaseUrl}ViewCollegeConfig")  {
+            var client = new RestClient($"{Constants.BaseUrl}ViewCollegeFaculties")  {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
