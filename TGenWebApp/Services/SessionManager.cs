@@ -25,8 +25,8 @@ namespace TGenWebApp.Services {
         /// </summary>
         /// <param name="session">A valid session object.</param>
         /// <returns>Session ID</returns>
-        public static async Task<string> AddSession(Session session) {
-            await Logger.Log($"Created session for {session.Id}");
+        public static string AddSession(Session session) {
+            Logger.Log($"Created session for {session.Id}");
             var random = GetRandomString();
             while (NameMap.ContainsKey(random))
                 random = GetRandomString();

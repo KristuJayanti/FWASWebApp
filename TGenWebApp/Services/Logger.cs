@@ -9,7 +9,7 @@ namespace TGenWebApp.Services {
 
         private static string _fileName = "session.log";
         
-        private static bool _isOpen = false;
+        // private static bool _isOpen = false;
 
         private static StreamWriter _file;
 
@@ -18,10 +18,10 @@ namespace TGenWebApp.Services {
             _fileName = @$"C:\MyLogs\Log-{time.Day}-{time.Month}-{time.Year}_{time.Hour}-{time.Minute}-{time.Second}.log";
             _file = new StreamWriter(_fileName);
             await _file.WriteAsync("Time\t\t\tType\tAction");
-            _isOpen = true;
+            // _isOpen = true;
         }
 
-        public static async Task Log(string text, LogMode logMode = LogMode.Verbose) {
+        public static void Log(string text, LogMode logMode = LogMode.Verbose) {
             // if (!_isOpen) await Initialise();
             var time = DateTime.Now;
             var t = $"{time.Day}/{time.Month}/{time.Year},{time.Hour}:" +

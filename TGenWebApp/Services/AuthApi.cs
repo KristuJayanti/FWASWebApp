@@ -20,7 +20,7 @@ namespace TGenWebApp.Services {
         /// <param name="username">An Email Address or username.</param>
         /// <returns>Returns if the email or username is registered.</returns>
         public static async Task<bool> IsValidUsername(string username) {
-            await Logger.Log($"Called /CheckUsername for {username}", LogMode.Info);
+            Logger.Log($"Called /CheckUsername for {username}", LogMode.Info);
             var client = new RestClient($"{Constants.BaseUrl}CheckUsername") {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
@@ -28,7 +28,7 @@ namespace TGenWebApp.Services {
             var request = ApiBase.GenerateRequest($@"{{""username"":""{username}""}}");
             var response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful) {
-                await Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
+                Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
                 return false;
             }
 
@@ -43,7 +43,7 @@ namespace TGenWebApp.Services {
         /// <param name="password">Login Password</param>
         /// <returns>Session ID</returns>
         public static async Task<string> Login(string username, string password) {
-            await Logger.Log($"Called /UserAuth for {username}", LogMode.Info);
+            Logger.Log($"Called /UserAuth for {username}", LogMode.Info);
             var client = new RestClient($"{Constants.BaseUrl}UserAuth")  {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
@@ -51,7 +51,7 @@ namespace TGenWebApp.Services {
             var request = ApiBase.GenerateRequest($@"{{""username"":""{username}"", ""password"":""{password}""}}");
             var response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful) {
-                await Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
+                Logger.Log($"API Server failed when calling {username}.", LogMode.Error);
                 return null;
             }
 
@@ -62,11 +62,11 @@ namespace TGenWebApp.Services {
                 UserType = result["userType"] == "institution" ? UserType.institution : UserType.user
             };
             await CompleteSession(sess);
-            return await SessionManager.AddSession(sess);
+            return SessionManager.AddSession(sess);
         }
 
         private static async Task CompleteSession(Session session) {
-            await Logger.Log($"Called /UserBasic for {session.Id}", LogMode.Info);
+            Logger.Log($"Called /UserBasic for {session.Id}", LogMode.Info);
             var client = new RestClient($"{Constants.BaseUrl}UserBasic")  {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
@@ -75,7 +75,7 @@ namespace TGenWebApp.Services {
                                                                 ""userType"":""{session.UserType}""}}");
             var response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful) {
-                await Logger.Log($"API Server failed when completing session for userID {session.Id}.", LogMode.Error);
+                Logger.Log($"API Server failed when completing session for userID {session.Id}.", LogMode.Error);
                 return;
             }
             var re = JsonConvert.DeserializeObject<UserBasicResponseModel>(response.Content);

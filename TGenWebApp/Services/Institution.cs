@@ -6,9 +6,9 @@ namespace TGenWebApp.Services {
 
         private ViewCollegeConfigResponseModel _config;
         private List<ViewCollegeFacultiesResponseModel> _faculties;
-        
-        public string InstitutionId { get; }
-        public string InstitutionName { get; }
+
+        private string InstitutionId;
+        private string InstitutionName;
 
         public Institution(string institutionId, string institutionName) {
             InstitutionId = institutionId;
@@ -17,12 +17,18 @@ namespace TGenWebApp.Services {
 
         // /!\ BLOCKING
         public ViewCollegeConfigResponseModel CollegeConfig {
-            get { return _config ??= ViewApi.ViewCollegeConfig(InstitutionId).Result; }
+            get { 
+                _config ??= ViewApi.ViewCollegeConfig(InstitutionId).Result;
+                return _config;
+            }
         }
         
         // /!\ BLOCKING
         public List<ViewCollegeFacultiesResponseModel> CollegeFaculties {
-            get { return _faculties ??= ViewApi.ViewCollegeFaculties(InstitutionId).Result; }
+            get {
+                _faculties ??= ViewApi.ViewCollegeFaculties(InstitutionId).Result;
+                return _faculties;
+            }
         }
     }
 }
