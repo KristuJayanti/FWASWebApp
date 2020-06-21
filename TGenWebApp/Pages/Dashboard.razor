@@ -166,6 +166,18 @@
             StateHasChanged();
             _state++;
         }
+        var buildings = await inst.GetCollegeBuildings();
+        _buildingCount ??= buildings.Count;
+        if (_state is 3) {
+            StateHasChanged();
+            _state++;
+        }
+        var rooms = await inst.GetCollegeRooms();
+        _roomCount ??= rooms.Count;
+        if (_state is 4) {
+            StateHasChanged();
+            _state++;
+        }
     }
 
 }
