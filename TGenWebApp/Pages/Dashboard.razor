@@ -16,130 +16,156 @@
         0% { background-position: -200% 0; }
       100% { background-position: 0 0; }
    }
+   
+   .card-filler {
+   		position: relative; 
+   		width: 15rem; 
+   		height: 15rem;
+   }
+   
+   .counts {
+   		font-size: 52px; 
+   		padding-top: 0.7rem; 
+   		padding-left: 0.7rem;
+   }
+   
+   .description{
+   		position: absolute; 
+   		bottom: 10px; 
+   		right: 10px
+   }
 </style>
 
-<div style = "padding: 3rem 7rem 0 7rem">
+<div style="padding: 3rem 7rem 0 7rem">
 
-	<h1>
-		<div class = "waiting" style = "width: 15rem; height: 3rem; 
+    <h1>
+        <div class="waiting" style="width: 15rem; height: 3rem; 
 			  display: @(_welcome == null ? "block" : "none")"></div>
-		@_welcome
-	</h1>
+        @_welcome
+    </h1>
 
-	<div style = "display: @(_session == null ? "block" : "none")">
+    <div style="display: @(_session == null ? "block" : "none")">
 
-		<CardLayout ChildrenHeight = "10rem"
-		            ChildrenWidth = "15rem">
-			<Card>
-				<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
-				<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-			</Card>
-			<Card>
-				<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
-				<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-			</Card>
-		</CardLayout>
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+        </CardLayout>
 
-	</div>
+    </div>
 
-	<div style = "display: @(_session == null ? "none" : "block")">
-		<CardLayout ChildrenHeight = "10rem"
-		            ChildrenWidth = "15rem">
-			@* Total Designations available *@
-			<Card>
-				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2  style = "position: absolute; bottom: 10px; right: 10px">Designations</h2>
-					<div class = "counter" style="font-size: 52px">
-						@if (_designationCount is null) {
-							<div class = "waiting"
-							     style = "width: 4rem; height: 4rem;">
-							</div>
-						} else {
-							@_designationCount
-						}
-					</div>
-				</div>
-			</Card>
-			@* Total Faculty count *@
-			<Card>
-				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2 style = "position: absolute; bottom: 10px; right: 10px">Faculties</h2>
-					<div class = "counter" style = "font-size: 52px">
-						@if (_facultyCount is null) {
-							<div class = "waiting"
-							     style = "width: 4rem; height: 4rem;">
-							</div>
-						} else {
-							@_facultyCount
-						}
-					</div>
-				</div>
-			</Card>
-			@* Total Buildings *@
-			<Card>
-				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2 style = "position: absolute; bottom: 10px; right: 10px">Buildings</h2>
-					<div class = "counter" style = "font-size: 52px">
-						@if (_buildingCount is null) {
-							<div class = "waiting"
-							     style = "width: 4rem; height: 4rem;">
-							</div>
-						} else {
-							@_buildingCount
-						}
-					</div>
-				</div>
-			</Card>
-			@* Total Rooms *@
-			<Card>
-				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2 style = "position: absolute; bottom: 10px; right: 10px">Rooms</h2>
-					<div class = "counter" style = "font-size: 52px">
-						@if (_roomCount is null) {
-							<div class = "waiting"
-							     style = "width: 4rem; height: 4rem;">
-							</div>
-						} else {
-							@_roomCount
-						}
-					</div>
-				</div>
-			</Card>
-			
-		</CardLayout>
-	</div>
+    <div style="display: @(_session == null ? "none" : "block")">
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            @* Total Designations available *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Designations</h2>
+                    <div class="counts">
+                        @if (_designationCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_designationCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Faculty count *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Faculties</h2>
+                    <div class="counts">
+                        @if (_facultyCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_facultyCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Buildings *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Buildings</h2>
+                    <div class="counts">
+                        @if (_buildingCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_buildingCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Rooms *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Rooms</h2>
+                    <div class="counts">
+                        @if (_roomCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_roomCount
+                        }
+                    </div>
+                </div>
+            </Card>
+
+        </CardLayout>
+    </div>
 </div>
 
 @code {
 
-	private Session _session;
-	private int? _facultyCount, _designationCount, _buildingCount, _roomCount;
-	private string _welcome;
+    private Session _session;
+    private int? _facultyCount, _designationCount, _buildingCount, _roomCount;
+    private string _welcome;
 
-	private int _state = 0;
+    private int _state = 0;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender) {
-		var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
-		_session = SessionManager.GetSession(sess);
-		if (_session is null) Manager.NavigateTo("/");
-		else _welcome = $"Welcome, {_session.Name}!";
-		if (_state++ is 0) StateHasChanged();
-		await UpdateCards();
-	}
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+        if (_session is null) Manager.NavigateTo("/");
+        else _welcome = $"Welcome, {_session.Name}!";
+        if (_state is 0) {
+            StateHasChanged();
+            _state++;
+            Console.WriteLine(_state);
+        }
+        await UpdateCards();
+    }
 
-	private async Task UpdateCards() {
-		if (_session is null) {
-			Logger.Log("Error getting session when /Dashboard is open", LogMode.Error);
-			return;
-		}
-		var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
-		var designations = await inst.GetCollegeConfigResponse();
-		_designationCount ??= designations.designations.Count;
-		if (_state++ is 1) StateHasChanged();
-		var faculties = await inst.GetCollegeFaculties();
-		_facultyCount ??= faculties.Count;
-		if (_state++ is 2) StateHasChanged();
-		
-	}
+    private async Task UpdateCards() {
+        var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
+        var designations = await inst.GetCollegeConfigResponse();
+        _designationCount ??= designations.designations.Count;
+        if (_state is 1) {
+            StateHasChanged();
+            _state++;
+        }
+        var faculties = await inst.GetCollegeFaculties();
+        _facultyCount ??= faculties.Count;
+        if (_state is 2) {
+            StateHasChanged();
+            _state++;
+        }
+    }
 
 }
