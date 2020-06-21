@@ -15,6 +15,6 @@
 
     public static class Constants {
         public const string SessionId = "sessionId";
-        public const string BaseUrl = "https://192.168.0.105:5001/";
+        public const string BaseUrl = "https://localhost:5001/";
     }
 }
