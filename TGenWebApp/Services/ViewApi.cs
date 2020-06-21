@@ -77,7 +77,7 @@ namespace TGenWebApp.Services {
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
             var request = ApiBase
-                .GenerateRequest($@"{{""institutionID"":""{institutionId}""}}, {{""isRoom"":""false""}}");
+                .GenerateRequest($@"{{""institutionId"":""{institutionId}"", ""IsRoom"":false}}");
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful)
                 return JsonConvert.DeserializeObject<List<CollegeInfrastructureBuildingResponseModel>>(response.Content);
@@ -97,7 +97,7 @@ namespace TGenWebApp.Services {
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
             var request = ApiBase
-                .GenerateRequest($@"{{""institutionID"":""{institutionId}""}}, {{""isRoom"":""true""}}");
+                .GenerateRequest($@"{{""institutionId"":""{institutionId}"", ""IsRoom"":true}}");
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful)
                 return JsonConvert.DeserializeObject<List<CollegeInfrastructureRoomResponseModel>>(response.Content);
