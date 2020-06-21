@@ -48,8 +48,8 @@
 			@* Total Designations available *@
 			<Card>
 				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2>Total Designations:</h2>
-					<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">
+					<h2  style = "position: absolute; bottom: 10px; right: 10px">Designations</h2>
+					<div class = "counter" style="font-size: 52px">
 						@if (_designationCount is null) {
 							<div class = "waiting"
 							     style = "width: 4rem; height: 4rem;">
@@ -63,8 +63,8 @@
 			@* Total Faculty count *@
 			<Card>
 				<div style = "position: relative; width: 15rem; height: 15rem;">
-					<h2>Total Faculty:</h2>
-					<div class = "counter" style = "position: absolute; bottom: 10px; right: 10px; font-size: 48px">
+					<h2 style = "position: absolute; bottom: 10px; right: 10px">Faculties</h2>
+					<div class = "counter" style = "font-size: 52px">
 						@if (_facultyCount is null) {
 							<div class = "waiting"
 							     style = "width: 4rem; height: 4rem;">
@@ -75,6 +75,37 @@
 					</div>
 				</div>
 			</Card>
+			@* Total Buildings *@
+			<Card>
+				<div style = "position: relative; width: 15rem; height: 15rem;">
+					<h2 style = "position: absolute; bottom: 10px; right: 10px">Buildings</h2>
+					<div class = "counter" style = "font-size: 52px">
+						@if (_buildingCount is null) {
+							<div class = "waiting"
+							     style = "width: 4rem; height: 4rem;">
+							</div>
+						} else {
+							@_buildingCount
+						}
+					</div>
+				</div>
+			</Card>
+			@* Total Rooms *@
+			<Card>
+				<div style = "position: relative; width: 15rem; height: 15rem;">
+					<h2 style = "position: absolute; bottom: 10px; right: 10px">Rooms</h2>
+					<div class = "counter" style = "font-size: 52px">
+						@if (_roomCount is null) {
+							<div class = "waiting"
+							     style = "width: 4rem; height: 4rem;">
+							</div>
+						} else {
+							@_roomCount
+						}
+					</div>
+				</div>
+			</Card>
+			
 		</CardLayout>
 	</div>
 </div>
@@ -82,16 +113,18 @@
 @code {
 
 	private Session _session;
-	private int? _facultyCount, _designationCount;
+	private int? _facultyCount, _designationCount, _buildingCount, _roomCount;
 	private string _welcome;
+
+	private int _state = 0;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender) {
 		var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
 		_session = SessionManager.GetSession(sess);
 		if (_session is null) Manager.NavigateTo("/");
 		else _welcome = $"Welcome, {_session.Name}!";
+		if (_state++ is 0) StateHasChanged();
 		await UpdateCards();
-		StateHasChanged();
 	}
 
 	private async Task UpdateCards() {
@@ -101,10 +134,12 @@
 		}
 		var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
 		var designations = await inst.GetCollegeConfigResponse();
-		_designationCount = designations.designations.Count;
+		_designationCount ??= designations.designations.Count;
+		if (_state++ is 1) StateHasChanged();
 		var faculties = await inst.GetCollegeFaculties();
-		_facultyCount = faculties.Count;
-		Console.WriteLine($"Designation: {_designationCount}, Faculty: {_facultyCount}");
+		_facultyCount ??= faculties.Count;
+		if (_state++ is 2) StateHasChanged();
+		
 	}
 
 }
