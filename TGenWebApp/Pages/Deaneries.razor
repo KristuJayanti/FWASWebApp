@@ -1,38 +1,112 @@
 ﻿@page "/Manage/Deaneries"
+@using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.View
+@using TGenWebApp.ResponseModels.Manager
+@using TGenWebApp.Services.ManagerApi
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Manager;
+@inject IJSRuntime JsRuntime;
+
+<style>
+    .waiting {
+    	background: repeating-linear-gradient(to left, #fff, #ddd);
+    	animation: load 5s linear infinite forwards;
+    	background-size: 200% auto;
+    }
+    	
+    @@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+    }
+    
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .bottom-display {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+    }
+</style>
 
 <h1 style='padding-left: 10vw;'>Deaneries</h1>
 
-<CardLayout ChildrenHeight='15rem'
-            ChildrenWidth='15rem'>
-    <Card>
-        <h3>Science</h3>
-        <p>Departments: Computer Science, Life Science</p>
-    </Card>
+@* Placeholder loading animation *@
+<div style="display: @(_session == null ? "block" : "none")">
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+    </CardLayout>
+</div>
+<div style="display: @(_session == null ? "none" : "block")">
+    <CardLayout ChildrenHeight='15rem'
+                ChildrenWidth='15rem'>
+        @if (_deaneries != null) {
+            @foreach (var deanery in _deaneries) {
+                <Card>
+                    <div class="card-container">
+                        <h2>@deanery.deaneryName</h2>
+                        <h4 class="bottom-display">
+                        @if (deanery.IsUG) {
+                            <span>UG</span>
+                        }
+                        @if (deanery.IsPG) {
+                            <span>PG</span>
+                        }
+                        </h4>
+                    </div>
+                </Card>
+            }
+        }
+        <Card>
+            <div style='position: relative; width: 100%; height: 100%;'>
+                <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
+                    <svg aria-hidden="true"
+                         width="100px"
+                         class="fa-9x fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg><br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
+    </CardLayout>
+</div>
 
-    <Card>
-        <h3>Commerce</h3>
-        <p>Departments: Commerce, Commerce PG</p>
-    </Card>
+@code {
 
-    <Card>
-        <div style='position: relative; width: 100%; height: 100%;'>
-        <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
-            <svg aria-hidden="true"
-                 width="100px"
-                 class="fa-9x fa-plus-circle fa-w-16 svg-inline--fa"
-                 data-icon="plus-circle"
-                 data-prefix="fal"
-                 focusable="false"
-                 role="img"
-                 viewBox="0 0 512 512"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path class=""
-                      d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
-                      fill="currentColor">
-                </path>
-            </svg><br />
-            Add new?
-        </h3>
-        </div>
-    </Card>
-</CardLayout>
+    private Session _session;
+    private List<Deanery> _deaneries;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session is null) Manager.NavigateTo("/");
+            else {
+                var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _deaneries = await inst.GetDeaneries();
+                StateHasChanged();
+            }
+        }
+    }
+
+}
