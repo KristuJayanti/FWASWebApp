@@ -108,5 +108,13 @@ namespace TGenWebApp.Services {
         public void ResetCourses() {
             _courses = null;
         }
+
+        public async Task<List<Programme>> GetProgrammes() {
+            return _programmes ??= await ProgrammeApi.Get(InstitutionId);
+        }
+
+        public void ResetProgrammes() {
+            _programmes = null;
+        }
     }
 }
