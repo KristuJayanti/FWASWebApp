@@ -49,10 +49,10 @@ namespace TGenWebApp.Services.ManagerApi {
             return null;
         }
 
-        private class CollegeDepartmentRequestModel {
-            private string institutionId { get; set; }
+        public class CollegeDepartmentRequestModel {
+            public string institutionId { get; set; }
 
-            private List<Department>? departments { get; set; } = new List<Department>();
+            public List<Department>? departments { get; set; }
 
             public CollegeDepartmentRequestModel(string institutionId, List<Department> departments) {
                 this.institutionId = institutionId;
