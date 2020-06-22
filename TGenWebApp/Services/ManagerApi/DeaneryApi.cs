@@ -21,7 +21,7 @@ namespace TGenWebApp.Services.ManagerApi {
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful) {
                 var inst = InstitutionManager.GetInstitution(institutionId);
-                inst.ResetDeanery();
+                inst.ResetDeaneries();
                 return true;
             }
             Logger.Log($"API Server failed when adding Deanery {deaneries[0].deaneryName},... to {institutionId}.",

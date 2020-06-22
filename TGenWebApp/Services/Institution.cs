@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TGenWebApp.ResponseModels.Manager;
 using TGenWebApp.ResponseModels.View;
+using TGenWebApp.Services.ManagerApi;
 
 namespace TGenWebApp.Services {
     public class Institution {
@@ -10,6 +11,11 @@ namespace TGenWebApp.Services {
         private List<ViewCollegeFacultiesResponseModel> _faculties;
         private List<CollegeInfrastructureBuildingResponseModel> _buildings;
         private List<CollegeInfrastructureRoomResponseModel> _rooms;
+        private List<Deanery> _deanery;
+        private List<Department> _departments;
+        private List<Course> _courses;
+        private List<Faculty> _faculties2;
+        private List<Programme> _programmes;
 
         private string InstitutionId;
         private string InstitutionName;
@@ -77,6 +83,22 @@ namespace TGenWebApp.Services {
         /// </summary>
         public void ResetCollegeRooms() {
             _rooms = null;
+        }
+
+        public async Task<List<Deanery>> GetDeaneries() {
+            return _deanery ??= await DeaneryApi.Get(InstitutionId);
+        }
+
+        public void ResetDeaneries() {
+            _deanery = null;
+        }
+
+        public async Task<List<Department>> GetDepartments() {
+            return _departments ??= await DepartmentApi.Get(InstitutionId);
+        }
+
+        public void ResetDepartments() {
+            _departments = null;
         }
     }
 }
