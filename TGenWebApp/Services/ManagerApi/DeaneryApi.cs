@@ -19,7 +19,11 @@ namespace TGenWebApp.Services.ManagerApi {
                 .AddHeader("Accept", "application/json")
                 .AddJsonBody(JsonConvert.SerializeObject(new CollegeDeaneryRequestModel(institutionId, deaneries)));
             var response = await client.ExecuteAsync(request);
-            if (response.IsSuccessful) return true;
+            if (response.IsSuccessful) {
+                var inst = InstitutionManager.GetInstitution(institutionId);
+                inst.ResetDeanery();
+                return true;
+            }
             Logger.Log($"API Server failed when adding Deanery {deaneries[0].deaneryName},... to {institutionId}.",
                 LogMode.Error);
             return false;
