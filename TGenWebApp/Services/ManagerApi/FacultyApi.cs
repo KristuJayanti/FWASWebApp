@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
+using TGenWebApp.ResponseModels.Core;
 using TGenWebApp.ResponseModels.Manager;
 
 namespace TGenWebApp.Services.ManagerApi {
@@ -20,9 +21,12 @@ namespace TGenWebApp.Services.ManagerApi {
                     JsonConvert.SerializeObject(faculty));
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful) {
-                var inst = InstitutionManager.GetInstitution(institutionId);
-                inst.ResetCollegeFaculties();
-                return true;
+                var resp = JsonConvert.DeserializeObject<FacultyResponseModel>(response.Content);
+                if (resp.IsSuccess) {
+                    var inst = InstitutionManager.GetInstitution(institutionId);
+                    inst.ResetCollegeFaculties();
+                    return true;
+                }
             }
 
             Logger.Log(
@@ -30,5 +34,23 @@ namespace TGenWebApp.Services.ManagerApi {
                 LogMode.Error);
             return false;
         }
+    }
+
+    public class FacultyResponseModel {
+        public bool IsSuccess { get; set; }
+        public string message { get; set; }
+
+        public UserBasicResponseModel? UserBasicResponseModel { get; set; } = new UserBasicResponseModel();
+
+        public string? userID { get; set; }
+
+        public string? institutionId { get; set; }
+
+        public string? departmentId { get; set; }
+
+        public string? jobId { get; set; }
+        public int? MaxTeachingHoursPerWeak { get; set; }
+        public bool? IsTeaching { get; set; }
+        public List<string>? designationIds { get; set; }
     }
 }
