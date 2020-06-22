@@ -48,7 +48,7 @@ namespace TGenWebApp.Services.ManagerApi {
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful)
                 return JsonConvert.DeserializeObject<List<Programme>>(response.Content);
-            Logger.Log($"API Server failed when getting College Deanery for {institutionId}.", LogMode.Error);
+            Logger.Log($"API Server failed when getting College Programmes for {institutionId}.", LogMode.Error);
             return null;
         }
     }
