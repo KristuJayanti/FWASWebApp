@@ -1,77 +1,146 @@
 ﻿@page "/Manage/Faculty"
+@using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.View
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
 
-<h1 style='padding-left: 10vw;'>Faculty</h1>
+<h1 style="padding-left: 10vw;">Faculty</h1>
 
 <style>
-    img {
-        width: 170px;
-    } input[type='text'] {
-        padding: 4px;
-        margin: 8px 2px;
-        border-radius: 4px;
-        border: 1px solid black;
+    .waiting {
+    	background: repeating-linear-gradient(to left, #fff, #ddd);
+    	animation: load 5s linear infinite forwards;
+    	background-size: 200% auto;
+    }
+    	
+    @@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+    }
+    
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .bottom-display {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+    }
+    
+    .prompt {
+        font-size: 20px;
+    }
+    
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
     }
 </style>
 
-<CardLayout ChildrenHeight='15rem'
-            ChildrenWidth='15rem'>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/R%20Kumar.jpg'>
-        <h3>Dr. R. Kumar</h3>
-        <p>Role: HOD</p>
-        <p>Department: Computer Science PG</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/Muruganantham.jpg'>
-        <h3>Prof. A. Muruganantham</h3>
-        <p>Role: Professor</p>
-        <p>Department: Computer Science PG</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-pg/images/faculty/Velmurugan.jpg'>
-        <h3>Prof. Velmurugan R </h3>
-        <p>Role: Professor</p>
-        <p>Department: Computer Science PG</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Jude.jpg'>
-        <h3>Dr. Calistus Jude AL </h3>
-        <p>Role: Dean</p>
-        <p>Department: Computer Science</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Fr_Lijo.jpg'>
-        <h3>Fr. Lijo P. Thomas </h3>
-        <p>Role: HOD</p>
-        <p>Department: Computer Science</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Sciences/department-cs-ug/images/faculty/Sevuga%20Pandian.jpg'>
-        <h3>A. Sevuga Pandian </h3>
-        <p>Role: Professor</p>
-        <p>Department: Computer Science</p>
-    </Card>
-    <Card>
-        <img src='https://kristujayanti.edu.in/academics/College-Arts-Science-Commerce/Faculty-Commerce-Management/management/images/faculty/Surendranath%20Reddy.jpg'>
-        <h3>C.Surendranath Reddy</h3>
-        <p>Role: HOD</p>
-        <p>Department: Commerce</p>
-    </Card>
-</CardLayout>
+@* Placeholder loading animation *@
+<div style="display: @(_session == null ? "block" : "none")">
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+    </CardLayout>
+</div>
 
-@* <PromptPane Dismissible='true'
-            Title='Add Faculty'
-            PrimaryText='Add'
-            SecondaryText='Cancel'>
-    Designation: <input type='text' placeholder='Designation'/> <br />
-    First Name: <input type='text'
-           placeholder='First Name' /> <br/>
-    Last Name: <input type='text' placeholder='Last Name' /> <br/>
-    Department: <input type='text' placeholder='Department' /> <br/>
-    Age: <input type='text' placeholder='Age'/><br/>
-    Gender: <input type='radio'/>Male
-    <input type='radio'/>Female<br />
-    Qualifications: <input type='text' placeholder='Qualifications'/><br />
-    Speciality: <input type='text' placeholder='Speciality'/> <br />
-    Photo: <input type='file' placeholder='Photo'/>
-</PromptPane> *@
+@* Actual Code *@
+<div style="display: @(_session is null ? "none" : "block")">
+
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+
+        @if (_faculties != null) {
+            @foreach (var faculty in _faculties) {
+                <Card>
+                    <div class="card-container">
+                        <h2>@faculty.name</h2>
+                        <h3 style="padding-left: 0.5rem;">@faculty.jobId</h3>
+                    </div>
+                </Card>
+            }
+        }
+        <Card>
+            <div style="position: relative; width: 100%; height: 100%;" @onclick="Add">
+                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                    <svg aria-hidden="true"
+                         class="fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         width="80px"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg>
+                    <br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
+    </CardLayout>
+
+</div>
+
+
+<PromptPane Dismissible="true"
+            Title="Add Faculty"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_promptVisibility">
+    <br/>
+    <div class="prompt">
+    Designation: <input type="text" placeholder="Designation"/> <br/>
+    First Name:
+    <input type="text"
+           placeholder="First Name"/> <br/>
+    Last Name: <input type="text" placeholder="Last Name"/> <br/>
+    Department: <select placeholder="Department"></select> <br/>
+    Designations: <select type="text" placeholder="Department"></select> <br/>
+    Email: <input type="text" placeholder="Age"/><br/>
+    Teacher: <input type="radio"/>Yes
+    <input type="radio"/>No<br/>
+    Phone Number: <input type="text" placeholder="Qualifications"/><br/>
+    Address: <input type="text" placeholder="Speciality"/> <br/>
+    Max Hours per week: <input type="text" placeholder="Speciality"/> <br/>
+    Photo: <input type="file" placeholder="Photo"/>
+    </div>
+</PromptPane>
+
+@code {
+
+    private Session _session;
+    private List<ViewCollegeFacultiesResponseModel> _faculties;
+    private bool _promptVisibility;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session != null) {
+                _faculties = await InstitutionManager.GetInstitution(_session.InstitutionId).GetCollegeFaculties();
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void Add() {
+        _promptVisibility = true;
+        StateHasChanged();
+    }
+
+}
