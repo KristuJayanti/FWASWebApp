@@ -27,6 +27,15 @@
         bottom: 0.7rem;
         right: 0.7rem;
     }
+    
+        .prompt {
+            font-size: 20px;
+        }
+        
+        .prompt > * {
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+        }
 </style>
 
 <h1 style='padding-left: 10vw;'>Departments</h1>
@@ -57,23 +66,62 @@
             foreach (var department in _departments) {
                 <Card>
                     <div class="card-container">
-                    <h2>@department.departmentName</h2>
-                    <h4>Deanery: @_institution.GetDeaneryById(department.deaneryId).deaneryName</h4>
-                    <h4 class="bottom-display">
-                        @if (department.IsUG) {
-                            <span>UG</span>
-                        }
-                        @if (department.IsPG) {
-                            <span>PG</span>
-                        }
-                    </h4>
+                        <h2>@department.departmentName</h2>
+                        <h4>Deanery: @_institution.GetDeaneryById(department.deaneryId).deaneryName</h4>
+                        <h4 class="bottom-display">
+                            @if (department.IsUG) {
+                                <span>UG</span>
+                            }
+                            @if (department.IsPG) {
+                                <span>PG</span>
+                            }
+                        </h4>
                     </div>
                 </Card>
             }
         }
+        <Card>
+            <div style="position: relative; width: 100%; height: 100%;" @onclick="Add">
+                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                    <svg aria-hidden="true"
+                         class="fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         width="80px"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg>
+                    <br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
     </CardLayout>
 
 </div>
+
+<PromptPane Dismissible="true"
+            Title="Add Department"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_promptVisibility">
+    <br/>
+    <div class="prompt">
+        Department Name: <input type="text" placeholder="Department"/> <br/>
+        Deanery: <select><option selected>Science Deanery</option></select><br />
+        UG? <input type="radio"/>Yes
+        <input type="radio"/>No<br/>
+        PG? <input type="radio"/>Yes
+        <input type="radio"/>No<br/>
+        Room: <select><option selected>Main Block</option></select>
+    </div>
+</PromptPane>
 
 
 @code {
@@ -81,6 +129,7 @@
     Session _session;
     List<Department> _departments;
     Institution _institution;
+    private bool _promptVisibility;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -92,6 +141,11 @@
             }
             StateHasChanged();
         }
+    }
+
+    private void Add() {
+        _promptVisibility = true;
+        StateHasChanged();
     }
 
 }
