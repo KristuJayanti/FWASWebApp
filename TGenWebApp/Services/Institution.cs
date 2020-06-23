@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TGenWebApp.ResponseModels.Manager;
 using TGenWebApp.ResponseModels.View;
@@ -14,7 +15,6 @@ namespace TGenWebApp.Services {
         private List<Deanery> _deanery;
         private List<Department> _departments;
         private List<Course> _courses;
-        private List<Faculty> _faculties2;
         private List<Programme> _programmes;
 
         private string InstitutionId;
@@ -91,6 +91,10 @@ namespace TGenWebApp.Services {
 
         public void ResetDeaneries() {
             _deanery = null;
+        }
+
+        public Deanery GetDeaneryById(string deaneryId) {
+            return deaneryId == null ? null : _deanery.Find(match: deanery => deanery.id == deaneryId);
         }
 
         public async Task<List<Department>> GetDepartments() {
