@@ -1,7 +1,198 @@
 ﻿@page "/Preferences"
+@using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.Manager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+<style>
+	.waiting {
+		background: repeating-linear-gradient(to left, #fff, #ddd);
+		animation: load 5s linear infinite forwards;
+		background-size: 200% auto;
+	}
+	
+	@@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+   }
+   
+	.prompt {
+        font-size: 20px;
+   	}
+   
+   	.prompt > * {
+    	margin: 0.5rem 0;
+    	padding: 0.5rem 0;
+   	}
+</style>
 
 <h3>Preferences</h3>
 
+<h4>Building</h4>
+
+@* Placeholder loading *@
+<div style="display: @(_session == null ? "block" : "none")">
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+    </CardLayout>
+</div>
+
+<div style="display: @(_session is null ? "none" : "block"); height: 80vh;">
+    <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
+        @if (_building != null) {
+            @foreach (var b in _building) {
+                <Card>
+                    <h2>@b.buildingName</h2>
+                    <h3>Floors: @b.numberOfFloors</h3>
+                </Card>
+            }
+        }
+        <Card>
+            <div style="position: relative; width: 100%; height: 100%;" @onclick="AddBuilding">
+                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                    <svg aria-hidden="true"
+                         class="fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         width="80px"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg>
+                    <br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
+    </CardLayout>
+</div>
+
+
+<h4>Rooms</h4>
+
+@* Placeholder loading *@
+<div style="display: @(_session == null ? "block" : "none")">
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+    </CardLayout>
+</div>
+
+<div style="display: @(_session is null ? "none" : "block")">
+    <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
+        @if (_room != null) {
+            @foreach (var b in _room) {
+                <Card>
+                    <h2>@b.roomCode</h2>
+                    <h3>Type: @b.roomType</h3>
+                    <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
+                </Card>
+            }
+        }
+        <Card>
+            <div style="position: relative; width: 100%; height: 100%;" @onclick="AddRoom">
+                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                    <svg aria-hidden="true"
+                         class="fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         width="80px"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg>
+                    <br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
+    </CardLayout>
+</div>
+
+<PromptPane Dismissible="true"
+            Title="Add Building"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_visibleBuilding">
+    <br/>
+    <div class="prompt">
+        Building Name: <input type="text" placeholder="Building Name"/> <br/>
+        No of Floors: <input type="text" placeholder="Floors"/><br/>
+    </div>
+</PromptPane>
+
+<PromptPane Dismissible="true"
+            Title="Add Room"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_visibleRoom">
+    <br/>
+    <div class="prompt">
+        Building:
+        <select>
+            <option selected>Building 1</option>
+        </select><br/>
+        Floor no.: <input type="text" placeholder="Floor Number"/> <br/>
+        Lab? <input type="radio"/>Yes <input type="radio"/> No <br/>
+        <input type="radio"/> UG <input type="radio"/> PG <br/>
+        Strength: <input type="text" placeholder="Room Strength"/> <br/>
+    </div>
+</PromptPane>
+
 @code {
+
+    private Session _session;
+    private List<CollegeInfrastructureBuildingResponseModel> _building;
+    private List<CollegeInfrastructureRoomResponseModel> _room;
+    private bool _visibleBuilding, _visibleRoom;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session is null)
+                NavigationManager.NavigateTo("/");
+            else {
+                var institute = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _building ??= await institute.GetCollegeBuildings();
+                _room ??= await institute.GetCollegeRooms();
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void AddBuilding() {
+        _visibleBuilding = true;
+        StateHasChanged();
+    }
+
+    private void AddRoom() {
+        _visibleRoom = true;
+        StateHasChanged();
+    }
 
 }
