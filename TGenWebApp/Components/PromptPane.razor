@@ -13,7 +13,7 @@
 
 
 <div style='width:100vw; height: 100vh; background-color: #0004; overflow: hidden; position: fixed; 
-        backdrop-filter: blur(10px); z-index: 1000; left: 0; top: 0;' class='@mainClosed'>
+        backdrop-filter: blur(10px); z-index: 1000; left: 0; top: 0; display: @(Visible?"block":"none")' class='@mainClosed'>
     <div style='left: 35%; top: 2rem; bottom: 2rem; right: 2rem; border: 1px solid gray; float:right;
             border-radius: 2px; position: fixed; background-color: #fff; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             transition: all 300ms ease-out; overflow: hidden;'>
@@ -51,6 +51,9 @@
 
     [Parameter]
     public string Dismissible {get; set; }
+    
+    [Parameter]
+    public bool Visible { get; set; }
 
     [Parameter]
     public string Title {get; set; }
