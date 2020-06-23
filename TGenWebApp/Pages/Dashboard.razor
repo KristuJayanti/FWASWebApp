@@ -128,6 +128,70 @@
                 </div>
             </Card>
 
+            @* Total Departments *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Deaneries</h2>
+                    <div class="counts">
+                        @if (_roomCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_deaneryCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Deaneries *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Departments</h2>
+                    <div class="counts">
+                        @if (_roomCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_deptCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Courses *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Courses</h2>
+                    <div class="counts">
+                        @if (_roomCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_courseCount
+                        }
+                    </div>
+                </div>
+            </Card>
+            @* Total Programmes *@
+            <Card>
+                <div class="card-filler">
+                    <h2 class="description">Programmes</h2>
+                    <div class="counts">
+                        @if (_roomCount is null) {
+                            <div class="waiting"
+                                 style="width: 4rem; height: 4rem;">
+                            </div>
+                        }
+                        else {
+                            @_programmeCount
+                        }
+                    </div>
+                </div>
+            </Card>
         </CardLayout>
     </div>
 </div>
@@ -135,49 +199,39 @@
 @code {
 
     private Session _session;
-    private int? _facultyCount, _designationCount, _buildingCount, _roomCount;
+    private int? _facultyCount, _designationCount, _buildingCount, 
+        _roomCount, _courseCount, _programmeCount, _deaneryCount, _deptCount;
     private string _welcome;
 
-    private int _state = 0;
-
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-        if (_session is null) Manager.NavigateTo("/");
-        else _welcome = $"Welcome, {_session.Name}!";
-        if (_state is 0) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session is null) Manager.NavigateTo("/");
+            else _welcome = $"Welcome, {_session.Name}!";
             StateHasChanged();
-            _state++;
-            Console.WriteLine(_state);
+            await UpdateCards();
         }
-        await UpdateCards();
     }
 
     private async Task UpdateCards() {
         var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
         var designations = await inst.GetCollegeConfigResponse();
         _designationCount ??= designations.designations.Count;
-        if (_state is 1) {
-            StateHasChanged();
-            _state++;
-        }
         var faculties = await inst.GetCollegeFaculties();
         _facultyCount ??= faculties.Count;
-        if (_state is 2) {
-            StateHasChanged();
-            _state++;
-        }
         var buildings = await inst.GetCollegeBuildings();
         _buildingCount ??= buildings.Count;
-        if (_state is 3) {
-            StateHasChanged();
-            _state++;
-        }
         var rooms = await inst.GetCollegeRooms();
         _roomCount ??= rooms.Count;
-        if (_state is 4) {
-            StateHasChanged();
-            _state++;
-        }
+        var depts = await inst.GetDepartments();
+        _deptCount ??= depts.Count;
+        var deaneries = await inst.GetDeaneries();
+        _deaneryCount ??= deaneries.Count;
+        var programmes = await inst.GetProgrammes();
+        _programmeCount ??= programmes.Count;
+        var courses = await inst.GetCourses();
+        _courseCount ??= courses.Count;
+        StateHasChanged();
     }
 
 }
