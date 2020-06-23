@@ -1,51 +1,97 @@
 ﻿@page "/Manage/Departments";
 @using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.Manager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+@inject NavigationManager NavigationManager;
 
 <style>
-	.waiting {
-		background: repeating-linear-gradient(to left, #fff, #ddd);
-		animation: load 5s linear infinite forwards;
-		background-size: 200% auto;
-	}
-	
-	@@keyframes load {
+    .waiting {
+    	background: repeating-linear-gradient(to left, #fff, #ddd);
+    	animation: load 5s linear infinite forwards;
+    	background-size: 200% auto;
+    }
+    	
+    @@keyframes load {
         0% { background-position: -200% 0; }
       100% { background-position: 0 0; }
-   }
+    }
+    
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .bottom-display {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+    }
 </style>
 
 <h1 style='padding-left: 10vw;'>Departments</h1>
 
 
-
+@* Placeholder loading *@
 <div style="display: @(_session == null ? "block" : "none")">
-
-	<CardLayout ChildrenHeight = "10rem"
-	            ChildrenWidth = "15rem">
-		<Card>
-			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
-			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-		</Card>
-		<Card>
-			<div class = "waiting" style = "width: 10rem; height: 2rem;"></div>
-			<div class = "waiting" style = "width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-		</Card>
-	</CardLayout>
-		
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+        <Card>
+            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+        </Card>
+    </CardLayout>
 </div>
+
+@* actual logic *@
+
+<div style="display: @(_session == null ? "none" : "block")">
+
+    <CardLayout ChildrenHeight="10rem"
+                ChildrenWidth="15rem">
+        @if (_departments != null) {
+            foreach (var department in _departments) {
+                <Card>
+                    <div class="card-container">
+                    <h2>@department.departmentName</h2>
+                    <h4>Deanery: @_institution.GetDeaneryById(department.deaneryId).deaneryName</h4>
+                    <h4 class="bottom-display">
+                        @if (department.IsUG) {
+                            <span>UG</span>
+                        }
+                        @if (department.IsPG) {
+                            <span>PG</span>
+                        }
+                    </h4>
+                    </div>
+                </Card>
+            }
+        }
+    </CardLayout>
+
+</div>
+
 
 @code {
 
-	Session _session;
+    Session _session;
+    List<Department> _departments;
+    Institution _institution;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender) {
-		var sessionId = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
-		if (SessionManager.IsValidSession(sessionId)) {
-			_session = SessionManager.GetSession(sessionId);
-		} else {
-			_session = null;
-		}
-	}
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session is null) NavigationManager.NavigateTo("/");
+            else {
+                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _departments ??= await _institution.GetDepartments();
+            }
+            StateHasChanged();
+        }
+    }
 
 }
