@@ -27,6 +27,14 @@
         bottom: 0.7rem;
         right: 0.7rem;
     }
+                   .prompt {
+                       font-size: 20px;
+                   }
+                   
+                   .prompt > * {
+                       margin: 0.5rem 0;
+                       padding: 0.5rem 0;
+                   }
 </style>
 
 <h1 style='padding-left: 10vw;'>Programmes</h1>
@@ -59,7 +67,7 @@
                         <h2>@programme.programmeName</h2>
                         <h3>@(programme.workingHoursPerWeek ?? 0) hours/wk</h3>
                         <div class="bottom-display">
-                            
+
                             @if (programme.IsUG ?? false) {
                                 <span>UG</span>
                             }
@@ -71,8 +79,46 @@
                 </Card>
             }
         }
+        <Card>
+            <div style='position: relative; width: 100%; height: 100%;' @onclick="Add">
+                <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
+                    <svg aria-hidden="true"
+                         width="100px"
+                         class="fa-9x fa-plus-circle fa-w-16 svg-inline--fa"
+                         data-icon="plus-circle"
+                         data-prefix="fal"
+                         focusable="false"
+                         role="img"
+                         viewBox="0 0 512 512"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path class=""
+                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                              fill="currentColor">
+                        </path>
+                    </svg><br/>
+                    Add new?
+                </h3>
+            </div>
+        </Card>
     </CardLayout>
 </div>
+<PromptPane Dismissible="true"
+            Title="Add Programme"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_promptVisibility">
+    <br/>
+    <div class="prompt">
+        Programme Name: <input type="text" placeholder="Programme"/> <br/>
+        Semester: <input type="text" placeholder="Semester"/> <br/>
+        <input type="radio"/> UG <input type="radio"/> PG <br />
+        Hours Everyday: <input type="text" placeholder="Hours Everyday"/> <br/>
+        Hours a Saturday: <input type="text" placeholder="Hours a Saturday"/> <br/>
+        Hours a Week: <input type="text" placeholder="Hours a Week"/> <br/>
+        Total Hours: <input type="text" placeholder="Total Hours"/> <br/>
+        Strength: <input type="text" placeholder="Student Strength"/> <br/>
+    </div>
+</PromptPane>
 
 @code{
 
@@ -90,6 +136,12 @@
             }
             StateHasChanged();
         }
+    }
+
+    private bool _promptVisibility;
+
+    private void Add() {
+        _promptVisibility = true;
     }
 
 }
