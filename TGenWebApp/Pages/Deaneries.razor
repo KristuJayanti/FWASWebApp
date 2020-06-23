@@ -30,6 +30,14 @@
         bottom: 0.7rem;
         right: 0.7rem;
     }
+            .prompt {
+                font-size: 20px;
+            }
+            
+            .prompt > * {
+                margin: 0.5rem 0;
+                padding: 0.5rem 0;
+            }
 </style>
 
 <h1 style='padding-left: 10vw;'>Deaneries</h1>
@@ -57,19 +65,19 @@
                     <div class="card-container">
                         <h2>@deanery.deaneryName</h2>
                         <h4 class="bottom-display">
-                        @if (deanery.IsUG) {
-                            <span>UG</span>
-                        }
-                        @if (deanery.IsPG) {
-                            <span>PG</span>
-                        }
+                            @if (deanery.IsUG) {
+                                <span>UG</span>
+                            }
+                            @if (deanery.IsPG) {
+                                <span>PG</span>
+                            }
                         </h4>
                     </div>
                 </Card>
             }
         }
         <Card>
-            <div style='position: relative; width: 100%; height: 100%;'>
+            <div style='position: relative; width: 100%; height: 100%;' @onclick="Add">
                 <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
                     <svg aria-hidden="true"
                          width="100px"
@@ -92,10 +100,27 @@
     </CardLayout>
 </div>
 
+<PromptPane Dismissible="true"
+            Title="Add Deanery"
+            PrimaryText="Add"
+            SecondaryText="Cancel"
+            Visible="@_promptVisibility">
+    <br/>
+    <div class="prompt">
+        Deanery Name: <input type="text" placeholder="Deanery"/> <br/>
+        UG? <input type="radio"/>Yes
+        <input type="radio"/>No<br/>
+        PG? <input type="radio"/>Yes
+        <input type="radio"/>No<br/>
+        Room: <select><option selected>Main Block</option></select>
+    </div>
+</PromptPane>
+
 @code {
 
     private Session _session;
     private List<Deanery> _deaneries;
+    private bool _promptVisibility;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -107,6 +132,10 @@
                 StateHasChanged();
             }
         }
+    }
+
+    private void Add() {
+        _promptVisibility = true;
     }
 
 }
