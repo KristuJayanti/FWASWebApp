@@ -218,7 +218,6 @@
         _promptVisibility = true;
         addedDesignations = new List<Designations>();
         pickedDesignation = new Designations();
-        Update().Wait();
     }
 
     private void Hide() {
@@ -231,6 +230,7 @@
             .ToList();
         await DeaneryApi.Add(_session.InstitutionId, deaneryObject);
         _promptVisibility = false;
+        await Update();
     }
 
     private void AddToList() {
