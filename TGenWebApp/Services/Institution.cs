@@ -10,6 +10,7 @@ namespace TGenWebApp.Services {
 
         private ViewCollegeConfigResponseModel _config;
         private List<ViewCollegeFacultiesResponseModel> _faculties;
+        private List<Designations> _designations;
         private List<CollegeInfrastructureBuildingResponseModel> _buildings;
         private List<CollegeInfrastructureRoomResponseModel> _rooms;
         private List<Deanery> _deanery;
@@ -83,6 +84,16 @@ namespace TGenWebApp.Services {
         /// </summary>
         public void ResetCollegeRooms() {
             _rooms = null;
+        }
+
+        public async Task<List<Designations>> GetDesignations() {
+            if (_designations != null) return _designations;
+            var viewDesignation = await ViewApi.ViewDesignation(InstitutionId);
+            return _designations ??= viewDesignation.designations;
+        }
+
+        public void ResetDesignations() {
+            _designations = null;
         }
 
         public async Task<List<Deanery>> GetDeaneries() {
