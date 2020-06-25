@@ -85,7 +85,7 @@
         @if (_deaneries != null) {
             @foreach (var deanery in _deaneries) {
                 <Card>
-                    <div class="card-container">
+                    <div class="card-container" @onclick="() => { EditWindow(deanery); }">
                         <h2>@deanery.deaneryName</h2>
                         <h4 class="bottom-display">
                             @if (deanery.IsUG) {
@@ -101,18 +101,11 @@
         }
         <Card>
             <div style='position: relative; width: 100%; height: 100%;' @onclick="Add">
-                <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
-                    <svg aria-hidden="true"
-                         width="100px"
-                         data-icon="plus-circle"
-                         data-prefix="fal"
-                         focusable="false"
-                         role="img"
+                <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center;'>
+                    <svg focusable="false"
                          viewBox="0 0 512 512"
                          xmlns="http://www.w3.org/2000/svg">
-                        <path class=""
-                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
-                              fill="currentColor">
+                        <path d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z">
                         </path>
                     </svg><br/>
                     Add new?
@@ -123,7 +116,7 @@
 </div>
 
 <PromptPane Dismissible="true"
-            Title="Add Deanery"
+            Title="@_windowTitle"
             PrimaryText="Add"
             SecondaryText="Cancel"
             Visible="@_promptVisibility"
@@ -131,7 +124,7 @@
             OnClickSecondary="@Hide">
     @if (_inst != null) {
         <div class="prompt">
-            <div class="info-card">Specify your Deanery Name in this field.</div><br/>
+            <div class="info-card">Specify your Deanery Name in this field.</div>
             Deanery Name*: <input type="text" placeholder="Deanery" @bind="deaneryObject.deaneryName" required/> <br/>
             <div class="info-card">Deanery ID is a shorthand form of representing the Deanery.</div>
             Deanery ID*: <input type="text" placeholder="Deanery ID" @bind="deaneryObject.deaneryCode" required/> <br/>
@@ -183,6 +176,7 @@
 
     public List<Designations> addedDesignations { get; set; }
     private Designations pickedDesignation { get; set; }
+    private bool _isEdit;
 
     private Session _session;
     private List<Deanery> _deaneries;
@@ -190,6 +184,7 @@
     private Institution _inst;
     private List<CollegeInfrastructureRoomResponseModel> _rooms;
     private List<Designations> _designations;
+    private string _windowTitle = "Add Deanery";
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -244,4 +239,13 @@
         addedDesignations.RemoveAll(e => e.id == item.id);
     }
 
+    private void EditWindow(Deanery deanery) {
+        deaneryObject = deanery;
+        _windowTitle = $"Edit Deanery: {deanery.deaneryName}";
+        addedDesignations = new List<Designations>();
+        foreach (var designation in deaneryObject.accessDesignation) {
+            addedDesignations.Add(_designations.Find(e => e.id == designation));
+        }
+        _promptVisibility = true;
+    }
 }
