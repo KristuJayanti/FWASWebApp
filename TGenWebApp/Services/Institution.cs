@@ -105,7 +105,7 @@ namespace TGenWebApp.Services {
         }
 
         public Deanery GetDeaneryById(string deaneryId) {
-            return deaneryId == null ? null : _deanery.Find(match: deanery => deanery.id == deaneryId);
+            return deaneryId == null ? new Deanery() : _deanery.Find(match: deanery => deanery.id == deaneryId);
         }
 
         public async Task<List<Department>> GetDepartments() {
