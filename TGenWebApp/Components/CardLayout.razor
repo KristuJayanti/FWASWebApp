@@ -2,6 +2,7 @@
     .container {
         position: absolute;
         padding-top: 2rem;
+        padding-bottom: 2rem;
         left: 50%;
         transform: translateX(-50%);
         display: grid;
@@ -33,9 +34,10 @@
 </style>
 
 
-
+<div>
 <div class="container">
     @ChildContent
+</div>
 </div>
 
 @code {
@@ -48,7 +50,7 @@
     public RenderFragment ChildContent {get; set; }
 
     protected override void OnInitialized() {
-        if (ChildrenHeight is null) ChildrenHeight = "14rem";
-        if (ChildrenWidth is null) ChildrenWidth = "16rem";
+        ChildrenHeight ??= "14rem";
+        ChildrenWidth ??= "16rem";
     }
 }
