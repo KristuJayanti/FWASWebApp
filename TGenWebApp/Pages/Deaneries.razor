@@ -30,14 +30,37 @@
         bottom: 0.7rem;
         right: 0.7rem;
     }
-            .prompt {
-                font-size: 20px;
-            }
+    .prompt {
+        font-size: 20px;
+    }
             
-            .prompt > * {
-                margin: 0.5rem 0;
-                padding: 0.5rem 0;
-            }
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+    
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 <h1 style='padding-left: 10vw;'>Deaneries</h1>
@@ -81,7 +104,6 @@
                 <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
                     <svg aria-hidden="true"
                          width="100px"
-                         class="fa-9x fa-plus-circle fa-w-16 svg-inline--fa"
                          data-icon="plus-circle"
                          data-prefix="fal"
                          focusable="false"
@@ -104,38 +126,122 @@
             Title="Add Deanery"
             PrimaryText="Add"
             SecondaryText="Cancel"
-            Visible="@_promptVisibility">
-    <br/>
-    <div class="prompt">
-        Deanery Name: <input type="text" placeholder="Deanery"/> <br/>
-        UG? <input type="radio"/>Yes
-        <input type="radio"/>No<br/>
-        PG? <input type="radio"/>Yes
-        <input type="radio"/>No<br/>
-        Room: <select><option selected>Main Block</option></select>
-    </div>
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@Hide">
+    @if (_inst != null) {
+        <div class="prompt">
+            <div class="info-card">Specify your Deanery Name in this field.</div><br/>
+            Deanery Name*: <input type="text" placeholder="Deanery" @bind="deaneryObject.deaneryName" required/> <br/>
+            <div class="info-card">Deanery ID is a shorthand form of representing the Deanery.</div>
+            Deanery ID*: <input type="text" placeholder="Deanery ID" @bind="deaneryObject.deaneryCode" required/> <br/>
+            <div class="info-card">Choose what type of programmes the Deanery offers.</div>
+            <input type="checkbox" @bind="deaneryObject.IsUG"/> UG
+            <input type="checkbox" @bind="deaneryObject.IsPG"/> PG
+            <br/>
+            <div class="info-card">Room in which this deanery will be in.</div>
+            Room:
+            <select @bind="deaneryObject.roomId" required>
+                @for (var i = 0; i < _rooms.Count; i++) {
+                    <option selected="@(i == 0 ? "true" : "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                }
+            </select><br/>
+            <div class="info-card">This menu helps you customise the heirarchy of authority in the deanery. Pick a 
+                member from the dropdown, and hit the '+' button to add them to the List. </div>
+            Access Designations:<br/>
+            <div>
+                @foreach (var acc in addedDesignations) {
+                    <div class="pickbox">
+                        @acc.title
+                        <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
+                            <svg aria-hidden="true" focusable="false"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                                <g class="fa-group">
+                                    <path fill="currentColor" d="M9.21,356.07a31.46,31.46,0,0,0,0,44.48l22.24,22.24a31.46,31.46,0,0,0,44.48,0L176,322.72,109.28,256ZM342.79,111.45,320.55,89.21a31.46,31.46,0,0,0-44.48,0L176,189.28,242.72,256,342.79,155.93a31.46,31.46,0,0,0,0-44.48Z" class="fa-secondary"></path><path fill="currentColor" d="M342.79,356.07a31.46,31.46,0,0,1,0,44.48l-22.24,22.24a31.46,31.46,0,0,1-44.48,0L9.21,155.93a31.46,31.46,0,0,1,0-44.48L31.45,89.21a31.46,31.46,0,0,1,44.48,0Z" class="fa-primary"></path>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                }
+            </div><br/>
+            <select @bind="pickedDesignation.id">
+                @for (var i = 0; i < _designations.Count; i++) {
+                    <option selected="@(i == 0 ? "true" : "false")" value="@_designations[i].id">@_designations[i].title</option>
+                }
+            </select>
+            <Button Color="Colored" OnClick="@AddToList">+</Button>
+            <br/>
+            <div class="info-card">Once you're done, Hit the Add button below to continue.</div>
+        </div>
+    }
 </PromptPane>
 
 @code {
 
+    [Parameter]
+    public Deanery deaneryObject { get; set; }
+
+    public List<Designations> addedDesignations { get; set; }
+    private Designations pickedDesignation { get; set; }
+
     private Session _session;
     private List<Deanery> _deaneries;
     private bool _promptVisibility;
+    private Institution _inst;
+    private List<CollegeInfrastructureRoomResponseModel> _rooms;
+    private List<Designations> _designations;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
             if (_session is null) Manager.NavigateTo("/");
             else {
-                var inst = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _deaneries = await inst.GetDeaneries();
+                _inst = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _deaneries = await _inst.GetDeaneries();
+                _designations = await _inst.GetDesignations();
+                _rooms = await _inst.GetCollegeRooms();
+                deaneryObject = new Deanery();
+                addedDesignations = new List<Designations>();
+                pickedDesignation = new Designations();
                 StateHasChanged();
             }
         }
     }
 
+    private async Task Update() {
+        _deaneries = await _inst.GetDeaneries();
+        StateHasChanged();
+    }
+
     private void Add() {
+        deaneryObject = new Deanery();
         _promptVisibility = true;
+        addedDesignations = new List<Designations>();
+        pickedDesignation = new Designations();
+        Update().Wait();
+    }
+
+    private void Hide() {
+        _promptVisibility = false;
+    }
+
+    private async Task Set() {
+        deaneryObject.accessDesignation = addedDesignations
+            .Select(addedDesignation => addedDesignation.id)
+            .ToList();
+        await DeaneryApi.Add(_session.InstitutionId, deaneryObject);
+        _promptVisibility = false;
+    }
+
+    private void AddToList() {
+        if (addedDesignations.Exists(e => e.id == pickedDesignation.id)) return;
+        if (_designations.Exists(e => e.id == pickedDesignation.id))
+            addedDesignations.Add(_designations.Find(e => e.id == pickedDesignation.id));
+        pickedDesignation = new Designations();
+    }
+
+    private void RemoveFromList(Designations item) {
+        addedDesignations.RemoveAll(e => e.id == item.id);
     }
 
 }
