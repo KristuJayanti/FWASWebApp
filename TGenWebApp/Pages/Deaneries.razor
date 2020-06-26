@@ -136,7 +136,7 @@
             Room:
             <select @bind="deaneryObject.roomId" required>
                 @for (var i = 0; i < _rooms.Count; i++) {
-                    <option selected="@(i == 0 ? "true" : "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                    <option @(i==0 ? "selected": "") value="@_rooms[i].id">@_rooms[i].roomCode</option>
                 }
             </select><br/>
             <div class="info-card">This menu helps you customise the heirarchy of authority in the deanery. Pick a 
@@ -159,7 +159,7 @@
             </div><br/>
             <select @bind="pickedDesignation.id">
                 @for (var i = 0; i < _designations.Count; i++) {
-                    <option selected="@(i == 0 ? "true" : "false")" value="@_designations[i].id">@_designations[i].title</option>
+                    <option @(i==0 ? "selected": "") value="@_designations[i].id">@_designations[i].title</option>
                 }
             </select>
             <Button Color="Colored" OnClick="@AddToList">+</Button>
