@@ -1,6 +1,9 @@
 ﻿@page "/Manage/Faculty"
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.View
+@using TGenWebApp.ResponseModels.Manager
+@using BlazorInputFile
+@using TGenWebApp.Services.ManagerApi
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
@@ -38,10 +41,33 @@
         margin: 0.5rem 0;
         padding: 0.5rem 0;
     }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+    
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 @* Placeholder loading animation *@
-<div style="display: @(_session == null ? "block" : "none")">
+<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -56,7 +82,7 @@
 </div>
 
 @* Actual Code *@
-<div style="display: @(_session is null ? "none" : "block")">
+<div style="display: @(_session is null ? "none" : "block"); margin-left: 10vw;">
 
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
@@ -102,37 +128,118 @@
             Title="Add Faculty"
             PrimaryText="Add"
             SecondaryText="Cancel"
-            Visible="@_promptVisibility">
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@Hide">
     <br/>
-    <div class="prompt">
-    Designation: <input type="text" placeholder="Designation"/> <br/>
-    First Name:
-    <input type="text"
-           placeholder="First Name"/> <br/>
-    Last Name: <input type="text" placeholder="Last Name"/> <br/>
-    Department: <select placeholder="Department"></select> <br/>
-    Designations: <select type="text" placeholder="Department"></select> <br/>
-    Email: <input type="text" placeholder="Age"/><br/>
-    Teacher: <input type="radio"/>Yes
-    <input type="radio"/>No<br/>
-    Phone Number: <input type="text" placeholder="Qualifications"/><br/>
-    Address: <input type="text" placeholder="Speciality"/> <br/>
-    Max Hours per week: <input type="text" placeholder="Speciality"/> <br/>
-    Photo: <input type="file" placeholder="Photo"/>
-    </div>
+    @if (_institution != null) {
+        <div class="prompt">
+            Name:
+            <input type="text"
+                   placeholder="Name" @bind="facultyObject.name"><br/>
+            Job ID:
+            <input type="text" placeholder="Job ID" @bind="facultyObject.jobId"/> <br/>
+            Reset Password:
+            <input type="button" disabled="@facultyObject.passwordReset"
+                   @onclick="@(() => { facultyObject.passwordReset = true; })" value="Reset Password"/><br/>
+            Department:
+            <select @bind="facultyObject.departmentId">
+                @for (var i = 0; i < _departments.Count; i++) {
+                    <option selected="@(i == 0 ? "selected" : "false")"
+                            value="@_departments[i].id">
+                        @_departments[i].departmentName
+                    </option>
+                }
+            </select>
+            <br/>
+            Access Designations:<br/>
+            <div>
+                @foreach (var acc in addedDesignations) {
+                    <div class="pickbox">
+                        @acc.title
+                        <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
+                            <!-- Microsoft FluentUI icons -->
+                            <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1"
+                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 style="padding-right: 1px;">
+                                <title>Remove</title>
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g fill="#212121" fill-rule="nonzero">
+                                        <path d="M2.58859116,2.7156945 L2.64644661,2.64644661 C2.82001296,2.47288026 3.08943736,2.45359511 3.2843055,2.58859116 L3.35355339,2.64644661 L8,7.293 L12.6464466,2.64644661 C12.8417088,2.45118446 13.1582912,2.45118446 13.3535534,2.64644661 C13.5488155,2.84170876 13.5488155,3.15829124 13.3535534,3.35355339 L8.707,8 L13.3535534,12.6464466 C13.5271197,12.820013 13.5464049,13.0894374 13.4114088,13.2843055 L13.3535534,13.3535534 C13.179987,13.5271197 12.9105626,13.5464049 12.7156945,13.4114088 L12.6464466,13.3535534 L8,8.707 L3.35355339,13.3535534 C3.15829124,13.5488155 2.84170876,13.5488155 2.64644661,13.3535534 C2.45118446,13.1582912 2.45118446,12.8417088 2.64644661,12.6464466 L7.293,8 L2.64644661,3.35355339 C2.47288026,3.17998704 2.45359511,2.91056264 2.58859116,2.7156945 L2.64644661,2.64644661 L2.58859116,2.7156945 Z" id="🎨-Color"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                }
+            </div><br/>
+            <select @bind="pickedDesignation.id">
+                @for (var i = 0; i < _designations.Count; i++) {
+                    <option selected="@(i == 0 ? "selected" : "false")" value="@_designations[i].id">@_designations[i].title</option>
+                }
+            </select>
+            <Button Color="Colored" OnClick="@AddToList">+</Button>
+            <br/>
+            Email:
+            <input type="text" placeholder="Email" @bind="facultyObject.emailId"/><br/>
+            <input type="checkbox" @bind="facultyObject.IsTeaching"/> Teacher <br/>
+            Phone Number: <input type="tel" placeholder="Phone" @bind="facultyObject.phoneNumber"/><br/>
+            Address: <textarea cols="15" rows="3" placeholder="Address" @bind="facultyObject.address"></textarea> <br/>
+            PIN Code: <input type="text" placeholder="PIN Code" @bind="facultyObject.pincode"/>
+            Max Hours per week: <input type="number" placeholder="Hours/wk" @bind="facultyObject.MaxHoursPerWeek"/> <br/>
+            Photo: <InputFile OnChange="HandleFileSelected"/> 
+            <div style="display: @(facultyObject.photo is null? "none":"block"); width: 15px; height: 15px;">
+                <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" 
+                     viewBox="0 0 48 48">
+                    <defs id="defs4638">
+                    <linearGradient id="0" gradientUnits="userSpaceOnUse" y1="47.85" x2="0" y2="-2.292">
+                      <stop stop-color="#4da70e" id="stop4633"/>
+                      <stop offset="1" stop-color="#9ded46" id="stop4635"/>
+                    </linearGradient>
+                  </defs>
+                  <g transform="matrix(.92307 0 0 .92307-24.891 2.712)" enable-background="new" id="g4644" style="fill-opacity:1;opacity:1;fill-rule:nonzero">
+                    <circle r="26" cy="23.07" cx="52.97" fill="url(#0)" id="circle4640" style="fill-opacity:1;fill-rule:nonzero;fill:#55d400"/>
+                    <path d="m66.804 16.712l-2.518-2.518c-.345-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-12.148 12.167-5.444-5.463c-.346-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-2.518 2.518c-.346.346-.518.766-.518 1.259 0 .494.173.914.518 1.259l6.704 6.704 2.519 2.518c.345.346.765.518 1.259.518.494 0 .914-.173 1.259-.518l2.519-2.518 13.407-13.407c.345-.346.518-.766.518-1.259 0-.494-.173-.914-.518-1.259" fill="#fff" fill-opacity=".851" id="path4642" style="fill-opacity:1;fill-rule:nonzero"/>
+                  </g>
+                </svg>
+            </div>
+        </div>
+    }
 </PromptPane>
 
 @code {
 
     private Session _session;
     private List<ViewCollegeFacultiesResponseModel> _faculties;
+    private ResponseModels.Manager.Faculty facultyObject;
+    private Institution _institution;
+    private List<Department> _departments;
     private bool _promptVisibility;
+    private List<Designations> addedDesignations { get; set; }
+    private Designations pickedDesignation { get; set; }
+    private List<Designations> _designations;
+
+    private async Task HandleFileSelected(IFileListEntry[] files) {
+        var file = files.FirstOrDefault();
+        if (file != null) {
+            var ms = await file.ReadAllAsync();
+            var bytes = ms.ToArray();
+            facultyObject.photo = Convert.ToBase64String(bytes);
+        }
+        else facultyObject.photo = null;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
             if (_session != null) {
-                _faculties = await InstitutionManager.GetInstitution(_session.InstitutionId).GetCollegeFaculties();
+                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _faculties = await _institution.GetCollegeFaculties();
+                facultyObject = new ResponseModels.Manager.Faculty();
+                addedDesignations = new List<Designations>();
+                pickedDesignation = new Designations();
+                _designations = await _institution.GetDesignations();
+                _departments = await _institution.GetDepartments();
             }
             StateHasChanged();
         }
@@ -142,5 +249,37 @@
         _promptVisibility = true;
         StateHasChanged();
     }
+
+    private async Task Set() {
+        facultyObject.institutionID = _session.InstitutionId;
+        facultyObject.designationIds = addedDesignations
+            .Select(addedDesignation => addedDesignation.id)
+            .ToList();
+        await FacultyApi.Add(_session.InstitutionId, facultyObject);
+        _promptVisibility = false;
+        await Update();
+    }
+
+    private async Task Update() {
+        _faculties = await _institution.GetCollegeFaculties();
+        StateHasChanged();
+    }
+
+    private void AddToList() {
+        if (addedDesignations.Exists(e => e.id == pickedDesignation.id)) return;
+        if (_designations.Exists(e => e.id == pickedDesignation.id))
+            addedDesignations.Add(_designations.Find(e => e.id == pickedDesignation.id));
+        pickedDesignation = new Designations();
+    }
+    
+    private void Hide() {
+        _promptVisibility = false;
+    }
+
+    private void RemoveFromList(Designations item) {
+        addedDesignations.RemoveAll(e => e.id == item.id);
+    }
+
+    private async Task EditWindow(ViewCollegeConfigResponseModel faculty) { }
 
 }
