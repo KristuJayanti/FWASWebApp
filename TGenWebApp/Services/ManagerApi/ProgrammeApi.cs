@@ -55,8 +55,9 @@ namespace TGenWebApp.Services.ManagerApi {
 
     public class CollegeProgrammeRequestModel {
         public string institutionId { get; set; }
+        #nullable enable
         public List<Programme>? programmes { get; set; }
-
+        #nullable disable
         public CollegeProgrammeRequestModel(string institutionId, List<Programme> programmes) {
             this.institutionId = institutionId;
             this.programmes = programmes;
