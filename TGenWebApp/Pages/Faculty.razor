@@ -186,21 +186,24 @@
             Address: <textarea cols="15" rows="3" placeholder="Address" @bind="facultyObject.address"></textarea> <br/>
             PIN Code: <input type="text" placeholder="PIN Code" @bind="facultyObject.pincode"/>
             Max Hours per week: <input type="number" placeholder="Hours/wk" @bind="facultyObject.MaxHoursPerWeek"/> <br/>
-            Photo: <InputFile OnChange="HandleFileSelected"/> 
-            <div style="display: @(facultyObject.photo is null? "none":"block"); width: 15px; height: 15px;">
-                <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" 
-                     viewBox="0 0 48 48">
-                    <defs id="defs4638">
-                    <linearGradient id="0" gradientUnits="userSpaceOnUse" y1="47.85" x2="0" y2="-2.292">
-                      <stop stop-color="#4da70e" id="stop4633"/>
-                      <stop offset="1" stop-color="#9ded46" id="stop4635"/>
-                    </linearGradient>
-                  </defs>
-                  <g transform="matrix(.92307 0 0 .92307-24.891 2.712)" enable-background="new" id="g4644" style="fill-opacity:1;opacity:1;fill-rule:nonzero">
-                    <circle r="26" cy="23.07" cx="52.97" fill="url(#0)" id="circle4640" style="fill-opacity:1;fill-rule:nonzero;fill:#55d400"/>
-                    <path d="m66.804 16.712l-2.518-2.518c-.345-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-12.148 12.167-5.444-5.463c-.346-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-2.518 2.518c-.346.346-.518.766-.518 1.259 0 .494.173.914.518 1.259l6.704 6.704 2.519 2.518c.345.346.765.518 1.259.518.494 0 .914-.173 1.259-.518l2.519-2.518 13.407-13.407c.345-.346.518-.766.518-1.259 0-.494-.173-.914-.518-1.259" fill="#fff" fill-opacity=".851" id="path4642" style="fill-opacity:1;fill-rule:nonzero"/>
-                  </g>
-                </svg>
+            Photo:
+            <div style="display: inline-block;">
+                <div style="display: @(facultyObject.photo is null ? "none" : "block"); width: 15px; height: 15px;">
+                    <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 48 48">
+                        <defs id="defs4638">
+                            <linearGradient id="0" gradientUnits="userSpaceOnUse" y1="47.85" x2="0" y2="-2.292">
+                                <stop stop-color="#4da70e" id="stop4633"/>
+                                <stop offset="1" stop-color="#9ded46" id="stop4635"/>
+                            </linearGradient>
+                        </defs>
+                        <g transform="matrix(.92307 0 0 .92307-24.891 2.712)" enable-background="new" id="g4644" style="fill-opacity:1;opacity:1;fill-rule:nonzero">
+                            <circle r="26" cy="23.07" cx="52.97" fill="url(#0)" id="circle4640" style="fill-opacity:1;fill-rule:nonzero;fill:#55d400"/>
+                            <path d="m66.804 16.712l-2.518-2.518c-.345-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-12.148 12.167-5.444-5.463c-.346-.346-.766-.518-1.259-.518-.494 0-.914.173-1.259.518l-2.518 2.518c-.346.346-.518.766-.518 1.259 0 .494.173.914.518 1.259l6.704 6.704 2.519 2.518c.345.346.765.518 1.259.518.494 0 .914-.173 1.259-.518l2.519-2.518 13.407-13.407c.345-.346.518-.766.518-1.259 0-.494-.173-.914-.518-1.259" fill="#fff" fill-opacity=".851" id="path4642" style="fill-opacity:1;fill-rule:nonzero"/>
+                        </g>
+                    </svg>
+                </div>
+                <InputFile OnChange="HandleFileSelected"/>
             </div>
         </div>
     }
@@ -270,7 +273,7 @@
             addedDesignations.Add(_designations.Find(e => e.id == pickedDesignation.id));
         pickedDesignation = new Designations();
     }
-    
+
     private void Hide() {
         _promptVisibility = false;
     }
