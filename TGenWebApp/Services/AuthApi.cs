@@ -8,6 +8,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serialization.Json;
 using TGenWebApp.ResponseModels.Core;
+using TGenWebApp.ResponseModels.Manager;
 
 namespace TGenWebApp.Services {
     /// <summary>
@@ -63,6 +64,37 @@ namespace TGenWebApp.Services {
             };
             await CompleteSession(sess);
             return SessionManager.AddSession(sess);
+        }
+
+        public static async Task<Faculty> UserBasicFaculty(string userId) {
+            Logger.Log($"Called /UserBasic for {userId}", LogMode.Info);
+            var client = new RestClient($"{Constants.BaseUrl}UserBasic")  {
+                Timeout = -1,
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+            };
+            var request = ApiBase.GenerateRequest($@"{{""userId"":""{userId}"", 
+                                                                ""userType"":""{UserType.user}""}}");
+            var response = await client.ExecuteAsync(request);
+            if (!response.IsSuccessful) {
+                Logger.Log($"API Server failed when completing session for userID {userId}.", LogMode.Error);
+                return null;
+            }
+            var re = JsonConvert.DeserializeObject<UserBasicResponseModel>(response.Content);
+            return new Faculty {
+                name = re.name,
+                address = re.address,
+                departmentId = "",
+                designationIds = new List<string>(),
+                emailId = re.emailId,
+                institutionID = re.institutionId,
+                IsTeaching = false,
+                jobId = "",
+                MaxHoursPerWeek = 0,
+                passwordReset = false,
+                pincode = re.pincode,
+                userID = userId,
+                photo = re.photo
+            };
         }
 
         private static async Task CompleteSession(Session session) {
