@@ -16,14 +16,49 @@
       100% { background-position: 0 0; }
    }
    
-	.prompt {
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .bottom-display {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+    }
+    
+    .prompt {
         font-size: 20px;
-   	}
-   
-   	.prompt > * {
-    	margin: 0.5rem 0;
-    	padding: 0.5rem 0;
-   	}
+    }
+    
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+    
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 <div style="margin-left: 10vw;">
@@ -51,8 +86,10 @@
             @if (_building != null) {
                 @foreach (var b in _building) {
                     <Card>
-                        <h2>@b.buildingName</h2>
-                        <h3>Floors: @b.numberOfFloors</h3>
+                        <div class="card-container" @onclick="@(() => { Edit(b); })">
+                            <h2>@b.buildingName</h2>
+                            <h3>Floors: @b.numberOfFloors</h3>
+                        </div>
                     </Card>
                 }
             }
@@ -104,9 +141,11 @@
             @if (_room != null) {
                 @foreach (var b in _room) {
                     <Card>
-                        <h2>@b.roomCode</h2>
-                        <h3>Type: @b.roomType</h3>
-                        <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
+                        <div class="card-container" @onclick="@(() => { Edit(b); })">
+                            <h2>@b.roomCode</h2>
+                            <h3>Type: @b.roomType</h3>
+                            <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
+                        </div>
                     </Card>
                 }
             }
@@ -137,41 +176,61 @@
 </div>
 
 <PromptPane Dismissible="true"
-            Title="Add Building"
+            Title="@_windowTitle"
             PrimaryText="Add"
             SecondaryText="Cancel"
-            Visible="@_visibleBuilding">
+            Visible="@_visibleBuilding"
+            OnClickPrimary="@SetBuilding"
+            OnClickSecondary="@HideBuilding">
     <br/>
-    <div class="prompt">
-        Building Name: <input type="text" placeholder="Building Name"/> <br/>
-        No of Floors: <input type="text" placeholder="Floors"/><br/>
-    </div>
+    @if (_building != null) {
+        <div class="prompt">
+            Building Name: <input type="text" placeholder="Building Name" @bind="buildingObject.buildingName"/> <br/>
+            Building Code: <input type="text" placeholder="Building Code" @bind="buildingObject.buildingCode"/> <br/>
+            No of Floors: <input type="text" placeholder="Floors"/><br/>
+        </div>
+    }
 </PromptPane>
 
 <PromptPane Dismissible="true"
-            Title="Add Room"
+            Title="@_windowTitle"
             PrimaryText="Add"
             SecondaryText="Cancel"
-            Visible="@_visibleRoom">
+            Visible="@_visibleRoom"
+            OnClickPrimary="@SetRoom"
+            OnClickSecondary="@HideRoom">
     <br/>
-    <div class="prompt">
-        Building:
-        <select>
-            <option selected>Building 1</option>
-        </select><br/>
-        Floor no.: <input type="text" placeholder="Floor Number"/> <br/>
-        Lab? <input type="radio"/>Yes <input type="radio"/> No <br/>
-        <input type="radio"/> UG <input type="radio"/> PG <br/>
-        Strength: <input type="text" placeholder="Room Strength"/> <br/>
-    </div>
+    @if (_room != null) {
+        <div class="prompt">
+            Room Code: <input type="text" required @bind="roomObject.roomCode"/> <br/>
+            Room Type: <input type="text" required @bind="roomObject.roomType"/> <br/>
+            Building:
+            <select @bind="roomObject.buildingId">
+                <option selected value="@_building[0].id">@_building[0].buildingName</option>
+                @for (var i = 0; i < _room.Count; i++) {
+                    <option value="@_building[i].id">@_building[i].buildingName</option>
+                }
+            </select><br/>
+            Floor no.: <input type="text" placeholder="Floor Number" @bind="roomObject.floorNumber"/> <br/>
+            <input type="checkbox" @bind="roomObject.IsLab"/> Lab
+            <input type="checkbox" @bind="roomObject.IsUG"/> UG
+            <input type="checkbox" @bind="roomObject.IsPG"/> PG <br/>
+            Lab Type: <input type="text" disabled="@roomObject.IsLab" @bind="roomObject.labType"/> <br/>
+            Strength: <input type="text" placeholder="Room Strength" @bind="roomObject.maxStrength"/> <br/>
+        </div>
+    }
 </PromptPane>
 
 @code {
 
     private Session _session;
-    private List<CollegeInfrastructureBuildingResponseModel> _building;
+    private List<Building> _building;
     private List<CollegeInfrastructureRoomResponseModel> _room;
+    public Building buildingObject;
+    public RoomRequest roomObject;
+    private Institution _institution;
     private bool _visibleBuilding, _visibleRoom;
+    private string _windowTitle = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -179,22 +238,79 @@
             if (_session is null)
                 NavigationManager.NavigateTo("/");
             else {
-                var institute = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _building ??= await institute.GetCollegeBuildings();
-                _room ??= await institute.GetCollegeRooms();
+                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _building ??= await _institution.GetCollegeBuildings();
+                _room ??= await _institution.GetCollegeRooms();
+                buildingObject = new Building();
+                roomObject = new RoomRequest();
             }
             StateHasChanged();
         }
     }
 
     private void AddBuilding() {
+        buildingObject = new Building();
+        _windowTitle = "Add Building";
         _visibleBuilding = true;
-        StateHasChanged();
     }
 
     private void AddRoom() {
+        roomObject = new RoomRequest();
+        _windowTitle = "Add Room";
         _visibleRoom = true;
+    }
+
+    private async Task Update() {
+        _building ??= await _institution.GetCollegeBuildings();
+        _room ??= await _institution.GetCollegeRooms();
         StateHasChanged();
+    }
+
+    private void Edit(Building building) {
+        _windowTitle = $"Edit Building {building.buildingName}";
+        buildingObject = building;
+        _visibleBuilding = true;
+    }
+
+    private void Edit(CollegeInfrastructureRoomResponseModel room) {
+        _windowTitle = $"Edit Room {room.id}";
+        roomObject = new RoomRequest {
+            id = room.id,
+            buildingId = room.buildingId,
+            floorNumber = room.floorNumber,
+            IsLab = room.IsLab,
+            IsPG = room.IsPG,
+            IsUG = room.IsUG,
+            labType = room.labType,
+            maxStrength = room.maxStrength,
+            roomCode = room.roomCode,
+            roomType = room.roomType
+        };
+        _visibleRoom = true;
+    }
+
+    private async Task SetBuilding() {
+        await ViewApi.AddCollegeBuilding(_session.InstitutionId, buildingObject);
+        _building = null;
+        Update().Wait();
+        HideBuilding();
+        StateHasChanged();
+    }
+
+    private async Task SetRoom() {
+        await ViewApi.AddCollegeRoom(_session.InstitutionId, roomObject);
+        _room = null;
+        Update().Wait();
+        HideRoom();
+        StateHasChanged();
+    }
+
+    private void HideRoom() {
+        _visibleRoom = false;
+    }
+
+    private void HideBuilding() {
+        _visibleBuilding = false;
     }
 
 }
