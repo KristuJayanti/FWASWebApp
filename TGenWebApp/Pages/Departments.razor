@@ -1,6 +1,8 @@
 ﻿@page "/Manage/Departments";
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
+@using TGenWebApp.ResponseModels.View
+@using TGenWebApp.Services.ManagerApi
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
 @inject NavigationManager NavigationManager;
 
@@ -28,14 +30,37 @@
         right: 0.7rem;
     }
     
-        .prompt {
-            font-size: 20px;
-        }
+    .prompt {
+        font-size: 20px;
+    }
         
-        .prompt > * {
-            margin: 0.5rem 0;
-            padding: 0.5rem 0;
-        }
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+        
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+        
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 <h1 style='padding-left: 10vw;'>Departments</h1>
@@ -65,7 +90,7 @@
         @if (_departments != null) {
             foreach (var department in _departments) {
                 <Card>
-                    <div class="card-container">
+                    <div class="card-container" @onclick="@(() => Edit(department))">
                         <h2>@department.departmentName</h2>
                         <h4>Deanery: @(_institution.GetDeaneryById(department.deaneryId).deaneryName ?? "Unknown")</h4>
                         <h4 class="bottom-display">
@@ -107,27 +132,85 @@
 </div>
 
 <PromptPane Dismissible="true"
-            Title="Add Department"
-            PrimaryText="Add"
+            Title="@_windowTitle"
+            PrimaryText="Finish"
             SecondaryText="Cancel"
-            Visible="@_promptVisibility">
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@(()=>_promptVisibility=false)">
     <br/>
-    <div class="prompt">
-        Department Name: <input type="text" placeholder="Department"/> <br/>
-        Deanery: <select><option selected>Science Deanery</option></select><br />
-        UG? <input type="radio"/>Yes
-        <input type="radio"/>No<br/>
-        PG? <input type="radio"/>Yes
-        <input type="radio"/>No<br/>
-        Room: <select><option selected>Main Block</option></select>
-    </div>
+    @if (_promptVisibility && _departments != null) {
+        <div class="prompt">
+            <div class="info-card">Specify a Deanery Name. </div>
+            Department Name: <input type="text" placeholder="Department" @bind="departmentObject.departmentName"/> <br/>
+            <div class="info-card">Give this deanery a code. It could be a simple name to identify your department.</div>
+            Department Code: <input type="text" placeholder="Department Code" @bind="departmentObject.departmentCode"/> <br/>
+
+            <div class="info-card">Pick the deanery that this department belongs to.</div>
+            Deanery:
+            <select @bind="departmentObject.deaneryId">
+                @for (var i = 0; i < _deaneries.Count; i++) {
+                    <option @(i == 0 ? "selected" : "") value="@_deaneries[i].id">@_deaneries[i].deaneryName</option>
+                }
+            </select><br/>
+
+            <div class="info-card">Select if the department has UG or PG or both.</div>
+            <input type="checkbox" @bind="departmentObject.IsUG"/>UG
+            <input type="checkbox" @bind="departmentObject.IsPG"/>PG <br/>
+
+            <div class="info-card">Where is this department?</div>
+            Room:
+            <select @bind="departmentObject.roomId">
+                @for (var i = 0; i < _rooms.Count; i++) {
+                    <option @(i == 0 ? "selected" : "") value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                }
+            </select><br/>
+
+            <div class="info-card">Pick the access designations that the department will have.</div>
+            Access Designations:<br/>
+            <div>
+                @foreach (var acc in addedDesignations) {
+                    <div class="pickbox">
+                        @acc.title
+                        <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
+                            <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+                                <title>ic_fluent_dismiss_16_regular</title>
+                                <desc>Created with Sketch.</desc>
+                                <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="ic_fluent_dismiss_16_regular" fill="#212121" fill-rule="nonzero">
+                                        <path d="M2.58859116,2.7156945 L2.64644661,2.64644661 C2.82001296,2.47288026 3.08943736,2.45359511 3.2843055,2.58859116 L3.35355339,2.64644661 L8,7.293 L12.6464466,2.64644661 C12.8417088,2.45118446 13.1582912,2.45118446 13.3535534,2.64644661 C13.5488155,2.84170876 13.5488155,3.15829124 13.3535534,3.35355339 L8.707,8 L13.3535534,12.6464466 C13.5271197,12.820013 13.5464049,13.0894374 13.4114088,13.2843055 L13.3535534,13.3535534 C13.179987,13.5271197 12.9105626,13.5464049 12.7156945,13.4114088 L12.6464466,13.3535534 L8,8.707 L3.35355339,13.3535534 C3.15829124,13.5488155 2.84170876,13.5488155 2.64644661,13.3535534 C2.45118446,13.1582912 2.45118446,12.8417088 2.64644661,12.6464466 L7.293,8 L2.64644661,3.35355339 C2.47288026,3.17998704 2.45359511,2.91056264 2.58859116,2.7156945 L2.64644661,2.64644661 L2.58859116,2.7156945 Z" id="🎨-Color"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                }
+            </div><br/>
+            <select @bind="pickedDesignation.id">
+                @for (var i = 0; i < _designations.Count; i++) {
+                    <option @(i == 0 ? "selected" : "") value="@_designations[i].id">@_designations[i].title</option>
+                }
+            </select>
+            <Button Color="Colored" OnClick="@AddToList">+</Button>
+            <br/>
+            <div class="info-card">Once you are done, hit the 'Finish' button below.</div>
+        </div>
+    }
 </PromptPane>
 
 
 @code {
 
+    public Department departmentObject { get; set; }
+    public List<Designations> addedDesignations { get; set; }
+    private Designations pickedDesignation { get; set; }
+    private List<Designations> _designations;
+    private string _windowTitle = "Add Department";
     Session _session;
     List<Department> _departments;
+    List<Deanery> _deaneries;
+    List<CollegeInfrastructureRoomResponseModel> _rooms;
     Institution _institution;
     private bool _promptVisibility;
 
@@ -138,14 +221,48 @@
             else {
                 _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
                 _departments ??= await _institution.GetDepartments();
+                _rooms ??= await _institution.GetCollegeRooms();
+                _deaneries ??= await _institution.GetDeaneries();
             }
             StateHasChanged();
         }
     }
-
-    private void Add() {
-        _promptVisibility = true;
+    
+    private async Task Update() {
+        _departments = await _institution.GetDepartments();
         StateHasChanged();
     }
 
+    private void Add() {
+        departmentObject = new Department();
+        _promptVisibility = true;
+        addedDesignations = new List<Designations>();
+        pickedDesignation = new Designations();
+    }
+
+    private void AddToList() {
+        if (addedDesignations.Exists(e => e.id == pickedDesignation.id)) return;
+        if (_designations.Exists(e => e.id == pickedDesignation.id))
+            addedDesignations.Add(_designations.Find(e => e.id == pickedDesignation.id));
+        pickedDesignation = new Designations();
+    }
+
+    private void RemoveFromList(Designations item) {
+        addedDesignations.RemoveAll(e => e.id == item.id);
+    }
+
+    private async Task Set() {
+        departmentObject.accessDesignation = addedDesignations
+            .Select(addedDesignation => addedDesignation.id)
+            .ToList();
+        await DepartmentApi.Add(_session.InstitutionId, departmentObject);
+        _promptVisibility = false;
+        await Update();
+    }
+
+    private void Edit(Department department) {
+        _windowTitle = $"Edit Department: {department.departmentName}";
+        departmentObject = department;
+        _promptVisibility = true;
+    }
 }
