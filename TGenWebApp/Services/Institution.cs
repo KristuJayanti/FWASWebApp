@@ -11,7 +11,7 @@ namespace TGenWebApp.Services {
         private ViewCollegeConfigResponseModel _config;
         private List<ViewCollegeFacultiesResponseModel> _faculties;
         private List<Designations> _designations;
-        private List<CollegeInfrastructureBuildingResponseModel> _buildings;
+        private List<Building> _buildings;
         private List<CollegeInfrastructureRoomResponseModel> _rooms;
         private List<Deanery> _deanery;
         private List<Department> _departments;
@@ -60,7 +60,7 @@ namespace TGenWebApp.Services {
         /// Cache of College Building layout. Look at <see cref="ViewApi.ViewCollegeBuildings(string)"/>
         /// </summary>
         /// <returns>List of Buildings.</returns>
-        public async Task<List<CollegeInfrastructureBuildingResponseModel>> GetCollegeBuildings() {
+        public async Task<List<Building>> GetCollegeBuildings() {
             return _buildings ??= await ViewApi.ViewCollegeBuildings(InstitutionId);
         }
 
