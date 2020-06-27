@@ -1,4 +1,6 @@
 ﻿@page "/Manage"
+@page "/Manage/{currentPage}"
+
 @using System.Reflection.Metadata
 @using TGenWebApp.Services
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -18,31 +20,31 @@
         <nav>
             <ul>
                 <li>
-                    <a class='@(_currentPage == "Deaneries" ? "active" : "")'
+                    <a class='@(currentPage == "Deaneries" ? "active" : "")'
                        @onclick='() => NavigateTo("Deaneries")'>
                         Deaneries
                     </a>
                 </li>
                 <li>
-                    <a class='@(_currentPage == "Departments" ? "active" : "")'
+                    <a class='@(currentPage == "Departments" ? "active" : "")'
                        @onclick='() => NavigateTo("Departments")'>
                         Departments
                     </a>
                 </li>
                 <li>
-                    <a class='@(_currentPage == "Faculty" ? "active" : "")'
+                    <a class='@(currentPage == "Faculty" ? "active" : "")'
                        @onclick='() => NavigateTo("Faculty")'>
                         Faculty
                     </a>
                 </li>
                 <li>
-                    <a class='@(_currentPage == "Programmes" ? "active" : "")'
+                    <a class='@(currentPage == "Programmes" ? "active" : "")'
                        @onclick='() => NavigateTo("Programmes")'>
                         Programmes
                     </a>
                 </li>
                 <li>
-                    <a class='@(_currentPage == "Courses" ? "active" : "")'
+                    <a class='@(currentPage == "Courses" ? "active" : "")'
                        @onclick='() => NavigateTo("Courses")'>
                         Courses
                     </a>
@@ -54,7 +56,7 @@
 
 <div style="margin-top: 4rem;">
 
-    @switch (_currentPage) {
+    @switch (currentPage) {
         case "Deaneries":
             <Deaneries/>
             break;
@@ -165,7 +167,7 @@
 
 @code {
     Session _session;
-    private string _currentPage = "";
+    [Parameter] public string currentPage { get; set; }
     private bool _isNewUser;
 
     //Headings
@@ -194,7 +196,7 @@
     };
 
     private void NavigateTo(string page) {
-        _currentPage = page;
+        NavigationManager.NavigateTo($"/Manage/{page}");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
