@@ -136,15 +136,23 @@
             OnClickSecondary="@Hide">
     <br/>
     <div class="prompt">
+        <div class="info-card">Enter the programme name here.</div>
         Programme Name: <input type="text" placeholder="Programme" @bind="programmeObject.programmeName"/> <br/>
+        <div class="info-card">Enter a code to identify this programme.</div>
         Programme Code: <input type="text" placeholder="Programme Code" @bind="programmeObject.programmeCode"/> <br/>
-
+        <div class="info-card">Enter the current semester.</div>
         Semester: <input type="text" placeholder="Semester" @bind="programmeObject.semesterNumber"/> <br/>
+        <div class="info-card">Check this box if the programme is a UG programme.</div>
         <input type="radio" @bind="programmeObject.IsUG"/> UG
+        <div class="info-card">Enter the number of hours the course is taken everyday.</div>
         Hours Everyday: <input type="text" placeholder="Hours Everyday" @bind="programmeObject.workingHoursPerDay"/> <br/>
+        <div class="info-card">Enter the hours the course is taken on Saturdays.</div>
         Hours a Saturday: <input type="text" placeholder="Hours a Saturday" @bind="programmeObject.workingHoursPerSaturday"/> <br/>
+        <div class="info-card">Enter the number of hours the course is taken in a week.</div>
         Hours a Week: <input type="text" placeholder="Hours a Week" @bind="programmeObject.workingHoursPerWeek"/> <br/>
+        <div class="info-card">Total recommended hours of this course.</div>
         Total Hours: <input type="text" placeholder="Total Hours" @bind="programmeObject.totalWorkingHours"/> <br/>
+        <div class="info-card">Total students attempting the course.</div>
         Strength: <input type="text" placeholder="Student Strength" @bind="programmeObject.studentStrength"/> <br/>
     </div>
 </PromptPane>
@@ -164,6 +172,7 @@
             else {
                 _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
                 _programmes = await _institution.GetProgrammes();
+                programmeObject = new Programme();
             }
             StateHasChanged();
         }
