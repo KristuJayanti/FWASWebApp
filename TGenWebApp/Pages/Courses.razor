@@ -1,4 +1,8 @@
 ﻿@using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.Manager
+@using TGenWebApp.Services.ManagerApi
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
 
 <style>
 	.waiting {
@@ -12,19 +16,53 @@
       100% { background-position: 0 0; }
    }
    
-               .prompt {
-                   font-size: 20px;
-               }
-               
-               .prompt > * {
-                   margin: 0.5rem 0;
-                   padding: 0.5rem 0;
-               }
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .bottom-display {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+    }
+    .prompt {
+        font-size: 20px;
+    }
+            
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+    
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 <h1 style="padding-left: 10vw;">Courses</h1>
 
-<div>
+<div style="display: @(_session is null ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="15rem" ChildrenWidth="15rem">
         <Card>
             <div class="waiting" style="width: 10rem; height: 2rem;"></div>
@@ -34,6 +72,23 @@
             <div class="waiting" style="width: 10rem; height: 2rem;"></div>
             <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
         </Card>
+
+    </CardLayout>
+</div>
+
+<div style="display: @(_session is null ? "none" : "block"); margin-left: 10vw;">
+    <CardLayout ChildrenHeight="15rem" ChildrenWidth="15rem">
+        @if (_courses != null) {
+            @foreach (var course in _courses) {
+                <Card>
+                    <div class="card-container" @onclick="@(() => { Edit(course); })">
+                        <h2>@course.courseName</h2>
+                        <h3>@(_departments.Find(e => e.id == course.departmentId)?.departmentName)</h3>
+                        <h3>@course.totalHours Hours</h3>
+                    </div>
+                </Card>
+            }
+        }
         <Card>
             <div style='position: relative; width: 100%; height: 100%;' @onclick="Add">
                 <h3 style='position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)'>
@@ -59,29 +114,93 @@
 </div>
 
 <PromptPane Dismissible="true"
-            Title="Add Course"
-            PrimaryText="Add"
+            Title="@_windowTitle"
+            PrimaryText="Finish"
             SecondaryText="Cancel"
-            Visible="@_promptVisibility">
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@Hide">
     <br/>
-    <div class="prompt">
-        Course Name: <input type="text" placeholder="Course"/> <br/>
-        <input type="checkbox"/> Theory
-        <input type="checkbox"/> Practical
-        <input type="checkbox"/> Mandatory Lab <br/>
-        Total Hours: <input type="text" placeholder="Total Hours"/><br />
-        Hours per week: <input type="text" placeholder="Hours/week"/>
-    </div>
+    @if (_institution != null) {
+        <div class="prompt">
+            Course Name: <input type="text" placeholder="Course Name" @bind="courseObject.courseName"/> <br/>
+            Course Code: <input type="text" placeholder="Course Code" @bind="courseObject.courseCode"/> <br/>
+            Department:
+            <select @bind="courseObject.departmentId">
+                <option selected value="@_departments[0].id">@_departments[0].departmentName</option>
+                @for (var i = 1; i < _departments.Count; i++) {
+                    <option value="@_departments[i].id">@_departments[i].departmentName</option>
+                }
+            </select><br/>
+            Programme:
+            <select @bind="courseObject.programmeId">
+                <option selected value="@_programmes[0].Id">@_programmes[0].programmeName</option>
+                @for (var i = 1; i < _programmes.Count; i++) {
+                    <option value="@_programmes[i].Id">@_programmes[i].programmeName</option>
+                }
+            </select><br/>
+            <input type="checkbox" @bind="courseObject.IsTheory"/> Theory
+            <input type="checkbox" @bind="courseObject.IsPractical"/> Practical
+            <input type="checkbox" @bind="courseObject.mandatoryLab"/> Mandatory Lab <br/>
+            Total Hours: <input type="text" placeholder="Total Hours" @bind="courseObject.totalHours"/><br/>
+            Hours per week: <input type="text" placeholder="Hours/week" @bind="courseObject.hoursPerWeek"/>
+        </div>
+    }
 </PromptPane>
 
 
 @code{
 
-    Session _session;
+    private Session _session;
+    public Course courseObject;
+    private List<Course> _courses;
+    private string _windowTitle = "Add Course";
+    private List<Department> _departments;
+    private List<Programme> _programmes;
+    private Institution _institution;
     private bool _promptVisibility;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+        if (firstRender) {
+            if (_session != null) {
+                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _courses = await _institution.GetCourses();
+                courseObject = new Course();
+                _departments = await _institution.GetDepartments();
+                _programmes = await _institution.GetProgrammes();
+                StateHasChanged();
+            }
+            else {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
     private void Add() {
+        _windowTitle = "Add Course";
+        courseObject = new Course();
         _promptVisibility = true;
+    }
+
+    private async Task Update() {
+        _courses = await _institution.GetCourses();
+    }
+
+    private void Hide() {
+        _promptVisibility = false;
+    }
+
+    private void Edit(Course course) {
+        courseObject = course;
+        _windowTitle = $"Edit course {course.courseName}";
+        _promptVisibility = true;
+    }
+
+    private async Task Set() {
+        await CourseApi.Add(_session.InstitutionId, courseObject);
+        await Update();
+        _promptVisibility = false;
     }
 
 }
