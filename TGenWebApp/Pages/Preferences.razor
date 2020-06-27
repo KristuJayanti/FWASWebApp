@@ -1,4 +1,4 @@
-@page "/Preferences"
+﻿@page "/Preferences"
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -31,108 +31,109 @@
 
     <h4 style="margin-left: 2rem;">Building</h4>
 
-@* Placeholder loading *@
-<div style="display: @(_session == null ? "block" : "none")">
-    <CardLayout ChildrenHeight="10rem"
-                ChildrenWidth="15rem">
-        <Card>
-            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
-            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-        </Card>
-        <Card>
-            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
-            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-        </Card>
-    </CardLayout>
-</div>
+    @* Placeholder loading *@
+    <div style="display: @(_session == null ? "block" : "none")">
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+        </CardLayout>
+    </div>
 
-<div style="display: @(_session is null ? "none" : "block"); height: 80vh;">
-    <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
-        @if (_building != null) {
-            @foreach (var b in _building) {
-                <Card>
-                    <h2>@b.buildingName</h2>
-                    <h3>Floors: @b.numberOfFloors</h3>
-                </Card>
+    <div style="display: @(_session is null ? "none" : "block");">
+        <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
+            @if (_building != null) {
+                @foreach (var b in _building) {
+                    <Card>
+                        <h2>@b.buildingName</h2>
+                        <h3>Floors: @b.numberOfFloors</h3>
+                    </Card>
+                }
             }
-        }
-        <Card>
-            <div style="position: relative; width: 100%; height: 100%;" @onclick="AddBuilding">
-                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
-                    <svg aria-hidden="true"
-                         class="fa-plus-circle fa-w-16 svg-inline--fa"
-                         data-icon="plus-circle"
-                         data-prefix="fal"
-                         focusable="false"
-                         role="img"
-                         viewBox="0 0 512 512"
-                         width="80px"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path class=""
-                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
-                              fill="currentColor">
-                        </path>
-                    </svg>
-                    <br/>
-                    Add new?
-                </h3>
-            </div>
-        </Card>
-    </CardLayout>
-</div>
+            <Card>
+                <div style="position: relative; width: 100%; height: 100%;" @onclick="AddBuilding">
+                    <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                        <svg aria-hidden="true"
+                             class="fa-plus-circle fa-w-16 svg-inline--fa"
+                             data-icon="plus-circle"
+                             data-prefix="fal"
+                             focusable="false"
+                             role="img"
+                             viewBox="0 0 512 512"
+                             width="80px"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path class=""
+                                  d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                                  fill="currentColor">
+                            </path>
+                        </svg>
+                        <br/>
+                        Add new?
+                    </h3>
+                </div>
+            </Card>
+        </CardLayout>
+    </div>
 
 
     <h4 style="margin-left: 2rem;">Rooms</h4>
 
-@* Placeholder loading *@
-<div style="display: @(_session == null ? "block" : "none")">
-    <CardLayout ChildrenHeight="10rem"
-                ChildrenWidth="15rem">
-        <Card>
-            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
-            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-        </Card>
-        <Card>
-            <div class="waiting" style="width: 10rem; height: 2rem;"></div>
-            <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
-        </Card>
-    </CardLayout>
-</div>
+    @* Placeholder loading *@
+    <div style="display: @(_session == null ? "block" : "none")">
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+        </CardLayout>
+    </div>
 
-<div style="display: @(_session is null ? "none" : "block")">
-    <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
-        @if (_room != null) {
-            @foreach (var b in _room) {
-                <Card>
-                    <h2>@b.roomCode</h2>
-                    <h3>Type: @b.roomType</h3>
-                    <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
-                </Card>
+    <div style="display: @(_session is null ? "none" : "block")">
+        <CardLayout ChildrenHeight="10rem" ChildrenWidth="15rem">
+            @if (_room != null) {
+                @foreach (var b in _room) {
+                    <Card>
+                        <h2>@b.roomCode</h2>
+                        <h3>Type: @b.roomType</h3>
+                        <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
+                    </Card>
+                }
             }
-        }
-        <Card>
-            <div style="position: relative; width: 100%; height: 100%;" @onclick="AddRoom">
-                <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
-                    <svg aria-hidden="true"
-                         class="fa-plus-circle fa-w-16 svg-inline--fa"
-                         data-icon="plus-circle"
-                         data-prefix="fal"
-                         focusable="false"
-                         role="img"
-                         viewBox="0 0 512 512"
-                         width="80px"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path class=""
-                              d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
-                              fill="currentColor">
-                        </path>
-                    </svg>
-                    <br/>
-                    Add new?
-                </h3>
-            </div>
-        </Card>
-    </CardLayout>
+            <Card>
+                <div style="position: relative; width: 100%; height: 100%;" @onclick="AddRoom">
+                    <h3 style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%)">
+                        <svg aria-hidden="true"
+                             class="fa-plus-circle fa-w-16 svg-inline--fa"
+                             data-icon="plus-circle"
+                             data-prefix="fal"
+                             focusable="false"
+                             role="img"
+                             viewBox="0 0 512 512"
+                             width="80px"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path class=""
+                                  d="M384 250v12c0 6.6-5.4 12-12 12h-98v98c0 6.6-5.4 12-12 12h-12c-6.6 0-12-5.4-12-12v-98h-98c-6.6 0-12-5.4-12-12v-12c0-6.6 5.4-12 12-12h98v-98c0-6.6 5.4-12 12-12h12c6.6 0 12 5.4 12 12v98h98c6.6 0 12 5.4 12 12zm120 6c0 137-111 248-248 248S8 393 8 256 119 8 256 8s248 111 248 248zm-32 0c0-119.9-97.3-216-216-216-119.9 0-216 97.3-216 216 0 119.9 97.3 216 216 216 119.9 0 216-97.3 216-216z"
+                                  fill="currentColor">
+                            </path>
+                        </svg>
+                        <br/>
+                        Add new?
+                    </h3>
+                </div>
+            </Card>
+        </CardLayout>
+    </div>
 </div>
 
 <PromptPane Dismissible="true"
@@ -172,7 +173,7 @@
     private List<CollegeInfrastructureRoomResponseModel> _room;
     private bool _visibleBuilding, _visibleRoom;
 
-    protected async override Task OnAfterRenderAsync(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
             if (_session is null)
