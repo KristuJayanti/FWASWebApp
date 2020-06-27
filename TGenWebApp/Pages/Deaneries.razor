@@ -66,7 +66,7 @@
 <h1 style='padding-left: 10vw;'>Deaneries</h1>
 
 @* Placeholder loading animation *@
-<div style="display: @(_session == null ? "block" : "none")">
+<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -79,7 +79,7 @@
         </Card>
     </CardLayout>
 </div>
-<div style="display: @(_session == null ? "none" : "block")">
+<div style="display: @(_session == null ? "none" : "block"); margin-left: 10vw;">
     <CardLayout ChildrenHeight='15rem'
                 ChildrenWidth='15rem'>
         @if (_deaneries != null) {
@@ -136,7 +136,7 @@
             Room:
             <select @bind="deaneryObject.roomId" required>
                 @for (var i = 0; i < _rooms.Count; i++) {
-                    <option @(i==0 ? "selected": "") value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                    <option selected="@(i==0 ? "selected": "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
                 }
             </select><br/>
             <div class="info-card">This menu helps you customise the heirarchy of authority in the deanery. Pick a 
@@ -163,7 +163,7 @@
             </div><br/>
             <select @bind="pickedDesignation.id">
                 @for (var i = 0; i < _designations.Count; i++) {
-                    <option @(i==0 ? "selected": "") value="@_designations[i].id">@_designations[i].title</option>
+                    <option selected="@(i==0 ? "selected": "false")" value="@_designations[i].id">@_designations[i].title</option>
                 }
             </select>
             <Button Color="Colored" OnClick="@AddToList">+</Button>

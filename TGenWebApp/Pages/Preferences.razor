@@ -1,4 +1,4 @@
-﻿@page "/Preferences"
+@page "/Preferences"
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
@@ -26,9 +26,10 @@
    	}
 </style>
 
-<h3>Preferences</h3>
+<div style="margin-left: 10vw;">
+    <h3>Preferences</h3>
 
-<h4>Building</h4>
+    <h4 style="margin-left: 2rem;">Building</h4>
 
 @* Placeholder loading *@
 <div style="display: @(_session == null ? "block" : "none")">
@@ -81,7 +82,7 @@
 </div>
 
 
-<h4>Rooms</h4>
+    <h4 style="margin-left: 2rem;">Rooms</h4>
 
 @* Placeholder loading *@
 <div style="display: @(_session == null ? "block" : "none")">

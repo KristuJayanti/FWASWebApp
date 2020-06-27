@@ -1,4 +1,4 @@
-﻿@page "/Manage/Departments";
+@page "/Manage/Departments";
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
 @using TGenWebApp.ResponseModels.View
@@ -67,7 +67,7 @@
 
 
 @* Placeholder loading *@
-<div style="display: @(_session == null ? "block" : "none")">
+<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -83,7 +83,7 @@
 
 @* actual logic *@
 
-<div style="display: @(_session == null ? "none" : "block")">
+<div style="display: @(_session == null ? "none" : "block"); margin-left: 10vw;">
 
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
