@@ -1,5 +1,6 @@
 namespace TGenWebApp.ResponseModels.Manager {
     public class Programme {
+        #nullable enable
         public string? Id { get; set; }
         public string? programmeName { get; set; }
         public string? programmeCode { get; set; }

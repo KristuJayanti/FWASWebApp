@@ -4,11 +4,13 @@ using TGenWebApp.ResponseModels.Core;
 namespace TGenWebApp.ResponseModels.Manager {
     public class Faculty {
         public string institutionID { get; set; }
+        public string emailId { get; set; }
+        #nullable enable
         public string? userID { get; set; }
 
         public string? name { get; set; }
         public string? photo { get; set; }
-        public string emailId { get; set; }
+        
         public bool? passwordReset { get; set; } = false;
         public long? phoneNumber { get; set; }
         public string? address { get; set; }
