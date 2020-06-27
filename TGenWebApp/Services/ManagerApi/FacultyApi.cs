@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace TGenWebApp.Services.ManagerApi {
     public class FacultyApi {
          public static async Task<bool> Add(string institutionId, Faculty faculty) {
             Logger.Log($"Called /CollegeProgramme:Add for {institutionId}", LogMode.Info);
-            var client = new RestClient($"{Constants.BaseUrl}CollegeProgramme") {
+            var client = new RestClient($"{Constants.BaseUrl}CollegeFaculty") {
                 Timeout = -1,
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
@@ -19,6 +20,7 @@ namespace TGenWebApp.Services.ManagerApi {
                 .AddHeader("Accept", "application/json")
                 .AddJsonBody(
                     JsonConvert.SerializeObject(faculty));
+            Console.WriteLine(JsonConvert.SerializeObject(faculty));
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful) {
                 var resp = JsonConvert.DeserializeObject<FacultyResponseModel>(response.Content);
@@ -39,6 +41,8 @@ namespace TGenWebApp.Services.ManagerApi {
     public class FacultyResponseModel {
         public bool IsSuccess { get; set; }
         public string message { get; set; }
+        
+        #nullable enable
 
         public UserBasicResponseModel? UserBasicResponseModel { get; set; } = new UserBasicResponseModel();
 
