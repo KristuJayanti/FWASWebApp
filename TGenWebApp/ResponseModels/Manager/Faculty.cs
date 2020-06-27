@@ -12,6 +12,8 @@ namespace TGenWebApp.ResponseModels.Manager {
         public string? photo { get; set; }
         
         public bool? passwordReset { get; set; } = false;
+        
+        public string? password { get; set; }
         public long? phoneNumber { get; set; }
         public string? address { get; set; }
         public int? pincode { get; set; }
