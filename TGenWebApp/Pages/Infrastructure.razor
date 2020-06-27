@@ -141,7 +141,7 @@
             @if (_room != null) {
                 @foreach (var b in _room) {
                     <Card>
-                        <div class="card-container" @onclick="@(() => { Edit(b); })">
+                        <div class="card-container" @onclick="@(() => { EditRoom(b); })">
                             <h2>@b.roomCode</h2>
                             <h3>Type: @b.roomType</h3>
                             <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
@@ -187,7 +187,7 @@
         <div class="prompt">
             Building Name: <input type="text" placeholder="Building Name" @bind="buildingObject.buildingName"/> <br/>
             Building Code: <input type="text" placeholder="Building Code" @bind="buildingObject.buildingCode"/> <br/>
-            No of Floors: <input type="text" placeholder="Floors"/><br/>
+            No of Floors: <input type="text" placeholder="Floors" @bind="buildingObject.numberOfFloors"/><br/>
         </div>
     }
 </PromptPane>
@@ -202,12 +202,12 @@
     <br/>
     @if (_room != null) {
         <div class="prompt">
-            Room Code: <input type="text" required @bind="roomObject.roomCode"/> <br/>
-            Room Type: <input type="text" required @bind="roomObject.roomType"/> <br/>
+            Room Code: <input type="text" @bind="roomObject.roomCode" required/> <br/>
+            Room Type: <input type="text" @bind="roomObject.roomType" required/> <br/>
             Building:
             <select @bind="roomObject.buildingId">
                 <option selected value="@_building[0].id">@_building[0].buildingName</option>
-                @for (var i = 0; i < _room.Count; i++) {
+                @for (var i = 1; i < _building.Count; i++) {
                     <option value="@_building[i].id">@_building[i].buildingName</option>
                 }
             </select><br/>
@@ -215,7 +215,7 @@
             <input type="checkbox" @bind="roomObject.IsLab"/> Lab
             <input type="checkbox" @bind="roomObject.IsUG"/> UG
             <input type="checkbox" @bind="roomObject.IsPG"/> PG <br/>
-            Lab Type: <input type="text" disabled="@roomObject.IsLab" @bind="roomObject.labType"/> <br/>
+            Lab Type: <input type="text" disabled="@(!roomObject.IsLab)" @bind="roomObject.labType"/> <br/>
             Strength: <input type="text" placeholder="Room Strength" @bind="roomObject.maxStrength"/> <br/>
         </div>
     }
@@ -243,8 +243,8 @@
                 _room ??= await _institution.GetCollegeRooms();
                 buildingObject = new Building();
                 roomObject = new RoomRequest();
+                StateHasChanged();
             }
-            StateHasChanged();
         }
     }
 
@@ -252,12 +252,14 @@
         buildingObject = new Building();
         _windowTitle = "Add Building";
         _visibleBuilding = true;
+        _visibleRoom = false;
     }
 
     private void AddRoom() {
-        roomObject = new RoomRequest();
+        roomObject = new RoomRequest {buildingId = _building[0].id};
         _windowTitle = "Add Room";
         _visibleRoom = true;
+        _visibleBuilding = false;
     }
 
     private async Task Update() {
@@ -270,9 +272,10 @@
         _windowTitle = $"Edit Building {building.buildingName}";
         buildingObject = building;
         _visibleBuilding = true;
+        _visibleRoom = false;
     }
 
-    private void Edit(CollegeInfrastructureRoomResponseModel room) {
+    private void EditRoom(CollegeInfrastructureRoomResponseModel room) {
         _windowTitle = $"Edit Room {room.id}";
         roomObject = new RoomRequest {
             id = room.id,
@@ -287,22 +290,22 @@
             roomType = room.roomType
         };
         _visibleRoom = true;
+        _visibleBuilding = false;
     }
 
     private async Task SetBuilding() {
         await ViewApi.AddCollegeBuilding(_session.InstitutionId, buildingObject);
         _building = null;
-        Update().Wait();
-        HideBuilding();
-        StateHasChanged();
+        _visibleBuilding = false;
+        await Update();
     }
 
     private async Task SetRoom() {
+        if (!roomObject.IsLab) roomObject.labType = "";
         await ViewApi.AddCollegeRoom(_session.InstitutionId, roomObject);
         _room = null;
-        Update().Wait();
-        HideRoom();
-        StateHasChanged();
+        _visibleRoom = false;
+        await Update();
     }
 
     private void HideRoom() {
