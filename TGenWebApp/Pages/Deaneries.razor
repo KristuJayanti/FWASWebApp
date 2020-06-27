@@ -117,7 +117,7 @@
 
 <PromptPane Dismissible="true"
             Title="@_windowTitle"
-            PrimaryText="Add"
+            PrimaryText="Finish"
             SecondaryText="Cancel"
             Visible="@_promptVisibility"
             OnClickPrimary="@Set"
@@ -147,10 +147,14 @@
                     <div class="pickbox">
                         @acc.title
                         <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
-                            <svg aria-hidden="true" focusable="false"
-                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
-                                <g class="fa-group">
-                                    <path fill="currentColor" d="M9.21,356.07a31.46,31.46,0,0,0,0,44.48l22.24,22.24a31.46,31.46,0,0,0,44.48,0L176,322.72,109.28,256ZM342.79,111.45,320.55,89.21a31.46,31.46,0,0,0-44.48,0L176,189.28,242.72,256,342.79,155.93a31.46,31.46,0,0,0,0-44.48Z" class="fa-secondary"></path><path fill="currentColor" d="M342.79,356.07a31.46,31.46,0,0,1,0,44.48l-22.24,22.24a31.46,31.46,0,0,1-44.48,0L9.21,155.93a31.46,31.46,0,0,1,0-44.48L31.45,89.21a31.46,31.46,0,0,1,44.48,0Z" class="fa-primary"></path>
+                            <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+                                <title>ic_fluent_dismiss_16_regular</title>
+                                <desc>Created with Sketch.</desc>
+                                <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="ic_fluent_dismiss_16_regular" fill="#212121" fill-rule="nonzero">
+                                        <path d="M2.58859116,2.7156945 L2.64644661,2.64644661 C2.82001296,2.47288026 3.08943736,2.45359511 3.2843055,2.58859116 L3.35355339,2.64644661 L8,7.293 L12.6464466,2.64644661 C12.8417088,2.45118446 13.1582912,2.45118446 13.3535534,2.64644661 C13.5488155,2.84170876 13.5488155,3.15829124 13.3535534,3.35355339 L8.707,8 L13.3535534,12.6464466 C13.5271197,12.820013 13.5464049,13.0894374 13.4114088,13.2843055 L13.3535534,13.3535534 C13.179987,13.5271197 12.9105626,13.5464049 12.7156945,13.4114088 L12.6464466,13.3535534 L8,8.707 L3.35355339,13.3535534 C3.15829124,13.5488155 2.84170876,13.5488155 2.64644661,13.3535534 C2.45118446,13.1582912 2.45118446,12.8417088 2.64644661,12.6464466 L7.293,8 L2.64644661,3.35355339 C2.47288026,3.17998704 2.45359511,2.91056264 2.58859116,2.7156945 L2.64644661,2.64644661 L2.58859116,2.7156945 Z" id="🎨-Color"></path>
+                                    </g>
                                 </g>
                             </svg>
                         </div>
@@ -164,7 +168,7 @@
             </select>
             <Button Color="Colored" OnClick="@AddToList">+</Button>
             <br/>
-            <div class="info-card">Once you're done, Hit the Add button below to continue.</div>
+            <div class="info-card">Once you're done, Hit the 'Finish' button below to continue.</div>
         </div>
     }
 </PromptPane>
