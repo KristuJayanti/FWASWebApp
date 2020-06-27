@@ -1,4 +1,4 @@
-@page "/Manage/Departments";
+﻿@page "/Manage/Departments";
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
 @using TGenWebApp.ResponseModels.View
@@ -139,7 +139,7 @@
             OnClickPrimary="@Set"
             OnClickSecondary="@(()=>_promptVisibility=false)">
     <br/>
-    @if (_promptVisibility && _departments != null) {
+    @if (_institution != null) {
         <div class="prompt">
             <div class="info-card">Specify a Deanery Name. </div>
             Department Name: <input type="text" placeholder="Department" @bind="departmentObject.departmentName"/> <br/>
@@ -150,7 +150,7 @@
             Deanery:
             <select @bind="departmentObject.deaneryId">
                 @for (var i = 0; i < _deaneries.Count; i++) {
-                    <option @(i == 0 ? "selected" : "") value="@_deaneries[i].id">@_deaneries[i].deaneryName</option>
+                    <option selected="@(i==0 ? "selected": "false")" value="@_deaneries[i].id">@_deaneries[i].deaneryName</option>
                 }
             </select><br/>
 
@@ -162,7 +162,7 @@
             Room:
             <select @bind="departmentObject.roomId">
                 @for (var i = 0; i < _rooms.Count; i++) {
-                    <option @(i == 0 ? "selected" : "") value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                    <option selected="@(i==0 ? "selected": "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
                 }
             </select><br/>
 
@@ -190,7 +190,7 @@
             </div><br/>
             <select @bind="pickedDesignation.id">
                 @for (var i = 0; i < _designations.Count; i++) {
-                    <option @(i == 0 ? "selected" : "") value="@_designations[i].id">@_designations[i].title</option>
+                    <option selected="@(i == 0 ? "selected" : "false")" value="@_designations[i].id">@_designations[i].title</option>
                 }
             </select>
             <Button Color="Colored" OnClick="@AddToList">+</Button>
@@ -223,9 +223,13 @@
                 _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
                 _departments ??= await _institution.GetDepartments();
                 _rooms ??= await _institution.GetCollegeRooms();
+                addedDesignations = new List<Designations>();
+                pickedDesignation = new Designations();
+                departmentObject = new Department();
+                _designations = await _institution.GetDesignations();
                 _deaneries ??= await _institution.GetDeaneries();
+                StateHasChanged();
             }
-            StateHasChanged();
         }
     }
     
@@ -264,6 +268,10 @@
     private void Edit(Department department) {
         _windowTitle = $"Edit Department: {department.departmentName}";
         departmentObject = department;
+        addedDesignations = new List<Designations>();
+        foreach (var designation in departmentObject.accessDesignation) {
+            addedDesignations.Add(_designations.Find(e => e.id == designation));
+        }
         _promptVisibility = true;
     }
 }
