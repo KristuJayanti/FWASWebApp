@@ -1,6 +1,7 @@
 ﻿@page "/Manage/Programmes";
 @using TGenWebApp.Services
 @using TGenWebApp.ResponseModels.Manager
+@using TGenWebApp.Services.ManagerApi
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
 @inject NavigationManager NavigationManager;
 
@@ -27,14 +28,38 @@
         bottom: 0.7rem;
         right: 0.7rem;
     }
-                   .prompt {
-                       font-size: 20px;
-                   }
+    
+    .prompt {
+        font-size: 20px;
+    }
                    
-                   .prompt > * {
-                       margin: 0.5rem 0;
-                       padding: 0.5rem 0;
-                   }
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+    
+    .info-card {
+        padding: 4px;
+        border: 2px solid #005a9e;
+        background: #9fd3e3;
+        border-radius: 4px;
+    }
 </style>
 
 <h1 style='padding-left: 10vw;'>Programmes</h1>
@@ -63,7 +88,7 @@
         @if (_programmes != null) {
             foreach (var programme in _programmes) {
                 <Card>
-                    <div class="card-container">
+                    <div class="card-container" @onclick="@(() => EditWindow(programme))">
                         <h2>@programme.programmeName</h2>
                         <h3>@(programme.workingHoursPerWeek ?? 0) hours/wk</h3>
                         <div class="bottom-display">
@@ -103,20 +128,24 @@
     </CardLayout>
 </div>
 <PromptPane Dismissible="true"
-            Title="Add Programme"
+            Title="@_windowTitle"
             PrimaryText="Add"
             SecondaryText="Cancel"
-            Visible="@_promptVisibility">
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@Hide">
     <br/>
     <div class="prompt">
-        Programme Name: <input type="text" placeholder="Programme"/> <br/>
-        Semester: <input type="text" placeholder="Semester"/> <br/>
-        <input type="radio"/> UG <input type="radio"/> PG <br />
-        Hours Everyday: <input type="text" placeholder="Hours Everyday"/> <br/>
-        Hours a Saturday: <input type="text" placeholder="Hours a Saturday"/> <br/>
-        Hours a Week: <input type="text" placeholder="Hours a Week"/> <br/>
-        Total Hours: <input type="text" placeholder="Total Hours"/> <br/>
-        Strength: <input type="text" placeholder="Student Strength"/> <br/>
+        Programme Name: <input type="text" placeholder="Programme" @bind="programmeObject.programmeName"/> <br/>
+        Programme Code: <input type="text" placeholder="Programme Code" @bind="programmeObject.programmeCode"/> <br/>
+
+        Semester: <input type="text" placeholder="Semester" @bind="programmeObject.semesterNumber"/> <br/>
+        <input type="radio" @bind="programmeObject.IsUG"/> UG
+        Hours Everyday: <input type="text" placeholder="Hours Everyday" @bind="programmeObject.workingHoursPerDay"/> <br/>
+        Hours a Saturday: <input type="text" placeholder="Hours a Saturday" @bind="programmeObject.workingHoursPerSaturday"/> <br/>
+        Hours a Week: <input type="text" placeholder="Hours a Week" @bind="programmeObject.workingHoursPerWeek"/> <br/>
+        Total Hours: <input type="text" placeholder="Total Hours" @bind="programmeObject.totalWorkingHours"/> <br/>
+        Strength: <input type="text" placeholder="Student Strength" @bind="programmeObject.studentStrength"/> <br/>
     </div>
 </PromptPane>
 
@@ -125,6 +154,8 @@
     private Session _session;
     private Institution _institution;
     private List<Programme> _programmes;
+    private Programme programmeObject;
+    private string _windowTitle = "Add Programme";
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -141,6 +172,28 @@
     private bool _promptVisibility;
 
     private void Add() {
+        programmeObject = new Programme();
+        _promptVisibility = true;
+    }
+
+    private async Task Update() {
+        _programmes = await _institution.GetProgrammes();
+        StateHasChanged();
+    }
+
+    private void Hide() {
+        _promptVisibility = false;
+    }
+
+    private async Task Set() {
+        await ProgrammeApi.Add(_session.InstitutionId, programmeObject);
+        _promptVisibility = false;
+        await Update();
+    }
+
+    private void EditWindow(Programme programme) {
+        programmeObject = programme;
+        _windowTitle = "Edit Programme";
         _promptVisibility = true;
     }
 
