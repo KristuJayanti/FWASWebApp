@@ -198,13 +198,14 @@
 
     private async Task Set() {
         await ProgrammeApi.Add(_session.InstitutionId, programmeObject);
+        _windowTitle = "Add Programme";
         _promptVisibility = false;
         await Update();
     }
 
     private void EditWindow(Programme programme) {
         programmeObject = programme;
-        _windowTitle = "Edit Programme";
+        _windowTitle = $"Edit Programme: {programme.programmeName}";
         _promptVisibility = true;
     }
 
