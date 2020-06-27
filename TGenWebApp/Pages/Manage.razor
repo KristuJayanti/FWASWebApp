@@ -1,7 +1,8 @@
-@page "/Manage"
+﻿@page "/Manage"
 @using System.Reflection.Metadata
 @using TGenWebApp.Services
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager;
 
 <style>
     .fa-9x {
@@ -203,6 +204,7 @@
             _isNewUser = _session.IsInitialSetup;
         }
         else {
+            NavigationManager.NavigateTo("/");
             _session = null;
         }
     }
