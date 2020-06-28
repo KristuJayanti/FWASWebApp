@@ -90,7 +90,7 @@
     [Parameter] 
     public EventCallback<Session> OnSessionChanged { get; set; }
 
-    private Session session;
+    private Session _session;
 
     private string Email { get; set; }
     private string Password { get; set; }
@@ -106,7 +106,6 @@
     private async void Login() {
         var res = await AuthApi.IsValidUsername(Email);
         if (res) {
-    // User Exists!
             var ses = await AuthApi.Login(Email, Password);
             if (ses is null) {
                 _errorMessages = "Invalid Username or password";
@@ -115,10 +114,12 @@
                 _errorMessages = "Login successful";
                 await LocalStorage.SetItemAsync(Constants.SessionId, ses);
                 await ConfirmLogin();
-                session = SessionManager.GetSession(ses);
-                Manager.NavigateTo(session.IsInitialSetup ? "Manage" : "Dashboard");
-                InstitutionManager.AddInstitution(session.InstitutionId, session.InstitutionName);
-                await OnSessionChanged.InvokeAsync(session);
+                _session = SessionManager.GetSession(ses);
+                if (_session.userType == UserType.institution)
+                    Manager.NavigateTo(_session.IsInitialSetup ? "Manage" : "Dashboard");
+                else Manager.NavigateTo("Home");
+                InstitutionManager.AddInstitution(_session.InstitutionId, _session.InstitutionName);
+                await OnSessionChanged.InvokeAsync(_session);
             }
         }
         else _errorMessages = "Invalid Username or password";
@@ -128,14 +129,10 @@
     private async Task<bool> ConfirmLogin() {
         var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
         if (SessionManager.IsValidSession(sess)) {
-            //IsLoggedIn = true;
-            //_name = SessionManager.GetName(sess);
             _loginWindowStatus = false;
             StateHasChanged();
             return true;
         }
-        //IsLoggedIn = false;
-        //_name = string.Empty;
         StateHasChanged();
         return false;
     }

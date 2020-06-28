@@ -5,12 +5,12 @@
 
 @if (_isLoggedIn) {
     @if (_isInstitute) {
-        <InstitutionLoginNavMenu Session="@_session"/>
+        <InstitutionLoginNavMenu Session="@_session" OnSessionChanged="@SessionChanged"/>
     } else {
-        <UserLoginNavMenu Session="@_session"/>
+        <UserLoginNavMenu Session="@_session" OnSessionChanged="@SessionChanged"/>
     }
 } else {
-    <LoggedOutNavMenu OnSessionChanged="@SessionChanged" />
+    <LoggedOutNavMenu OnSessionChanged="@SessionChanged"/>
 }
 
 @code {
@@ -19,6 +19,12 @@
     private bool _isLoggedIn, _isInstitute;
 
     private void SessionChanged(Session newSession) {
+        if (newSession is null) {
+            _isLoggedIn = false;
+            _isInstitute = false;
+            _session = null;
+            return;
+        }
         _session = newSession;
         if (string.IsNullOrEmpty(_session?.Id)) return;
         _isLoggedIn = true;
