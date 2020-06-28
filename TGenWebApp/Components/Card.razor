@@ -1,3 +1,4 @@
+@using System.Diagnostics
 <style>
     .card {
         background: white;
@@ -36,18 +37,20 @@
     public RenderFragment ChildContent {get; set; }
 
     protected override void OnInitialized() {
-        if (Height is null) Height = "";
-        else Height = "height: " + Height + " !important;";
+        Height = Height is null ? "" : $"height: {Height} !important;";
 
-        if (Width is null) Width = "";
-        else Width = "width: " + Width + " !important;";
+        Width = Width is null ? "" : $"width: {Width} !important;";
 
-        if (Length is null || Length is "Medium") Length = "grid-row: span 2; min-height: 14rem;";
-        else if (Length is "Short") Length = "grid-row: span 1; min-height: 7rem;";
-        else if (Length is "Tall") Length = "grid-row: span 4; min-height: 21rem;";
+        Length = Length switch {
+            "Short" => "grid-row: span 1; min-height: 7rem;",
+            "Tall" => "grid-row: span 4; min-height: 21rem;",
+            _ => "grid-row: span 2; min-height: 14rem;"
+        };
 
-        if (Breadth is null || Breadth is "Medium") Breadth = "grid-column: span 2;";
-        else if (Breadth is "Narrow") Breadth = "grid-column: span 1;";
-        else if (Breadth is "Wide") Breadth = "grid-column: span 4;";
+        Breadth = Breadth switch {
+            "Narrow" => "grid-column: span 1;",
+            "Wide" => "grid-column: span 4;",
+            _ => "grid-column: span 2;"
+        };
     }
 }
