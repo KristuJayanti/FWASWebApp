@@ -1,0 +1,142 @@
+@using TGenWebApp.Services
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Manager
+
+<header>
+    <nav>
+        <div class="logo-header">
+            <NavLink href="" Match="NavLinkMatch.All">
+                FWAS.
+            </NavLink>
+        </div>
+        <div class="nav-button">
+            <svg
+                aria-hidden="true" focusable="false"
+                data-prefix="fad" data-icon="bars"
+                role="img" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512" class="svg-inline--fa fa-bars fa-w-14 fa-9x">
+                <g class="fa-group">
+                    <path fill="currentColor"
+                          d="M16 288h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16z"
+                          class="fa-secondary">
+                    </path>
+                    <path fill="currentColor"
+                          d="M432 384H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H16A16 16 0 0 0 0 80v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16z" class="fa-primary">
+                    </path>
+                </g>
+            </svg>
+        </div>
+        <div class="menu-container">
+            <ul>
+                <li>
+                    <NavLink href="Features" Match="NavLinkMatch.All">Features</NavLink>
+                </li>
+                <li class="login" @onclick="ShowLogin">
+                    Login
+                    <!-- Font Awesome Arrow -->
+                    <svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="arrow @ArrowState">
+                        <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+                        <title>ic_fluent_chevron_down_24_regular</title>
+                        <desc>Created with Sketch.</desc>
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g fill="#212121" fill-rule="nonzero">
+                                <path d="M4.71967,8.96967 C5.01256,8.67678 5.48744,8.67678 5.78033,8.96967 L12.0000025,15.1893 L18.2197,8.96967 C18.5126,8.67678 18.9874,8.67678 19.2803,8.96967 C19.5732,9.26256 19.5732,9.73744 19.2803,10.0303 L12.5303,16.7803 C12.2374,17.0732 11.7626,17.0732 11.4697,16.7803 L4.71967,10.0303 C4.42678,9.73744 4.42678,9.26256 4.71967,8.96967 Z" id="🎨-Color"/>
+                            </g>
+                        </g>
+                    </svg>
+                </li>
+                <li class="mob-login">
+                    <a href="Login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+<div class="login-form @FormDisplay">
+    <form method="POST">
+        <input type="email"
+               @bind="Email"
+               placeholder="Email"
+               class="textbox">
+        <br/>
+        <input type="password"
+               @bind="Password"
+               placeholder="Password"
+               class="textbox">
+        <br/>
+        <p style="background-color: #ff7070; color: #f00; padding: 3px; border-radius: 3px;">@_errorMessages</p>
+        <br/>
+        <div class="buttons">
+            <Button OnClick="@Login"
+                    Type="button"
+                    Color="Colored">
+                Login
+            </Button>
+            <Button Type="reset"
+                    Color="Uncolored">
+                Reset
+            </Button>
+        </div>
+    </form>
+</div>
+
+
+@code {
+
+    private bool _loginWindowStatus;
+    
+    [Parameter] 
+    public EventCallback<Session> OnSessionChanged { get; set; }
+
+    private Session session;
+
+    private string Email { get; set; }
+    private string Password { get; set; }
+    private string _errorMessages = "";
+    
+    private string FormDisplay => _loginWindowStatus ? "login-visible" : "";
+    private string ArrowState => _loginWindowStatus ? "arrow-up" : "";
+    
+    private void ShowLogin() {
+        _loginWindowStatus = !_loginWindowStatus;
+    }
+    
+    private async void Login() {
+        var res = await AuthApi.IsValidUsername(Email);
+        if (res) {
+    // User Exists!
+            var ses = await AuthApi.Login(Email, Password);
+            if (ses is null) {
+                _errorMessages = "Invalid Username or password";
+            }
+            else {
+                _errorMessages = "Login successful";
+                await LocalStorage.SetItemAsync(Constants.SessionId, ses);
+                await ConfirmLogin();
+                session = SessionManager.GetSession(ses);
+                Manager.NavigateTo(session.IsInitialSetup ? "Manage" : "Dashboard");
+                InstitutionManager.AddInstitution(session.InstitutionId, session.InstitutionName);
+                await OnSessionChanged.InvokeAsync(session);
+            }
+        }
+        else _errorMessages = "Invalid Username or password";
+        StateHasChanged();
+    }
+
+    private async Task<bool> ConfirmLogin() {
+        var sess = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
+        if (SessionManager.IsValidSession(sess)) {
+            //IsLoggedIn = true;
+            //_name = SessionManager.GetName(sess);
+            _loginWindowStatus = false;
+            StateHasChanged();
+            return true;
+        }
+        //IsLoggedIn = false;
+        //_name = string.Empty;
+        StateHasChanged();
+        return false;
+    }
+}

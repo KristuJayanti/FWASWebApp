@@ -1,0 +1,59 @@
+@using TGenWebApp.Services
+<header>
+    <nav class="dashboard-nav">
+        <div class="logo-header">
+            <NavLink href="" Match="NavLinkMatch.All">
+                FWAS.
+            </NavLink>
+        </div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <NavLink href="Dashboard" Match="NavLinkMatch.All">Dashboard</NavLink>
+                </li>
+                <li>
+                    <NavLink href="Infrastructure">Infrastructure</NavLink>
+                </li>
+                <li>
+                    <NavLink href="Manage">Manage</NavLink>
+                </li>
+                <li>
+                    <NavLink href="Messages">Messages</NavLink>
+                </li>
+            </ul>
+        </div>
+        <div class="user">
+            <svg aria-hidden="true"
+                 focusable="false" data-prefix="fad"
+                 data-icon="user" role="img"
+                 xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 448 512" class="avatar"
+                 width="20px" height="20px">
+                <g class="fa-group">
+                    <path fill="currentColor" d="M352 128A128 128 0 1 1 224 0a128 128 0 0 1 128 128z"
+                          class="primary-col">
+                    </path>
+                    <path fill="currentColor" d="M313.6 288h-16.7a174.1 174.1 0 0 1-145.8 0h-16.7A134.43 134.43 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.43 134.43 0 0 0 313.6 288z"
+                          class="secondary-col">
+                    </path>
+                </g>
+            </svg>
+            @session.Name
+            <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" class="arrow">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g fill="#212121" fill-rule="nonzero">
+                        <path d="M4.71967,8.96967 C5.01256,8.67678 5.48744,8.67678 5.78033,8.96967 L12.0000025,15.1893 L18.2197,8.96967 C18.5126,8.67678 18.9874,8.67678 19.2803,8.96967 C19.5732,9.26256 19.5732,9.73744 19.2803,10.0303 L12.5303,16.7803 C12.2374,17.0732 11.7626,17.0732 11.4697,16.7803 L4.71967,10.0303 C4.42678,9.73744 4.42678,9.26256 4.71967,8.96967 Z" id="🎨-Color"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </nav>
+</header>
+
+@code {
+
+    [Parameter]
+    public Session session { get; set; }
+
+}
