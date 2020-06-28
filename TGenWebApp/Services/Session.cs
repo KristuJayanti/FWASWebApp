@@ -1,6 +1,6 @@
 ﻿namespace TGenWebApp.Services {
     public class Session {
-        public UserType UserType { get; set; }
+        public UserType userType { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string InstitutionId { get; set; }

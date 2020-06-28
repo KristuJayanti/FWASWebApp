@@ -60,7 +60,7 @@ namespace TGenWebApp.Services {
             if (result["validationMessage"] != "Validation Success") return null;
             var sess = new Session {
                 Id = result["userId"],
-                UserType = result["userType"] == "institution" ? UserType.institution : UserType.user
+                userType = result["userType"] == "institution" ? UserType.institution : UserType.user
             };
             await CompleteSession(sess);
             return SessionManager.AddSession(sess);
@@ -104,7 +104,7 @@ namespace TGenWebApp.Services {
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
             var request = ApiBase.GenerateRequest($@"{{""userId"":""{session.Id}"", 
-                                                                ""userType"":""{session.UserType}""}}");
+                                                                ""userType"":""{session.userType}""}}");
             var response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful) {
                 Logger.Log($"API Server failed when completing session for userID {session.Id}.", LogMode.Error);
@@ -117,7 +117,7 @@ namespace TGenWebApp.Services {
         private static void MapClass(Session session, UserBasicResponseModel model) {
             session.Name = model.name;
             session.IsInitialSetup = model.initialSetup;
-            if (session.UserType == UserType.user) {
+            if (session.userType == UserType.user) {
                 session.InstitutionId = model.institutionId;
                 session.InstitutionName = model.addressLocation.name;
             } else {
