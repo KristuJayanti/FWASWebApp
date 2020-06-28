@@ -18,13 +18,11 @@
     private Session _session;
     private bool _isLoggedIn, _isInstitute;
 
-    public async void SessionChanged(Session newSession) {
+    private void SessionChanged(Session newSession) {
         _session = newSession;
-        if (!string.IsNullOrEmpty(_session?.Id)) {
-            _isLoggedIn = true;
-            _isInstitute = (_session.userType == UserType.institution);
-        }
-        StateHasChanged();
+        if (string.IsNullOrEmpty(_session?.Id)) return;
+        _isLoggedIn = true;
+        _isInstitute = (_session.userType == UserType.institution);
     }
 
 }
