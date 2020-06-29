@@ -116,7 +116,7 @@
                 @foreach (var acc in viewFacultyObject.SelectedCourses) {
                     <div class="pickbox">
                         @acc.courseName
-                        <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
+                        <div class="remove" @onclick="() => { RemoveFromList(acc); }">
                             <!-- Microsoft FluentUI icons -->
                             <svg width="16px" height="16px" viewBox="0 0 16 16"
                                  xmlns="http://www.w3.org/2000/svg"
@@ -132,14 +132,19 @@
                     </div>
                 }
             </div><br/>
-            Preferred Courses:
-            <select @bind="temp2.Id">
-                <option value="@viewFacultyObject.PreferredCourses[0].Id" selected>@viewFacultyObject.PreferredCourses[0].courseName</option>
-                @for (var i = 1; i < viewFacultyObject.PreferredCourses.Count; i++) {
-                    <option value="@viewFacultyObject.PreferredCourses[i].Id">@viewFacultyObject.PreferredCourses[i].courseName</option>
-                }
-            </select>
-            <Button Color="Colored" OnClick="@AddChoiceToList">+</Button><br/>
+            @if (viewFacultyObject.PreferredCourses.Count == 0) {
+                <h3>This user has not picked their Preferred Courses yet.</h3>
+            }else {
+                <div>Preferred Courses:
+                <select @bind="temp2.Id">
+                    <option value="@viewFacultyObject.PreferredCourses[0].Id" selected>@viewFacultyObject.PreferredCourses[0].courseName</option>
+                    @for (var i = 1; i < viewFacultyObject.PreferredCourses.Count; i++) {
+                        <option value="@viewFacultyObject.PreferredCourses[i].Id">@viewFacultyObject.PreferredCourses[i].courseName</option>
+                    }
+                </select>
+                <Button Color="Colored" OnClick="@AddChoiceToList">+</Button><br/>
+                </div>
+            }
             <br/>
             All Courses:
             <select @bind="temp.Id">
@@ -203,21 +208,17 @@
 
                 var sC = await SelectedCourseApi.Get(faculty.userId);
                 if (sC is null) continue;
-                if (sC?.selectedCourseIds is null)
-                    sC.selectedCourseIds = new List<string>();
-                else
-                    viewFaculty.SelectedCourses = sC.selectedCourseIds
+                sC.selectedCourseIds ??= new List<string>();
+                viewFaculty.SelectedCourses = sC.selectedCourseIds
                         .Select(selectedCourseId => _courses
                             .Find(e => e.Id == selectedCourseId))
                         .ToList();
-                viewFaculty.selectedCourseIds = sC?.selectedCourseIds;
+                viewFaculty.selectedCourseIds = sC.selectedCourseIds;
 
                 var pC = await PreferredCourseApi.Get(faculty.userId);
                 if (pC is null) continue;
-                if (pC?.preferredCourseIds is null)
-                    pC.preferredCourseIds = new List<string>();
-                else
-                    viewFaculty.PreferredCourses = pC.preferredCourseIds
+                pC.preferredCourseIds ??= new List<string>();
+                viewFaculty.PreferredCourses = pC.preferredCourseIds
                         .Select(preferredCourseId => _courses
                             .Find(e => e.Id == preferredCourseId))
                         .ToList();
@@ -228,8 +229,9 @@
         }
     }
 
-    private async void Edit(MappedSelectedCourse viewFaculty) {
+    private void Edit(MappedSelectedCourse viewFaculty) {
         viewFacultyObject = viewFaculty;
+        Console.Write(viewFacultyObject.SelectedCourses.Count);
         _promptVisibility = true;
     }
 
