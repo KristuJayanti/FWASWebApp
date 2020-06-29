@@ -154,7 +154,8 @@ namespace TGenWebApp.Services {
                     RequestFormat = DataFormat.Json
                 }.AddHeader("Access-Control-Allow-Origin", "*")
                 .AddHeader("Accept", "application/json")
-                .AddJsonBody(JsonConvert.SerializeObject(new CollegeInfrastructureRoomRequestModel(institutionId, rooms)));
+                .AddJsonBody(
+                    JsonConvert.SerializeObject(new CollegeInfrastructureRoomRequestModel(institutionId, rooms)));
             var response = await client.ExecuteAsync(request);
             if (response.IsSuccessful) {
                 var inst = InstitutionManager.GetInstitution(institutionId);
@@ -179,6 +180,45 @@ namespace TGenWebApp.Services {
                 this.institutionId = institutionId;
                 this.rooms = rooms;
             }
+        }
+
+        public static async Task<bool> UpdateConfig(CollegeConfigRequestModel requestModel) {
+            Logger.Log($"Called /CollegeConfig:Update for {requestModel.institutionID}", LogMode.Info);
+            var client = new RestClient($"{Constants.BaseUrl}CollegeConfig") {
+                Timeout = -1,
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+            };
+            var request = new RestRequest(Method.POST) {
+                    RequestFormat = DataFormat.Json
+                }.AddHeader("Access-Control-Allow-Origin", "*")
+                .AddHeader("Accept", "application/json")
+                .AddJsonBody(JsonConvert.SerializeObject(requestModel));
+            var response = await client.ExecuteAsync(request);
+            if (response.IsSuccessful) {
+                var inst = InstitutionManager.GetInstitution(requestModel.institutionID);
+                inst.ResetCollegeConfigResponse();;
+                return true;
+            }
+
+            Logger.Log($"API Server failed when adding Configuration to,... to {requestModel.institutionID}.",
+                LogMode.Error);
+            return false;
+        }
+
+        public class CollegeConfigRequestModel {
+            public string institutionID { get; set; }
+
+            public bool IsUG { get; set; }
+            public bool IsPG { get; set; }
+            public int minimumWorkingDaysOddSemester { get; set; }
+            public int minimumWorkingDaysEvenSemester { get; set; }
+            public List<Designation> designations { get; set; } = new List<Designation>();
+        }
+
+        public class Designation {
+            public List<int> codes { get; set; }
+            public string title { get; set; }
+            public string? id { get; set; }
         }
     }
 }
