@@ -89,10 +89,10 @@
                     <div class="card-container" @onclick="() => { Edit(viewFaculty); }">
                         <h2>@viewFaculty.FacultyName</h2>
                         @if (viewFaculty.SelectedCourses.Count == 0) {
-                            <h3>Courses not set yet.</h3>
+                            <h3 style="font-weight: normal">Courses not set yet.</h3>
                         }
                         else {
-                            <h3>Handles @viewFaculty.SelectedCourses.Count.ToString() courses.</h3>
+                            <h3 style="font-weight: normal">Handles @viewFaculty.SelectedCourses.Count.ToString() courses.</h3>
                         }
                     </div>
                 </Card>

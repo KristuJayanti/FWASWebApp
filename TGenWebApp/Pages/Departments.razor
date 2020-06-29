@@ -92,7 +92,7 @@
                     <div class="card-container" @onclick="@(() => Edit(department))">
                         <h2>@department.departmentName</h2>
                         <h4>Deanery: @(_institution.GetDeaneryById(department.deaneryId).deaneryName ?? "Unknown")</h4>
-                        <h4 class="bottom-display">
+                        <h4 style="font-weight: normal" class="bottom-display">
                             @if (department.IsUG) {
                                 <span>UG</span>
                             }

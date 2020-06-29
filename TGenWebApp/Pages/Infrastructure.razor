@@ -143,8 +143,8 @@
                     <Card>
                         <div class="card-container" @onclick="@(() => { EditRoom(b); })">
                             <h2>@b.roomCode</h2>
-                            <h3>Type: @b.roomType</h3>
-                            <h3>Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
+                            <h3 style="font-weight: normal">Type: @b.roomType</h3>
+                            <h3 style="font-weight: normal">Building: @(_building.Find(e => b.buildingId == e.id).buildingName)</h3>
                         </div>
                     </Card>
                 }

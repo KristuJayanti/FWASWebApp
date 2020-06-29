@@ -83,8 +83,8 @@
                 <Card>
                     <div class="card-container" @onclick="@(() => { Edit(course); })">
                         <h2>@course.courseName</h2>
-                        <h3>@(_departments.Find(e => e.id == course.departmentId)?.departmentName)</h3>
-                        <h3>@course.totalHours Hours</h3>
+                        <h3 style="font-weight: normal">@(_departments.Find(e => e.id == course.departmentId)?.departmentName)</h3>
+                        <h3 style="font-weight: normal">@course.totalHours Hours</h3>
                     </div>
                 </Card>
             }
