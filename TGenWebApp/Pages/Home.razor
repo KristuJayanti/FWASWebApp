@@ -205,13 +205,15 @@
                 _choice = new Course();
                 _selectedCourses = new List<Course>();
                 if (selectedCourses.selectedCourseIds != null)
-                    foreach (var courseId in selectedCourses.selectedCourseIds)
-                        _selectedCourses.Add(_courses.Find(e => e.Id == courseId));
+                    _selectedCourses = selectedCourses.selectedCourseIds
+                        .Select(selectedCourseId => _courses.Find(e => e.Id == selectedCourseId))
+                        .ToList();
                 var preferredCourses = await PreferredCourseApi.Get(_session.Id);
                 _myCourses = new List<Course>();
                 if (preferredCourses.preferredCourseIds != null)
-                    foreach (var courseId in preferredCourses.preferredCourseIds)
-                        _myCourses.Add(_courses.Find(e => e.Id == courseId));
+                    _myCourses = preferredCourses.preferredCourseIds
+                        .Select(preferredCourseId => _courses.Find(e => e.Id == preferredCourseId))
+                        .ToList();
             }
             else {
                 NavigationManager.NavigateTo("/");
