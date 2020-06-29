@@ -131,11 +131,12 @@
                         </div>
                     </div>
                 }
-            </div><br/>
+            </div>
+            Preferred Courses:
             @if (viewFacultyObject.PreferredCourses.Count == 0) {
-                <h3>This user has not picked their Preferred Courses yet.</h3>
+                <h5 style="font-weight: lighter">This user has not picked their Preferred Courses yet.</h5>
             }else {
-                <div>Preferred Courses:
+                <div>
                 <select @bind="temp2.Id">
                     <option value="@viewFacultyObject.PreferredCourses[0].Id" selected>@viewFacultyObject.PreferredCourses[0].courseName</option>
                     @for (var i = 1; i < viewFacultyObject.PreferredCourses.Count; i++) {
@@ -145,7 +146,6 @@
                 <Button Color="Colored" OnClick="@AddChoiceToList">+</Button><br/>
                 </div>
             }
-            <br/>
             All Courses:
             <select @bind="temp.Id">
                 <option value="@_courses[0].Id" selected>@_courses[0].courseName</option>
@@ -165,7 +165,7 @@
         public List<Course> SelectedCourses { get; set; }
         public List<Course> PreferredCourses { get; set; }
 
-    // protect against nulls
+        // protect against nulls
         public MappedSelectedCourse() {
             FacultyName = string.Empty;
             SelectedCourses = new List<Course>();
@@ -231,7 +231,6 @@
 
     private void Edit(MappedSelectedCourse viewFaculty) {
         viewFacultyObject = viewFaculty;
-        Console.Write(viewFacultyObject.SelectedCourses.Count);
         _promptVisibility = true;
     }
 
@@ -257,6 +256,7 @@
             .Select(e => e.Id)
             .ToList();
         await SelectedCourseApi.Add(viewFacultyObject.userId, selectedStrings);
+        _promptVisibility = false;
     }
 
     private void Hide() {
