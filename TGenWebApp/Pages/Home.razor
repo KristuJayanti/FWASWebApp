@@ -1,2 +1,255 @@
 @page "/Home"
+@using TGenWebApp.Services
+@using TGenWebApp.ResponseModels.Manager
+@using TGenWebApp.Services.AllocationApi
+@using System.Linq
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
+<style>
+    .waiting {
+    	background: repeating-linear-gradient(to left, #fff, #ddd);
+    	animation: load 5s linear infinite forwards;
+    	background-size: 200% auto;
+    }
+    	
+    @@keyframes load {
+        0% { background-position: -200% 0; }
+      100% { background-position: 0 0; }
+    }
+    
+    .card-container {
+        position: relative;
+        width: 15rem;
+        height: 15rem;
+    }
+    
+    .prompt {
+        font-size: 20px;
+    }
+    
+    .prompt > * {
+        margin: 0.5rem 0;
+        padding: 0.5rem 0;
+    }
+    
+    .pickbox {
+        font-size: 14px; 
+        border: 1px solid black; 
+        border-radius: 2px;
+        display: inline-flex; 
+        background: #ccc;
+        padding: 2px;
+    }
+    
+    .pickbox .remove {
+        margin-left: 2px;
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+    }
+</style>
+
+<div style="margin: 0 10vw 10vw 10vw;">
+    <h1>
+        <div class="waiting" style="width: 18px; display: @(_session is null ? "block" : "none")"></div>
+        @if (_session != null) {
+            <div>Welcome, @_session.Name!</div>
+        }
+    </h1>
+    <br/>
+    <h2>Courses Selected for you.</h2>
+    @if (_courses is null) {
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+        </CardLayout>
+    }
+    else {
+        @if (_selectedCourses is null || _selectedCourses.Count == 0) {
+            <div style="text-align: center; margin-top: 6rem;">
+                <h3>No Selected Courses! 🙇‍♀️</h3>
+                <h4>Your admin hasn't alloted any courses for you yet.</h4>
+                <h4>Check this area back in sometime.</h4>
+            </div>
+        }
+        else {
+            <CardLayout>
+                @foreach (var course in _selectedCourses) {
+                    <Card>
+                        <div class="card-container">
+                            <h2>@course.courseName</h2>
+                            <h3>@(_departments.Find(e => course.departmentId == e.id)?.departmentName)</h3>
+                        </div>
+                    </Card>
+                }
+            </CardLayout>
+        }
+    }
+
+
+    <br/>
+    <br/>
+    <h2>Your Preferred Courses:</h2>
+    @if (_courses == null) {
+        <CardLayout ChildrenHeight="10rem"
+                    ChildrenWidth="15rem">
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+            <Card>
+                <div class="waiting" style="width: 10rem; height: 2rem;"></div>
+                <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
+            </Card>
+        </CardLayout>
+    }
+    else {
+        if (_myCourses.Count == 0) {
+            <div style="text-align: center; margin-top: 6rem;">
+                <h3>You don't seem to have picked courses yet.</h3>
+                <Button Color="Colored" OnClick="@Show">Pick now?</Button>
+            </div>
+        }
+        else {
+            <CardLayout>
+                @foreach (var course in _myCourses) {
+                    <Card>
+                        <div class="card-container">
+                            <h2>@course.courseName</h2>
+                            <h3>@(_departments.Find(e => course.departmentId == e.id)?.departmentName)</h3>
+                        </div>
+                    </Card>
+                }
+            </CardLayout>
+        }
+    }
+</div>
+
+<PromptPane Dismissible="true"
+            Title="Pick Preferred Courses"
+            PrimaryText="Done"
+            SecondaryText="Cancel"
+            Visible="@_promptVisibility"
+            OnClickPrimary="@Set"
+            OnClickSecondary="@Hide">
+    <br/>
+    @if (_institution != null) {
+        <div class="prompt">
+            Your Choices:<br/>
+            <div>
+                @foreach (var acc in _choices) {
+                    <div class="pickbox">
+                        @acc.courseName
+                        <div class="remove" @onclick="() => { RemoveFromList(acc); StateHasChanged();}">
+                            <!-- Microsoft FluentUI icons -->
+                            <svg width="16px" height="16px" viewBox="0 0 16 16"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>Remove</title>
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="ic_fluent_dismiss_16_regular" fill="#212121" fill-rule="nonzero">
+                                        <path d="M2.58859116,2.7156945 L2.64644661,2.64644661 C2.82001296,2.47288026 3.08943736,2.45359511 3.2843055,2.58859116 L3.35355339,2.64644661 L8,7.293 L12.6464466,2.64644661 C12.8417088,2.45118446 13.1582912,2.45118446 13.3535534,2.64644661 C13.5488155,2.84170876 13.5488155,3.15829124 13.3535534,3.35355339 L8.707,8 L13.3535534,12.6464466 C13.5271197,12.820013 13.5464049,13.0894374 13.4114088,13.2843055 L13.3535534,13.3535534 C13.179987,13.5271197 12.9105626,13.5464049 12.7156945,13.4114088 L12.6464466,13.3535534 L8,8.707 L3.35355339,13.3535534 C3.15829124,13.5488155 2.84170876,13.5488155 2.64644661,13.3535534 C2.45118446,13.1582912 2.45118446,12.8417088 2.64644661,12.6464466 L7.293,8 L2.64644661,3.35355339 C2.47288026,3.17998704 2.45359511,2.91056264 2.58859116,2.7156945 L2.64644661,2.64644661 L2.58859116,2.7156945 Z" id="🎨-Color"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                }
+            </div><br/>
+            <select @bind="_choice.Id">
+                <option value="@_courses[0].Id" selected>@_courses[0].courseName</option>
+                @for (var i = 1; i < _courses.Count; i++) {
+                    <option value="@_courses[i].Id">@_courses[i].courseName</option>
+                }
+            </select>
+            <Button Color="Colored" OnClick="@AddToList">+</Button>
+            <br/>
+        </div>
+    }
+</PromptPane>
+
+
+@code {
+
+    private Session _session;
+    Institution _institution;
+    List<Course> _courses;
+    List<Course> _myCourses;
+    List<Course> _selectedCourses;
+    List<Course> _choices;
+    private List<Department> _departments;
+    Course _choice;
+    private bool _promptVisibility;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session != null) {
+                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+                _courses = await _institution.GetCourses();
+                _departments = await _institution.GetDepartments();
+                var selectedCourses = await SelectedCourseApi.Get(_session.Id);
+    // _selectedCourses = (from courseId in _courses
+    //         join courseIds in selectedCourses.selectedCourseIds
+    //         on courseId.Id equals courseIds
+    //         select courseId).ToList();
+                _choices = new List<Course>();
+                _choice = new Course();
+                _selectedCourses = new List<Course>();
+                if (selectedCourses.selectedCourseIds != null)
+                    foreach (var courseId in selectedCourses.selectedCourseIds)
+                        _selectedCourses.Add(_courses.Find(e => e.Id == courseId));
+                var preferredCourses = await PreferredCourseApi.Get(_session.Id);
+                _myCourses = new List<Course>();
+                if (preferredCourses.preferredCourseIds != null)
+                    foreach (var courseId in preferredCourses.preferredCourseIds)
+                        _myCourses.Add(_courses.Find(e => e.Id == courseId));
+            }
+            else {
+                NavigationManager.NavigateTo("/");
+            }
+            StateHasChanged();
+        }
+    }
+
+    private async void Set() {
+        var preferredCourseIds = _choices
+                .Select(course => course.Id ?? "")
+                .ToList();
+        await PreferredCourseApi.Add(_session.Id, preferredCourseIds);
+        var t = await PreferredCourseApi.Get(_session.Id);
+        _myCourses = new List<Course>();
+        if (t.preferredCourseIds == null) return;
+        foreach (var courseId in t.preferredCourseIds)
+            _selectedCourses.Add(_courses.Find(e => e.Id == courseId));
+        _promptVisibility = false;
+        StateHasChanged();
+    }
+
+    private void Hide() {
+        _promptVisibility = false;
+    }
+
+    private void Show() {
+        _choice.Id = _courses[0].Id;
+        _promptVisibility = true;
+    }
+
+    private void AddToList() {
+        if (_choices.Exists(e => e.Id == _choice.Id)) return;
+        _choices.Add(_courses.Find(e => e.Id == _choice.Id));
+        _choice = new Course();
+    }
+
+    private void RemoveFromList(Course course) {
+        _choices.RemoveAll(e => e.Id == course.Id);
+    }
+}
