@@ -3,32 +3,32 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager Manager;
 
-@if (_isLoggedIn) {
-    @if (_isInstitute) {
+@if (_session is null) {
+    <LoggedOutNavMenu OnSessionChanged="@SessionChanged"/>
+} else {
+    if (_session.userType == UserType.institution) {
         <InstitutionLoginNavMenu Session="@_session" OnSessionChanged="@SessionChanged"/>
-    } else {
+    }
+    else {
         <UserLoginNavMenu Session="@_session" OnSessionChanged="@SessionChanged"/>
     }
-} else {
-    <LoggedOutNavMenu OnSessionChanged="@SessionChanged"/>
 }
 
 @code {
 
     private Session _session;
-    private bool _isLoggedIn, _isInstitute;
 
-    private void SessionChanged(Session newSession) {
-        if (newSession is null) {
-            _isLoggedIn = false;
-            _isInstitute = false;
-            _session = null;
-            return;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            StateHasChanged();
         }
+    }
+    
+    private void SessionChanged(Session newSession) {
         _session = newSession;
+        if (newSession is null) return;
         if (string.IsNullOrEmpty(_session?.Id)) return;
-        _isLoggedIn = true;
-        _isInstitute = (_session.userType == UserType.institution);
     }
 
 }
