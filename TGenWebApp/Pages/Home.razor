@@ -97,8 +97,8 @@
 
     <br/>
     <br/>
-    <h2>Your Preferred Courses:</h2>
     @if (_courses == null) {
+        <h2>Your Preferred Courses:</h2>
         <CardLayout ChildrenHeight="10rem"
                     ChildrenWidth="15rem">
             <Card>
@@ -113,12 +113,16 @@
     }
     else {
         if (_myCourses.Count == 0) {
+            <h2>Your Preferred Courses:</h2>
             <div style="text-align: center; margin-top: 6rem;">
                 <h3>You don't seem to have picked courses yet.</h3>
                 <Button Color="Colored" OnClick="@Show">Pick now?</Button>
             </div>
         }
         else {
+            <h2>Your Preferred Courses: &nbsp; &nbsp; &nbsp; 
+                <Button Color="Colored" OnClick="@Edit">Edit</Button>
+            </h2>
             <CardLayout>
                 @foreach (var course in _myCourses) {
                     <Card>
@@ -233,6 +237,16 @@
         foreach (var courseId in t.preferredCourseIds)
             _selectedCourses.Add(_courses.Find(e => e.Id == courseId));
         _promptVisibility = false;
+        await Update();
+    }
+
+    private async Task Update() {
+        var preferredCourses = await PreferredCourseApi.Get(_session.Id);
+        _myCourses = new List<Course>();
+        if (preferredCourses.preferredCourseIds != null)
+            _myCourses = preferredCourses.preferredCourseIds
+                .Select(preferredCourseId => _courses.Find(e => e.Id == preferredCourseId))
+                .ToList();
         StateHasChanged();
     }
 
@@ -242,6 +256,11 @@
 
     private void Show() {
         _choice.Id = _courses[0].Id;
+        _promptVisibility = true;
+    }
+
+    private void Edit() {
+        _choices = _myCourses;
         _promptVisibility = true;
     }
 
