@@ -6,50 +6,6 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<style>
-    .waiting {
-    	background: repeating-linear-gradient(to left, #fff, #ddd);
-    	animation: load 5s linear infinite forwards;
-    	background-size: 200% auto;
-    }
-    	
-    @@keyframes load {
-        0% { background-position: -200% 0; }
-      100% { background-position: 0 0; }
-    }
-    
-    .card-container {
-        position: relative;
-        width: 15rem;
-        height: 15rem;
-    }
-    
-    .prompt {
-        font-size: 20px;
-    }
-    
-    .prompt > * {
-        margin: 0.5rem 0;
-        padding: 0.5rem 0;
-    }
-    
-    .pickbox {
-        font-size: 14px; 
-        border: 1px solid black; 
-        border-radius: 2px;
-        display: inline-flex; 
-        background: #ccc;
-        padding: 2px;
-    }
-    
-    .pickbox .remove {
-        margin-left: 2px;
-        width: 12px;
-        height: 12px;
-        display: inline-block;
-    }
-</style>
-
 <div style="margin: 0 10vw 10vw 10vw;">
     <h1>
         <div class="waiting" style="width: 18px; display: @(_session is null ? "block" : "none")"></div>

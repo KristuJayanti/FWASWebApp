@@ -4,62 +4,6 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
-<style>
-	.waiting {
-		background: repeating-linear-gradient(to left, #fff, #ddd);
-		animation: load 5s linear infinite forwards;
-		background-size: 200% auto;
-	}
-	
-	@@keyframes load {
-        0% { background-position: -200% 0; }
-      100% { background-position: 0 0; }
-   }
-   
-    .card-container {
-        position: relative;
-        width: 15rem;
-        height: 15rem;
-    }
-    
-    .bottom-display {
-        position: absolute;
-        bottom: 0.7rem;
-        right: 0.7rem;
-    }
-    .prompt {
-        font-size: 20px;
-    }
-            
-    .prompt > * {
-        margin: 0.5rem 0;
-        padding: 0.5rem 0;
-    }
-    
-    .pickbox {
-        font-size: 14px; 
-        border: 1px solid black; 
-        border-radius: 2px;
-        display: inline-flex; 
-        background: #ccc;
-        padding: 2px;
-    }
-    
-    .pickbox .remove {
-        margin-left: 2px;
-        width: 12px;
-        height: 12px;
-        display: inline-block;
-    }
-    
-    .info-card {
-        padding: 4px;
-        border: 2px solid #005a9e;
-        background: #9fd3e3;
-        border-radius: 4px;
-    }
-</style>
-
 <h1 style="padding-left: 10vw;">Courses</h1>
 
 <div style="display: @(_session is null ? "block" : "none"); margin-left: 10vw;">
