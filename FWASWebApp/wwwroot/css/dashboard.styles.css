@@ -96,7 +96,7 @@
 .card:hover {
     color: #000;
     border: 1px solid #0078d7;
-    box-shadow: 0 0 3px #005a9e;
+    /* box-shadow: 0 0 3px #005a9e; */
 }
 
 /* Pages styles */
