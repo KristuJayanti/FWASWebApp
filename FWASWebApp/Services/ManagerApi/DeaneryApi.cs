@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
-using TGenWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.Manager;
 
-namespace TGenWebApp.Services.ManagerApi {
+namespace FWASWebApp.Services.ManagerApi {
     public static class DeaneryApi {
 
         public static async Task<bool> Add(string institutionId, List<Deanery> deaneries) {

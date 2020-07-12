@@ -1,4 +1,4 @@
-﻿namespace TGenWebApp.ResponseModels.Core {
+﻿namespace FWASWebApp.ResponseModels.Core {
     public class UserBasicResponseModel {
         public string institutionId { get; set; }
         public string name { get; set; }

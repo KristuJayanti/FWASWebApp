@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     public static class InstitutionManager {
         private static readonly Dictionary<string, Institution> Institutions  = new Dictionary<string, Institution>();
 

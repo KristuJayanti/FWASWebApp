@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
-using TGenWebApp.ResponseModels.Manager;
-using TGenWebApp.ResponseModels.View;
+using FWASWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.View;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     public static class ViewApi {
         /// <summary>
         /// Get all the designations from an institution

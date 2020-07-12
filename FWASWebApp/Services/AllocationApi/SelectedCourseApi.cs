@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
-using TGenWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.Manager;
 
-namespace TGenWebApp.Services.AllocationApi {
+namespace FWASWebApp.Services.AllocationApi {
     public class SelectedCourseApi {
         public static async Task<bool> Add(string userId, List<string> courseIds) {
             Logger.Log($"Called /SelectedCourse:Add for {userId}", LogMode.Info);

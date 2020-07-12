@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     public static class SessionManager {
         private static readonly Dictionary<string, Session> NameMap = new Dictionary<string, Session>();
 

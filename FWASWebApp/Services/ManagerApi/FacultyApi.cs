@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
-using TGenWebApp.ResponseModels.Core;
-using TGenWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.Core;
+using FWASWebApp.ResponseModels.Manager;
 
-namespace TGenWebApp.Services.ManagerApi {
+namespace FWASWebApp.Services.ManagerApi {
     public class FacultyApi {
          public static async Task<bool> Add(string institutionId, Faculty faculty) {
             Logger.Log($"Called /CollegeProgramme:Add for {institutionId}", LogMode.Info);

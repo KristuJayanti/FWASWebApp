@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     public static class Logger {
         public static bool Enable { get; set; }
 

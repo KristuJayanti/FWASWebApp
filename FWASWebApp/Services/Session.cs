@@ -1,4 +1,4 @@
-﻿namespace TGenWebApp.Services {
+﻿namespace FWASWebApp.Services {
     public class Session {
         public UserType userType { get; set; }
         public string Id { get; set; }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TGenWebApp.ResponseModels.Manager;
-using TGenWebApp.ResponseModels.View;
-using TGenWebApp.Services.ManagerApi;
+using FWASWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.View;
+using FWASWebApp.Services.ManagerApi;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     public class Institution {
 
         private ViewCollegeConfigResponseModel _config;

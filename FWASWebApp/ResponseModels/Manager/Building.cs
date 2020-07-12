@@ -1,4 +1,4 @@
-﻿namespace TGenWebApp.ResponseModels.Manager {
+﻿namespace FWASWebApp.ResponseModels.Manager {
     public class Building {
         public string id { get; set; }
         public string buildingCode { get; set; }

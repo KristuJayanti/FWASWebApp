@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serialization.Json;
-using TGenWebApp.ResponseModels.Core;
-using TGenWebApp.ResponseModels.Manager;
+using FWASWebApp.ResponseModels.Core;
+using FWASWebApp.ResponseModels.Manager;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     /// <summary>
     /// Authentication APIs are implemented in this class. 
     /// </summary>

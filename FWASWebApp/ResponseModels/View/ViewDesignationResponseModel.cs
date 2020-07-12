@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TGenWebApp.ResponseModels.View {
+namespace FWASWebApp.ResponseModels.View {
     public class ViewDesignationResponseModel {
         public List<Designations> designations { get; set; } = new List<Designations>();
     }

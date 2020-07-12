@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TGenWebApp.ResponseModels.View {
+namespace FWASWebApp.ResponseModels.View {
     public class ViewCollegeConfigResponseModel
     {
         public bool IsUG { get; set; }

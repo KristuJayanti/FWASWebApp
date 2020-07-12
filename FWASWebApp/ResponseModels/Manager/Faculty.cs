@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using TGenWebApp.ResponseModels.Core;
+using FWASWebApp.ResponseModels.Core;
 
-namespace TGenWebApp.ResponseModels.Manager {
+namespace FWASWebApp.ResponseModels.Manager {
     public class Faculty {
         public string institutionID { get; set; }
         public string emailId { get; set; }

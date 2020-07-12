@@ -1,4 +1,4 @@
-namespace TGenWebApp.ResponseModels.Manager {
+namespace FWASWebApp.ResponseModels.Manager {
     public class Course {
         #nullable enable
         public string? Id { get; set; }

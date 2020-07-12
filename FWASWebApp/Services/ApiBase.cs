@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace TGenWebApp.Services {
+namespace FWASWebApp.Services {
     internal static class ApiBase {
 
         internal static IRestRequest GenerateRequest(string jsonBody) {
