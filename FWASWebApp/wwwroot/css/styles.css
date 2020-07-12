@@ -238,7 +238,6 @@ button.button:active {
     padding-top: 5vh;
 }
 
-
 @media only screen and (max-width: 800px) {
     .menu-container {
         position: absolute;

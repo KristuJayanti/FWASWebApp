@@ -78,3 +78,23 @@
 .secondary-col {
     color: #000;
 }
+
+/* Cards */
+
+.card {
+    background: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    transition: 500ms ease;
+    color: #666;
+    border: 1px solid #dadada;
+    border-radius: 5px;
+}
+
+.card:hover {
+    color: #000;
+    border: 1px solid #0078d7;
+    box-shadow: 0 3px 6px #005a9e;
+}
