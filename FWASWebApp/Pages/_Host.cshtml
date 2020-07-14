@@ -8,10 +8,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="~/" />
-    <link href="css/site.css" rel="stylesheet" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="~/"/>
+    <link href="css/site.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dashboard.styles.css">
     <title>Welcome to TGen.</title>
@@ -61,34 +61,62 @@
     .components-reconnect-refused > .refused {
         display: block;
     }
+    .pop-error {
+        z-index: 1050;
+        position: absolute;
+    }
+    .pop-error > div{
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        background-color: #fff;
+        opacity: 0.8;
+        backdrop-filter: blur(3px);
+        text-align: center;
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
     </style>
 </head>
 <body>
-<div id = "components-reconnect-modal" class = "my-reconnect-modal components-reconnect-hide">
-    <div class = "show failed refused">
-        <img src = "img/puff.svg" 
-             style = "position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); width:200px" 
+<div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
+    <div class="show failed refused">
+        <img src="img/puff.svg"
+             style="position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); width:200px"
              alt="Please wait">
-        <h1 style = "color: #fff">Please wait, we're reconnecting.</h1>
+        <h1 style="color: #fff">Please wait, we're reconnecting.</h1>
     </div>
 </div>
 <app>
-    <component type = "typeof(App)" render-mode = "ServerPrerendered" />
+    <component type="typeof(App)" render-mode="ServerPrerendered"/>
 </app>
 
-<div id = "blazor-error-ui">
-    <environment include = "Staging,Production">
-        An error has occurred. This application may no longer respond until reloaded.
+<div id="blazor-error-ui" class="pop-error">
+    <environment include="Staging,Production">
+        <div>
+            <img src="~/img/disconnected.svg" alt="disconnected" width="500px"/>
+            <h1>An unexpected error occured, and you have been disconnected from the server.</h1>
+        </div>
     </environment>
-    <environment include = "Development">
-        An unhandled exception has occurred. See browser dev tools for details.
+    <environment include="Development" class="pop-error">
+        <div>
+            <img src="~/img/disconnected.svg" alt="disconnected" width="500px"/>
+            <h1>An unexpected error occured, and you have been disconnected from the server.</h1>
+            <h4>Look at the developer console for more information.</h4>
+        </div>
     </environment>
-    <a href = "" class = "reload">Reload</a>
-    <a class = "dismiss">🗙</a>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
 </div>
-<script src = "js/countUp.js"></script>
-<script src = "_framework/blazor.server.js"></script>
-<script src = "js/inputfile.js"></script>
+<script src="js/countUp.js"></script>
+<script src="_framework/blazor.server.js"></script>
+<script src="js/inputfile.js"></script>
 <script>
         function relax() {
             $().ready(() => {

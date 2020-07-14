@@ -2,16 +2,21 @@
 @using FWASWebApp.Services
 
 @if (ErrorType == "404") {
-    <h1>404. That's an error.</h1>
-    <p>We can't seem to find that page.</p>
-    <p> Ensure you have logged in with the right credentials.
-        Not @Session.Name? Hit Logout and Login with your credentials.</p>
+    <div style="margin: 4rem 10vw; display: flex; flex-direction: column; align-items: center; justify-content: center">
+        <img src="img/404.svg" alt="404" width="500px" />
+        <h1>You've reached a dead-end!</h1>
+        <h2>The path /@Path does not exist, or you don't have permission to access this page.</h2>
+        <p>Not @Session.Name? Logout from this account and try logging in with your credentials.</p>
+    </div>
 }
 
 @code {
 
     [Parameter]
     public Session Session { get; set; }
+    
+    [Parameter]
+    public string Path { get; set; }
     
     [Parameter]
     public string ErrorType { get; set; }
