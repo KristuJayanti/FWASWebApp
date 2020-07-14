@@ -3,14 +3,12 @@
 @using FWASWebApp.ResponseModels.Manager
 @using FWASWebApp.Services.AllocationApi
 @using System.Linq
-@inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <div style="margin: 0 10vw 10vw 10vw;">
     <h1>
-        <div class="waiting" style="width: 18px; display: @(_session is null ? "block" : "none")"></div>
-        @if (_session != null) {
-            <div>Welcome, @_session.Name!</div>
+        <div class="waiting" style="width: 18px; display: @(Session is null ? "block" : "none")"></div>
+        @if (Session != null) {
+            <div>Welcome, @Session.Name!</div>
         }
     </h1>
     <br/>
@@ -139,7 +137,10 @@
 
 @code {
 
-    private Session _session;
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
     Institution _institution;
     List<Course> _courses;
     List<Course> _myCourses;
@@ -150,13 +151,11 @@
     private bool _promptVisibility;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session != null) {
-                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
                 _courses = await _institution.GetCourses();
                 _departments = await _institution.GetDepartments();
-                var selectedCourses = await SelectedCourseApi.Get(_session.Id);
+                var selectedCourses = await SelectedCourseApi.Get(Session.Id);
     // _selectedCourses = (from courseId in _courses
     //         join courseIds in selectedCourses.selectedCourseIds
     //         on courseId.Id equals courseIds
@@ -168,16 +167,13 @@
                     _selectedCourses = selectedCourses.selectedCourseIds
                         .Select(selectedCourseId => _courses.Find(e => e.Id == selectedCourseId))
                         .ToList();
-                var preferredCourses = await PreferredCourseApi.Get(_session.Id);
+                var preferredCourses = await PreferredCourseApi.Get(Session.Id);
                 _myCourses = new List<Course>();
                 if (preferredCourses.preferredCourseIds != null)
                     _myCourses = preferredCourses.preferredCourseIds
                         .Select(preferredCourseId => _courses.Find(e => e.Id == preferredCourseId))
                         .ToList();
-            }
-            else {
-                NavigationManager.NavigateTo("/");
-            }
+            waiting = false;
             StateHasChanged();
         }
     }
@@ -186,8 +182,8 @@
         var preferredCourseIds = _choices
                 .Select(course => course.Id ?? "")
                 .ToList();
-        await PreferredCourseApi.Add(_session.Id, preferredCourseIds);
-        var t = await PreferredCourseApi.Get(_session.Id);
+        await PreferredCourseApi.Add(Session.Id, preferredCourseIds);
+        var t = await PreferredCourseApi.Get(Session.Id);
         _myCourses = new List<Course>();
         if (t.preferredCourseIds == null) return;
         foreach (var courseId in t.preferredCourseIds)
@@ -197,7 +193,7 @@
     }
 
     private async Task Update() {
-        var preferredCourses = await PreferredCourseApi.Get(_session.Id);
+        var preferredCourses = await PreferredCourseApi.Get(Session.Id);
         _myCourses = new List<Course>();
         if (preferredCourses.preferredCourseIds != null)
             _myCourses = preferredCourses.preferredCourseIds

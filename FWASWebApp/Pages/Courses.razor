@@ -1,12 +1,10 @@
 ﻿@using FWASWebApp.Services
 @using FWASWebApp.ResponseModels.Manager
 @using FWASWebApp.Services.ManagerApi
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
 
 <h1 style="padding-left: 10vw;">Courses</h1>
 
-<div style="display: @(_session is null ? "block" : "none"); margin-left: 10vw;">
+<div style="display: @(Session is null ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="15rem" ChildrenWidth="15rem">
         <Card>
             <div class="waiting" style="width: 10rem; height: 2rem;"></div>
@@ -20,7 +18,7 @@
     </CardLayout>
 </div>
 
-<div style="display: @(_session is null ? "none" : "block"); margin-left: 10vw;">
+<div style="display: @(Session is null ? "none" : "block"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="15rem" ChildrenWidth="15rem">
         @if (_courses != null) {
             @foreach (var course in _courses) {
@@ -95,7 +93,10 @@
 
 @code{
 
-    private Session _session;
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
     public Course courseObject;
     private List<Course> _courses;
     private string _windowTitle = "Add Course";
@@ -105,19 +106,14 @@
     private bool _promptVisibility;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-        if (firstRender) {
-            if (_session != null) {
-                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _courses = await _institution.GetCourses();
-                courseObject = new Course();
-                _departments = await _institution.GetDepartments();
-                _programmes = await _institution.GetProgrammes();
-                StateHasChanged();
-            }
-            else {
-                NavigationManager.NavigateTo("/");
-            }
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
+            _courses = await _institution.GetCourses();
+            courseObject = new Course();
+            _departments = await _institution.GetDepartments();
+            _programmes = await _institution.GetProgrammes();
+            waiting = false;
+            StateHasChanged();
         }
     }
 
@@ -142,7 +138,7 @@
     }
 
     private async Task Set() {
-        await CourseApi.Add(_session.InstitutionId, courseObject);
+        await CourseApi.Add(Session.InstitutionId, courseObject);
         await Update();
         _promptVisibility = false;
     }

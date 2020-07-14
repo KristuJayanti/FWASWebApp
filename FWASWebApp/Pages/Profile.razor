@@ -1,2 +1,12 @@
 @page "/Profile"
+@using FWASWebApp.Services
+
+@code {
+
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
+
+}
 

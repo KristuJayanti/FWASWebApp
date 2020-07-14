@@ -2,16 +2,12 @@
 @using FWASWebApp.ResponseModels.Manager
 @using FWASWebApp.ResponseModels.View
 @using FWASWebApp.Services.ManagerApi
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
-@inject NavigationManager NavigationManager;
-
-
 
 <h1 style='padding-left: 10vw;'>Departments</h1>
 
 
 @* Placeholder loading *@
-<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
+<div style="display: @(waiting ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -27,7 +23,7 @@
 
 @* actual logic *@
 
-<div style="display: @(_session == null ? "none" : "block"); margin-left: 10vw;">
+<div style="display: @(waiting ? "none" : "block"); margin-left: 10vw;">
 
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
@@ -81,7 +77,7 @@
             SecondaryText="Cancel"
             Visible="@_promptVisibility"
             OnClickPrimary="@Set"
-            OnClickSecondary="@(()=>_promptVisibility=false)">
+            OnClickSecondary="@(() => _promptVisibility = false)">
     <br/>
     @if (_institution != null) {
         <div class="prompt">
@@ -94,7 +90,7 @@
             Deanery:
             <select @bind="departmentObject.deaneryId">
                 @for (var i = 0; i < _deaneries.Count; i++) {
-                    <option selected="@(i==0 ? "selected": "false")" value="@_deaneries[i].id">@_deaneries[i].deaneryName</option>
+                    <option selected="@(i == 0 ? "selected" : "false")" value="@_deaneries[i].id">@_deaneries[i].deaneryName</option>
                 }
             </select><br/>
 
@@ -106,7 +102,7 @@
             Room:
             <select @bind="departmentObject.roomId">
                 @for (var i = 0; i < _rooms.Count; i++) {
-                    <option selected="@(i==0 ? "selected": "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
+                    <option selected="@(i == 0 ? "selected" : "false")" value="@_rooms[i].id">@_rooms[i].roomCode</option>
                 }
             </select><br/>
 
@@ -152,7 +148,11 @@
     private Designations pickedDesignation { get; set; }
     private List<Designations> _designations;
     private string _windowTitle = "Add Department";
-    Session _session;
+
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
     List<Department> _departments;
     List<Deanery> _deaneries;
     List<CollegeInfrastructureRoomResponseModel> _rooms;
@@ -160,23 +160,20 @@
     private bool _promptVisibility;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session is null) NavigationManager.NavigateTo("/");
-            else {
-                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _departments ??= await _institution.GetDepartments();
-                _rooms ??= await _institution.GetCollegeRooms();
-                addedDesignations = new List<Designations>();
-                pickedDesignation = new Designations();
-                departmentObject = new Department();
-                _designations = await _institution.GetDesignations();
-                _deaneries ??= await _institution.GetDeaneries();
-                StateHasChanged();
-            }
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
+            _departments ??= await _institution.GetDepartments();
+            _rooms ??= await _institution.GetCollegeRooms();
+            addedDesignations = new List<Designations>();
+            pickedDesignation = new Designations();
+            departmentObject = new Department();
+            _designations = await _institution.GetDesignations();
+            _deaneries ??= await _institution.GetDeaneries();
+            waiting = false;
+            StateHasChanged();
         }
     }
-    
+
     private async Task Update() {
         _departments = await _institution.GetDepartments();
         StateHasChanged();
@@ -205,7 +202,7 @@
         departmentObject.accessDesignation = addedDesignations
             .Select(addedDesignation => addedDesignation.id)
             .ToList();
-        await DepartmentApi.Add(_session.InstitutionId, departmentObject);
+        await DepartmentApi.Add(Session.InstitutionId, departmentObject);
         _promptVisibility = false;
         await Update();
     }
@@ -219,4 +216,5 @@
         }
         _promptVisibility = true;
     }
+
 }

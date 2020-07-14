@@ -3,15 +3,12 @@
 @using FWASWebApp.ResponseModels.Manager
 @using BlazorInputFile
 @using FWASWebApp.Services.ManagerApi
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
 
 <h1 style="padding-left: 10vw;">Faculty</h1>
 
 
-
 @* Placeholder loading animation *@
-<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
+<div style="display: @(waiting ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -26,7 +23,7 @@
 </div>
 
 @* Actual Code *@
-<div style="display: @(_session is null ? "none" : "block"); margin-left: 10vw;">
+<div style="display: @(waiting ? "none" : "block"); margin-left: 10vw;">
 
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
@@ -156,7 +153,10 @@
 
 @code {
 
-    private Session _session;
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
     private List<ViewCollegeFacultiesResponseModel> _faculties;
     private ResponseModels.Manager.Faculty facultyObject;
     private Institution _institution;
@@ -177,17 +177,15 @@
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session != null) {
-                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _faculties = await _institution.GetCollegeFaculties();
-                facultyObject = new ResponseModels.Manager.Faculty();
-                addedDesignations = new List<Designations>();
-                pickedDesignation = new Designations();
-                _designations = await _institution.GetDesignations();
-                _departments = await _institution.GetDepartments();
-            }
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
+            _faculties = await _institution.GetCollegeFaculties();
+            facultyObject = new ResponseModels.Manager.Faculty();
+            addedDesignations = new List<Designations>();
+            pickedDesignation = new Designations();
+            _designations = await _institution.GetDesignations();
+            _departments = await _institution.GetDepartments();
+            waiting = false;
             StateHasChanged();
         }
     }
@@ -198,11 +196,11 @@
     }
 
     private async Task Set() {
-        facultyObject.institutionID = _session.InstitutionId;
+        facultyObject.institutionID = Session.InstitutionId;
         facultyObject.designationIds = addedDesignations
             .Select(addedDesignation => addedDesignation.id)
             .ToList();
-        await FacultyApi.Add(_session.InstitutionId, facultyObject);
+        await FacultyApi.Add(Session.InstitutionId, facultyObject);
         _promptVisibility = false;
         await Update();
     }

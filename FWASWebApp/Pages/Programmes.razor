@@ -1,15 +1,11 @@
 ﻿@using FWASWebApp.Services
 @using FWASWebApp.ResponseModels.Manager
 @using FWASWebApp.Services.ManagerApi
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
-@inject NavigationManager NavigationManager;
-
-
 
 <h1 style='padding-left: 10vw;'>Programmes</h1>
 
 @* Placeholder loading *@
-<div style="display: @(_session == null ? "block" : "none"); margin-left: 10vw;">
+<div style="display: @(waiting ? "block" : "none"); margin-left: 10vw;">
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
         <Card>
@@ -25,7 +21,7 @@
 
 @* actual logic *@
 
-<div style="display: @(_session == null ? "none" : "block"); margin-left: 10vw;">
+<div style="display: @(waiting ? "none" : "block"); margin-left: 10vw;">
 
     <CardLayout ChildrenHeight="10rem"
                 ChildrenWidth="15rem">
@@ -105,21 +101,21 @@
 
 @code{
 
-    private Session _session;
+    [Parameter]
+    public Session Session { get; set; }
+
+    private bool waiting = true;
     private Institution _institution;
     private List<Programme> _programmes;
     private Programme programmeObject;
     private string _windowTitle = "Add Programme";
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session is null) NavigationManager.NavigateTo("/");
-            else {
-                _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
-                _programmes = await _institution.GetProgrammes();
-                programmeObject = new Programme();
-            }
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
+            _programmes = await _institution.GetProgrammes();
+            programmeObject = new Programme();
+            waiting = false;
             StateHasChanged();
         }
     }
@@ -141,7 +137,7 @@
     }
 
     private async Task Set() {
-        await ProgrammeApi.Add(_session.InstitutionId, programmeObject);
+        await ProgrammeApi.Add(Session.InstitutionId, programmeObject);
         _windowTitle = "Add Programme";
         _promptVisibility = false;
         await Update();

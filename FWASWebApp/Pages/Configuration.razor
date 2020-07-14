@@ -1,15 +1,12 @@
-@page "/Configuration"
 @using FWASWebApp.Services
 @using FWASWebApp.ResponseModels.View
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager
 
 
 <div style="margin-left: 10vw; margin-right: 10vw;">
     <h2>College Configuration</h2>
     <br/>
 
-    @if (_session is null) {
+    @if (waiting) {
         <CardLayout ChildrenHeight="10rem"
                     ChildrenWidth="15rem">
             <Card>
@@ -103,35 +100,36 @@
 
 @code{
 
-    Session _session;
+    [Parameter]
+    public Session Session { get; set; }
+    
     ViewCollegeConfigResponseModel _config;
     Institution _institution;
     ViewApi.CollegeConfigRequestModel _collegeConfigRequestModel;
     string _windowTitle;
     bool _promptVisibility;
+    bool waiting = true;
     ViewApi.Designation _designationObject;
     int _pickedCode;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session is null) {
-                NavigationManager.NavigateTo("/");
-                return;
+            if (waiting) {
+                _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
+                _config = await _institution.GetCollegeConfigResponse();
+                _collegeConfigRequestModel = new ViewApi.CollegeConfigRequestModel {
+                    institutionID = Session.InstitutionId,
+                    IsPG = _config.IsPG,
+                    IsUG = _config.IsUG,
+                    minimumWorkingDaysEvenSemester = 0,
+                    minimumWorkingDaysOddSemester = 0,
+                    designations = new List<ViewApi.Designation>()
+                };
+                _designationObject = new ViewApi.Designation {codes = new List<int>()};
+                waiting = false;
+                StateHasChanged();
             }
-            _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
-            _config = await _institution.GetCollegeConfigResponse();
-            _collegeConfigRequestModel = new ViewApi.CollegeConfigRequestModel {
-                institutionID = _session.InstitutionId,
-                IsPG = _config.IsPG,
-                IsUG = _config.IsUG,
-                minimumWorkingDaysEvenSemester = 0,
-                minimumWorkingDaysOddSemester = 0,
-                designations = new List<ViewApi.Designation>()
-            };
-            _designationObject = new ViewApi.Designation {codes = new List<int>()};
-            StateHasChanged();
         }
     }
 

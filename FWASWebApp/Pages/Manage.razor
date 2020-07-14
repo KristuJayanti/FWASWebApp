@@ -1,8 +1,5 @@
-﻿@page "/Manage"
-@page "/Manage/{currentPage}"
-@using FWASWebApp.Services
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager;
+﻿@using FWASWebApp.Services
+@inject NavigationManager NavigationManager
 
 <style>
     .fa-9x {
@@ -57,19 +54,19 @@
 
     @switch (currentPage) {
         case "Deaneries":
-            <Deaneries/>
+            <Deaneries Session="@Session"/>
             break;
         case "Departments":
-            <Departments/>
+            <Departments Session="@Session"/>
             break;
         case "Faculty":
-            <Faculty/>
+            <Faculty Session="@Session"/>
             break;
         case "Programmes":
-            <Programmes/>
+            <Programmes Session="@Session"/>
             break;
         case "Courses":
-            <Courses/>
+            <Courses Session="@Session"/>
             break;
         default:
             <div style='padding-top: 5rem; margin-left: 10vw;'>
@@ -193,7 +190,8 @@
 }
 
 @code {
-    Session _session;
+    [Parameter]
+    public Session Session { get; set; }
 
     [Parameter]
     public string currentPage { get; set; }
@@ -226,19 +224,11 @@
     };
 
     private void NavigateTo(string page) {
-        NavigationManager.NavigateTo($"/Manage/{page}");
+        NavigationManager.NavigateTo($"/{page}");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        var sessionId = await LocalStorage.GetItemAsync<string>(Constants.SessionId);
-        if (SessionManager.IsValidSession(sessionId)) {
-            _session = SessionManager.GetSession(sessionId);
-            _isNewUser = _session.IsInitialSetup;
-        }
-        else {
-            NavigationManager.NavigateTo("/");
-            _session = null;
-        }
+        _isNewUser = Session.IsInitialSetup;
     }
 
 }

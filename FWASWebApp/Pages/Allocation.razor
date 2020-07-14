@@ -1,11 +1,9 @@
-﻿@page "/Allocation"
-@using FWASWebApp.Services
+﻿@using FWASWebApp.Services
 @using FWASWebApp.ResponseModels.Manager
 @using FWASWebApp.ResponseModels.View
 @using FWASWebApp.Services.AllocationApi
 @using System.ComponentModel.Design
 @inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 
 
@@ -13,7 +11,7 @@
 <h3 style="padding-left: 11vw; font-weight: normal">Allocate your faculty with courses.</h3>
 
 <div style="padding-left: 10vw;">
-    @if (_session is null) {
+    @if (waiting) {
         <CardLayout ChildrenHeight="10rem"
                     ChildrenWidth="15rem">
             <Card>
@@ -25,8 +23,7 @@
                 <div class="waiting" style="width: 8rem; height: 1rem; padding-left: 1rem; margin-top: 1rem;"></div>
             </Card>
         </CardLayout>
-    }
-    else {
+    } else {
         <CardLayout ChildrenHeight="10rem"
                     ChildrenWidth="15rem">
             @foreach (var viewFaculty in _viewFaculties) {
@@ -105,6 +102,10 @@
 
 @code {
 
+    [Parameter] public Session Session { get; set; }
+
+    private bool waiting = true;
+    
     class MappedSelectedCourse : SelectedCourse {
         public string FacultyName { get; set; }
         public List<Course> SelectedCourses { get; set; }
@@ -117,8 +118,6 @@
             PreferredCourses = new List<Course>();
         }
     }
-
-    Session _session;
     Institution _institution;
     List<ViewCollegeFacultiesResponseModel> _faculties;
     List<Department> _departments;
@@ -129,13 +128,8 @@
     Course temp, temp2;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
-            if (_session is null) {
-                NavigationManager.NavigateTo("/");
-                return;
-            }
-            _institution = InstitutionManager.GetInstitution(_session.InstitutionId);
+        if (firstRender && waiting) {
+            _institution = InstitutionManager.GetInstitution(Session.InstitutionId);
             _faculties = await _institution.GetCollegeFaculties();
             _departments = await _institution.GetDepartments();
             _courses = await _institution.GetCourses();
@@ -170,6 +164,7 @@
                 
                 _viewFaculties.Add(viewFaculty);
             }
+            waiting = false;
             StateHasChanged();
         }
     }
