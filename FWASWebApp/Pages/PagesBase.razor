@@ -1,0 +1,81 @@
+@page "/{PagePath}"
+@using FWASWebApp.Services
+@inject NavigationManager Manager;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+
+@if (_session != null) {
+    @if (_session.userType == UserType.institution) {
+        @switch (PagePath.ToLower()) {
+            case "dashboard":
+                <Dashboard Session="@_session"/>
+                break;
+            case "manage":
+                <Manage Session="@_session" currentPage=""/>
+                break;
+            case "deaneries":
+                <Manage Session="@_session" currentPage="Deaneries"/>
+                break;
+            case "departments":
+                <Manage Session="@_session" currentPage="Departments"/>
+                break;
+            case "faculty":
+                <Manage Session="@_session" currentPage="Faculty"/>
+                break;
+            case "programmes":
+                <Manage Session="@_session" currentPage="Programmes"/>
+                break;
+            case "courses":
+                <Manage Session="@_session" currentPage="Courses"/>
+                break;
+            case "infrastructure":
+                <Infrastructure Session="@_session"/>
+                break;
+            case "configuration":
+            case "config":
+                <Configuration Session="@_session"/>
+                break;
+            case "allocation":
+                <Allocation Session="@_session"/>
+                break;
+            default:
+                <Error Session="@_session" ErrorType="404"/>
+                break;
+        }
+    }
+    else {
+        @switch (PagePath.ToLower()) {
+            case "profile":
+                <Profile Session="@_session"/>
+                break;
+            case "home":
+                <Home Session="@_session"/>
+                break;
+            default:
+                <Error Session="@_session" ErrorType="404"/>
+                break;
+        }
+    }
+}
+
+
+
+
+@code {
+
+    Session _session;
+
+    [Parameter]
+    public string PagePath { get; set; }
+
+    [Parameter]
+    public string SubPath { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            _session ??= SessionManager.GetSession(await LocalStorage.GetItemAsync<string>(Constants.SessionId));
+            if (_session is null) Manager.NavigateTo("/");
+            StateHasChanged();
+        }
+    }
+
+}
