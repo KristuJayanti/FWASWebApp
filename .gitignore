@@ -351,3 +351,7 @@ MigrationBackup/
 
 # Rider files
 .idea/
+
+# VSCode directory
+.vscode/
+
