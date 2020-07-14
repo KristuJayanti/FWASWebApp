@@ -38,7 +38,7 @@
                 <Allocation Session="@_session"/>
                 break;
             default:
-                <Error Session="@_session" ErrorType="404"/>
+                <Error Session="@_session" ErrorType="404" Path="@PagePath"/>
                 break;
         }
     }
@@ -51,7 +51,7 @@
                 <Home Session="@_session"/>
                 break;
             default:
-                <Error Session="@_session" ErrorType="404"/>
+                <Error Session="@_session" ErrorType="404" Path="PagePath"/>
                 break;
         }
     }
