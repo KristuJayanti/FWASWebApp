@@ -154,3 +154,33 @@
     background: #9fd3e3;
     border-radius: 4px;
 }
+
+.search-area {
+    position: relative;
+    width: 240px;
+    background: #fff;
+    padding: 10px 0;
+}
+
+.search-area svg {
+    position: absolute;
+    right: 0;
+    padding: 15px 0 0 0;
+}
+
+.search-area input[type="search"] {
+    position: absolute;
+    width: 250px;
+    padding: 15px 30px 15px 20px;
+    border: 1px solid var(--fade-border);
+    border-radius: 5px;
+    background: #fff6;
+    margin: 5px 0;
+    height: 1rem;
+    transition: 300ms ease-in-out;
+    transition-property: border;
+}
+
+.search-area input[type="search"]:hover {
+    border: 1px solid var(--accent-secondary);
+}
